@@ -1,14 +1,18 @@
-# FinTrace AI — Backend Ingestion & Core API Contract
+# FinTrace AI — Backend API & Integration Contract
 
-**Branch**: `feature/core-ingestion`  
+**Branch**: `main`  
 **Target Audience**: Sahil & Sakshi (Frontend / Integration Team)  
-**Status**: Milestone 1 Complete
+**Status**: Milestone 2 Complete (Ingestion, Financial Web Graph & Explainable Risk Scoring)
 
 ---
 
 ## 1. Overview & Setup
 
-The FinTrace AI backend provides REST API endpoints for ingesting financial audit datasets (Beneficiaries and Disbursements), validating incoming records using Zod schemas, persisting valid records to MongoDB (with fallback in-memory cache when running disconnected), and querying ingested records.
+The FinTrace AI backend provides REST API endpoints for:
+1. Ingesting financial audit datasets (Beneficiaries & Disbursements) via JSON or CSV.
+2. Validating incoming records with detailed Zod schema error reporting.
+3. Constructing an interactive Financial Web Graph linking beneficiaries, payout bank accounts, disbursements, and shared attribute clusters.
+4. Performing explainable rule-based risk scoring (0–100 bounded scale) with clear human-review disclaimers.
 
 ### Environment Configuration (`backend/.env`)
 ```env
@@ -32,6 +36,8 @@ CORS_ORIGIN=http://localhost:5173
 | `POST` | `/api/ingest/csv` | Unified CSV upload (`?type=beneficiary` or `?type=disbursement`) | `multipart/form-data` or `text/csv` |
 | `GET` | `/api/beneficiaries` | List ingested beneficiaries | N/A |
 | `GET` | `/api/disbursements` | List ingested disbursements | N/A |
+| `GET` | `/api/analysis/graph` | Build & return Financial Web Graph (nodes & edges) | N/A |
+| `GET` | `/api/analysis/risks` | Calculate & return ranked explainable risk findings | N/A |
 
 ---
 
@@ -58,7 +64,7 @@ CORS_ORIGIN=http://localhost:5173
 | :--- | :--- | :--- | :--- | :--- |
 | `disbursementId` | String | **Yes** | — | Unique payment ID (e.g., `DISB-2024-001`) |
 | `beneficiaryId` | String | **Yes** | — | Linked Beneficiary ID |
-| `amount` | Number | **Yes** | — | Must be positive number > 0 (string numbers like `"25000"` automatically coerced) |
+| `amount` | Number | **Yes** | — | Must be positive number > 0 (string numbers automatically coerced) |
 | `currency` | String | No | `INR` | Currency code |
 | `disbursementDate` | Date/ISO String | **Yes** | — | Valid Date / ISO timestamp |
 | `programCode` | String | **Yes** | — | Scheme / Program reference (e.g., `SCHEME-AGRI-2024`) |
@@ -69,59 +75,153 @@ CORS_ORIGIN=http://localhost:5173
 
 ---
 
-## 4. Request & Response Formats
+## 4. Graph Construction API (`GET /api/analysis/graph`)
 
-### 4.1 Ingestion Response Contract (`IngestionResult`)
+Generates graph representation from ingested data.
 
-All ingestion endpoints return a detailed summary along with accepted records and a row-by-row breakdown of any rejected records.
+### 4.1 Node Types
+- `beneficiary`: `id = beneficiaryId`, `label = name`
+- `payout_account`: `id = ACC-{bankAccountNumber}`, `label = Account {bankAccountNumber}`
+- `disbursement`: `id = disbursementId`, `label = Disbursement {disbursementId}`
 
+### 4.2 Edge Relations & Reasons
+- `BENEFICIARY_PAYOUT_ACCOUNT`: Beneficiary link to payout bank account node.
+- `DISBURSED_TO`: Disbursement link to beneficiary.
+- `SHARED_BANK_ACCOUNT`: Shared payout bank account between beneficiaries (`sourceAttribute: "bankAccountNumber"`).
+- `SHARED_PHONE`: Shared normalized phone number (`sourceAttribute: "phone"`).
+- `SHARED_ADDRESS`: Shared physical address (`sourceAttribute: "address"`).
+- `SHARED_EMAIL`: Shared email address (`sourceAttribute: "email"`).
+- `SHARED_IDENTITY_HASH`: Shared identity hash (`sourceAttribute: "identityHash"`).
+
+### 4.3 Sample Graph Response
 ```json
 {
   "success": true,
-  "message": "Processed 2 beneficiary records. Accepted: 1, Rejected: 1",
-  "summary": {
-    "totalRows": 2,
-    "acceptedCount": 1,
-    "rejectedCount": 1,
-    "recordType": "beneficiary"
-  },
-  "accepted": [
-    {
-      "beneficiaryId": "BEN-1001",
-      "name": "Rajesh Kumar",
-      "bankAccountNumber": "918273645012",
-      "ifscOrRoutingCode": "SBIN0001234",
-      "category": "Individual",
-      "phone": "+919876543210",
-      "email": "rajesh.k@example.com",
-      "address": "12 Civil Lines, New Delhi",
-      "identityHash": "HASH-BEN-1001",
-      "status": "Active"
-    }
-  ],
-  "rejected": [
-    {
-      "row": 2,
-      "raw": {
-        "beneficiaryId": "",
-        "name": "",
-        "bankAccountNumber": "123",
-        "ifscOrRoutingCode": ""
+  "data": {
+    "nodes": [
+      {
+        "id": "BEN-1001",
+        "label": "Rajesh Kumar",
+        "type": "beneficiary",
+        "metadata": {
+          "category": "Individual",
+          "status": "Active",
+          "bankAccountNumber": "918273645012",
+          "ifscOrRoutingCode": "SBIN0001234"
+        }
       },
-      "errors": [
-        { "field": "beneficiaryId", "message": "beneficiaryId cannot be empty" },
-        { "field": "name", "message": "name cannot be empty" },
-        { "field": "bankAccountNumber", "message": "bankAccountNumber must be at least 4 characters" },
-        { "field": "ifscOrRoutingCode", "message": "ifscOrRoutingCode cannot be empty" }
-      ]
+      {
+        "id": "ACC-918273645012",
+        "label": "Account 918273645012",
+        "type": "payout_account",
+        "metadata": {
+          "bankAccountNumber": "918273645012",
+          "ifscOrRoutingCode": "SBIN0001234",
+          "associatedBeneficiariesCount": 2
+        }
+      }
+    ],
+    "edges": [
+      {
+        "id": "edge-1",
+        "source": "BEN-1001",
+        "target": "ACC-918273645012",
+        "relation": "BENEFICIARY_PAYOUT_ACCOUNT",
+        "reason": "Beneficiary Rajesh Kumar uses payout account 918273645012",
+        "sourceAttribute": "bankAccountNumber"
+      },
+      {
+        "id": "edge-2",
+        "source": "BEN-1001",
+        "target": "BEN-1002",
+        "relation": "SHARED_BANK_ACCOUNT",
+        "reason": "Shared bank account \"918273645012\" shared between Rajesh Kumar and Asha Workers Co-Op",
+        "sourceAttribute": "bankAccountNumber"
+      }
+    ],
+    "summary": {
+      "totalNodes": 2,
+      "totalEdges": 2,
+      "beneficiaryCount": 2,
+      "payoutAccountCount": 1,
+      "disbursementCount": 0
     }
-  ]
+  }
 }
 ```
 
 ---
 
-## 5. Testing Commands & Quick Start for Integration
+## 5. Explainable Risk Scoring API (`GET /api/analysis/risks`)
+
+Transparent rule-based scoring (0–100 bounded scale).
+
+### 5.1 Risk Rules & Scoring Weights
+
+| Rule ID | Severity | Points | Description |
+| :--- | :--- | :--- | :--- |
+| `SHARED_PAYOUT_ACCOUNT` | **HIGH** | +50 (+70 if 3+) | Multiple distinct beneficiaries sharing 1 payout bank account |
+| `DUPLICATE_IDENTITY_HASH` | **HIGH** | +40 | Duplicate identity hash linked across different beneficiary IDs |
+| `BENEFICIARY_STATUS_FLAG` | **HIGH/MED** | +35 (Flagged) / +50 (Suspended) | Beneficiary account status marked as Flagged or Suspended |
+| `SHARED_PHONE_NUMBER` | **LOW** | +15 | Shared contact phone number |
+| `SHARED_ADDRESS` | **LOW** | +10 | Shared physical street address |
+| `SHARED_EMAIL` | **LOW** | +10 | Shared email address |
+| `HIGH_DISBURSEMENT_VOLUME` | **MEDIUM** | +15 | Cumulative payouts ≥ ₹500,000 |
+| `HIGH_DISBURSEMENT_VELOCITY` | **LOW** | +15 | Received ≥ 3 separate payment disbursements |
+| `SUSPICIOUS_PAYMENT_STATUS` | **MEDIUM** | +15 | Includes failed or reversed payment attempts |
+
+### 5.2 Risk Levels & Human Review Disclaimer
+- **High Risk**: `score >= 70`
+- **Medium Risk**: `score >= 30 && score < 70`
+- **Low Risk**: `score < 30`
+- **Disclaimer**: *"Risk indicators are automated rule-based flags for forensic audit and require human review. They do not constitute conclusive proof of fraud."*
+
+### 5.3 Sample Risk Analysis Response
+```json
+{
+  "success": true,
+  "data": {
+    "findings": [
+      {
+        "entityId": "BEN-1001",
+        "entityType": "beneficiary",
+        "name": "Rajesh Kumar",
+        "riskScore": 75,
+        "riskLevel": "HIGH",
+        "disclaimer": "Risk indicators are automated rule-based flags for forensic audit and require human review. They do not constitute conclusive proof of fraud.",
+        "signals": [
+          {
+            "ruleId": "SHARED_PAYOUT_ACCOUNT",
+            "severity": "HIGH",
+            "points": 50,
+            "description": "Bank account 918273645012 is shared by 2 distinct beneficiaries: Asha Workers Co-Op (BEN-1002)."
+          },
+          {
+            "ruleId": "HIGH_DISBURSEMENT_VOLUME",
+            "severity": "MEDIUM",
+            "points": 15,
+            "description": "High cumulative disbursement total of ₹600,000 across 2 payments."
+          }
+        ],
+        "explanations": [
+          "Bank account 918273645012 is shared by 2 distinct beneficiaries: Asha Workers Co-Op (BEN-1002).",
+          "High cumulative disbursement total of ₹600,000 across 2 payments."
+        ]
+      }
+    ],
+    "summary": {
+      "totalEntitiesAssessed": 1,
+      "highRiskCount": 1,
+      "mediumRiskCount": 0,
+      "lowRiskCount": 0
+    }
+  }
+}
+```
+
+---
+
+## 6. Testing Commands & Quick Start for Integration
 
 ### Start Backend API Server
 ```bash
@@ -129,45 +229,23 @@ cd backend
 npm run dev
 ```
 
-### 1. Verify Health
-```bash
-curl http://localhost:5000/api/health
-```
-
-### 2. Ingest Beneficiaries via JSON
-```bash
-curl -X POST http://localhost:5000/api/ingest/beneficiaries \
-  -H "Content-Type: application/json" \
-  -d '[
-    {
-      "beneficiaryId": "BEN-2001",
-      "name": "Meera Patel",
-      "bankAccountNumber": "554433221100",
-      "ifscOrRoutingCode": "HDFC0001234",
-      "category": "Individual"
-    }
-  ]'
-```
-
-### 3. Ingest Beneficiaries via CSV Upload
+### 1. Ingest Sample Synthetic Cluster
 ```bash
 curl -X POST http://localhost:5000/api/ingest/beneficiaries/csv \
   -F "file=@src/data/synthetic/beneficiaries_sample.csv"
 ```
 
-### 4. Fetch All Beneficiaries
+### 2. Fetch Graph
 ```bash
-curl http://localhost:5000/api/beneficiaries
+curl http://localhost:5000/api/analysis/graph
 ```
 
-### 5. Fetch All Disbursements
+### 3. Fetch Risk Findings
 ```bash
-curl http://localhost:5000/api/disbursements
+curl http://localhost:5000/api/analysis/risks
 ```
 
----
-
-## 6. Run Automated Tests
+### 4. Run Automated Test Suite (14 Tests)
 ```bash
 cd backend
 npm run test
