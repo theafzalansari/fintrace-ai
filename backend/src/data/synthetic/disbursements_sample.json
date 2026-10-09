@@ -1,0 +1,26 @@
+[
+  {
+    "disbursementId": "DISB-2024-001",
+    "beneficiaryId": "BEN-1001",
+    "amount": 25000.00,
+    "currency": "INR",
+    "disbursementDate": "2024-03-01T10:00:00.000Z",
+    "programCode": "SCHEME-AGRI-2024",
+    "paymentChannel": "Direct Transfer",
+    "status": "Completed",
+    "referenceNumber": "REF-981237",
+    "remarks": "Direct benefit transfer for seed subsidy"
+  },
+  {
+    "disbursementId": "DISB-2024-002",
+    "beneficiaryId": "BEN-1002",
+    "amount": 150000.00,
+    "currency": "INR",
+    "disbursementDate": "2024-03-02T11:30:00.000Z",
+    "programCode": "SCHEME-HEALTH-2024",
+    "paymentChannel": "NEFT",
+    "status": "Completed",
+    "referenceNumber": "REF-981238",
+    "remarks": "Community health equipment grant"
+  }
+]

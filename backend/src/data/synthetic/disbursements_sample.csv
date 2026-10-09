@@ -1,0 +1,6 @@
+disbursementId,beneficiaryId,amount,currency,disbursementDate,programCode,paymentChannel,status,referenceNumber,remarks
+DISB-2024-001,BEN-1001,25000.00,INR,2024-03-01T10:00:00.000Z,SCHEME-AGRI-2024,Direct Transfer,Completed,REF-981237,Direct benefit transfer for seed subsidy
+DISB-2024-002,BEN-1002,150000.00,INR,2024-03-02T11:30:00.000Z,SCHEME-HEALTH-2024,NEFT,Completed,REF-981238,Community health equipment grant
+DISB-2024-003,BEN-1003,450000.00,INR,2024-03-03T14:15:00.000Z,SCHEME-INFRA-2024,RTGS,Completed,REF-981239,Milestone 1 road construction payment
+DISB-2024-004,BEN-1004,5000.00,INR,2024-03-04T09:45:00.000Z,SCHEME-AGRI-2024,UPI,Completed,REF-981240,Emergency relief fund
+DISB-2024-005,BEN-1005,-500.00,INR,invalid-date,,Unknown,Completed,REF-981241,Invalid payment entry test

@@ -1,4 +1,2 @@
-/**
- * Central Data Models Export
- */
-export * from '../types/index.js';
+export * from './Beneficiary.js';
+export * from './Disbursement.js';

@@ -1,0 +1,26 @@
+[
+  {
+    "beneficiaryId": "BEN-1001",
+    "name": "Rajesh Kumar",
+    "bankAccountNumber": "918273645012",
+    "ifscOrRoutingCode": "SBIN0001234",
+    "category": "Individual",
+    "phone": "+919876543210",
+    "email": "rajesh.k@example.com",
+    "address": "12 Civil Lines, New Delhi",
+    "identityHash": "HASH-BEN-1001",
+    "status": "Active"
+  },
+  {
+    "beneficiaryId": "BEN-1002",
+    "name": "Asha Workers Co-Op",
+    "bankAccountNumber": "451236987014",
+    "ifscOrRoutingCode": "HDFC0005678",
+    "category": "NGO",
+    "phone": "+919876543211",
+    "email": "contact@ashacoop.org",
+    "address": "45 NGO Complex, Jaipur",
+    "identityHash": "HASH-BEN-1002",
+    "status": "Active"
+  }
+]
