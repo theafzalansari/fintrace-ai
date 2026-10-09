@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { SignedIn, SignedOut, UserButton } from '@clerk/clerk-react';
-import { ShieldCheck, ArrowRight, X, Menu } from 'lucide-react';
+import { ArrowRight, X, Menu } from 'lucide-react';
 import { ThemeToggle } from '../ui/ThemeToggle';
 import { Button } from '../ui/Button';
 import { Footer } from './Footer';
@@ -33,9 +33,11 @@ export const PublicLayout: React.FC<PublicLayoutProps> = ({ children }) => {
       {/* Public Editorial Header */}
       <header className="sticky top-0 z-50 border-b border-slate-200 dark:border-slate-800/80 bg-white/90 dark:bg-[#090D16]/90 backdrop-blur-md px-4 sm:px-8 py-3.5 flex items-center justify-between">
         <Link to="/" className="flex items-center gap-2.5 group">
-          <div className="h-8 w-8 rounded-lg bg-blue-50 dark:bg-blue-600/10 border border-blue-500/30 flex items-center justify-center group-hover:border-blue-500 transition-colors">
-            <ShieldCheck className="h-4 w-4 text-blue-500" />
-          </div>
+          <img
+            src="/logo.jpeg"
+            alt="FinTrace AI Logo"
+            className="h-8 w-8 rounded-lg object-cover border border-slate-200 dark:border-slate-800 shadow-sm group-hover:border-blue-500 transition-colors"
+          />
           <span className="font-sans text-base font-bold tracking-tight text-slate-900 dark:text-white">
             FinTrace <span className="text-blue-500 font-semibold">AI</span>
           </span>
@@ -49,7 +51,7 @@ export const PublicLayout: React.FC<PublicLayoutProps> = ({ children }) => {
           <a href="#methodology" onClick={handleScrollTo('methodology')} className="hover:text-slate-900 dark:hover:text-white transition-colors">
             Methodology
           </a>
-          <a href="#preview" onClick={handleScrollTo('preview')} className="hover:text-slate-900 dark:hover:text-white transition-colors">
+          <a href="#product-preview" onClick={handleScrollTo('product-preview')} className="hover:text-slate-900 dark:hover:text-white transition-colors">
             Product Preview
           </a>
         </nav>
@@ -136,7 +138,7 @@ export const PublicLayout: React.FC<PublicLayoutProps> = ({ children }) => {
           <a href="#methodology" onClick={handleScrollTo('methodology')} className="block text-slate-700 dark:text-slate-300">
             Methodology
           </a>
-          <a href="#preview" onClick={handleScrollTo('preview')} className="block text-slate-700 dark:text-slate-300">
+          <a href="#product-preview" onClick={handleScrollTo('product-preview')} className="block text-slate-700 dark:text-slate-300">
             Product Preview
           </a>
           <div className="pt-2 border-t border-slate-200 dark:border-slate-800 flex flex-col gap-2">

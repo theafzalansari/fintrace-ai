@@ -1,0 +1,11 @@
+beneficiaryId,name,bankAccountNumber,ifscOrRoutingCode,category,phone,email,address,identityHash,status
+BEN-3001,Aarav Sharma,918273645001,SBIN0001234,Individual,+919876543001,aarav.sharma@fictional.org,"Flat 101, Green Acres, Mumbai",HASH-IND-3001,Active
+BEN-3002,Priya Deshmukh,918273645002,HDFC0002345,Individual,+919876543002,priya.deshmukh@fictional.org,"House 12, Civil Lines, Pune",HASH-IND-3002,Active
+BEN-3003,Apex Infrastructure Solutions,ACC-SHARED-99,ICIC0009999,Contractor,+919876543003,contact@apexinfra-fake.org,"Sector 62, Noida, UP",HASH-CORP-9900,Suspended
+BEN-3004,Apex Horizon Ventures,ACC-SHARED-99,ICIC0009999,Contractor,+919876543004,info@apexhorizon-fake.org,"Sector 62, Noida, UP",HASH-CORP-9900,Active
+BEN-3005,Sahyadri Agro Federation,918273645005,PUNB0004321,NGO,+919876543005,contact@sahyadri-fake.org,"Plot 42, Sector 18, Vashi, Navi Mumbai",HASH-NGO-3005,Active
+BEN-3006,Vashi Rural Collective,918273645006,PUNB0004321,NGO,+919876543006,info@vashicollective-fake.org,"Plot 42, Sector 18, Vashi, Navi Mumbai",HASH-NGO-3006,Active
+BEN-3007,Vikram Enterprises,918273645007,SBIN0001234,Vendor,+919876543007,vikram@vikram-fake.org,"Industrial Area Phase 2, Thane",HASH-VND-3007,Flagged
+BEN-3008,Ananya Verma,918273645008,HDFC0002345,Individual,+919820011223,ananya.verma@fictional.org,"Block B, Model Town, Delhi",HASH-IND-3008,Active
+BEN-3009,Rohan Verma,918273645009,HDFC0002345,Individual,+919820011223,rohan.verma@fictional.org,"Block B, Model Town, Delhi",HASH-IND-3009,Active
+BEN-3010,Kavita Patel,918273645010,ICIC0003456,Vendor,+919876543010,kavita.patel@fictional.org,"Station Road, Ahmedabad",HASH-VND-3010,Active

@@ -5,7 +5,8 @@ import {
   ingestDisbursementsHandler,
   ingestBeneficiariesCsvHandler,
   ingestDisbursementsCsvHandler,
-  unifiedCsvIngestionHandler
+  unifiedCsvIngestionHandler,
+  resetIngestedDataHandler
 } from '../controllers/ingestionController.js';
 
 const router = Router();
@@ -18,5 +19,9 @@ router.post('/ingest/disbursements', ingestDisbursementsHandler);
 router.post('/ingest/beneficiaries/csv', upload.single('file'), ingestBeneficiariesCsvHandler);
 router.post('/ingest/disbursements/csv', upload.single('file'), ingestDisbursementsCsvHandler);
 router.post('/ingest/csv', upload.single('file'), unifiedCsvIngestionHandler);
+
+// Workspace reset endpoint
+router.delete('/ingest/reset', resetIngestedDataHandler);
+router.post('/ingest/reset', resetIngestedDataHandler);
 
 export default router;

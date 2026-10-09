@@ -154,3 +154,23 @@ export async function unifiedCsvIngestionHandler(req: Request, res: Response): P
     });
   }
 }
+
+export async function resetIngestedDataHandler(_req: Request, res: Response): Promise<void> {
+  try {
+    const result = await ingestionService.clearAllData();
+    res.status(200).json({
+      success: true,
+      message: `Cleared workspace records. Deleted ${result.beneficiariesDeleted} beneficiaries and ${result.disbursementsDeleted} disbursements.`,
+      ...result
+    });
+  } catch (error) {
+    logger.error('Error in resetIngestedDataHandler:', error);
+    res.status(500).json({
+      success: false,
+      error: {
+        message: 'Failed to reset workspace records',
+        details: error instanceof Error ? error.message : String(error)
+      }
+    });
+  }
+}

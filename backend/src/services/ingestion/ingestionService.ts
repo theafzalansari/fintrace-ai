@@ -358,10 +358,7 @@ export class IngestionService {
   public async getBeneficiaries(): Promise<unknown[]> {
     if (mongoose.connection.readyState === 1) {
       try {
-        const dbRecords = await Beneficiary.find().lean();
-        if (dbRecords && dbRecords.length > 0) {
-          return dbRecords;
-        }
+        return await Beneficiary.find().lean();
       } catch (err) {
         logger.warn('Error fetching beneficiaries from MongoDB, returning memory store', err);
       }
@@ -375,15 +372,33 @@ export class IngestionService {
   public async getDisbursements(): Promise<unknown[]> {
     if (mongoose.connection.readyState === 1) {
       try {
-        const dbRecords = await Disbursement.find().lean();
-        if (dbRecords && dbRecords.length > 0) {
-          return dbRecords;
-        }
+        return await Disbursement.find().lean();
       } catch (err) {
         logger.warn('Error fetching disbursements from MongoDB, returning memory store', err);
       }
     }
     return Array.from(memoryDisbursementsStore.values());
+  }
+
+  /**
+   * Clear all stored beneficiary & disbursement records from MongoDB collections
+   * and in-memory stores. Preserves collection schemas and indexes.
+   */
+  public async clearAllData(): Promise<{ beneficiariesDeleted: number; disbursementsDeleted: number }> {
+    let beneficiariesDeleted = 0;
+    let disbursementsDeleted = 0;
+
+    if (mongoose.connection.readyState === 1) {
+      const resBen = await Beneficiary.deleteMany({});
+      const resDisb = await Disbursement.deleteMany({});
+      beneficiariesDeleted = resBen.deletedCount || 0;
+      disbursementsDeleted = resDisb.deletedCount || 0;
+    }
+
+    memoryBeneficiariesStore.clear();
+    memoryDisbursementsStore.clear();
+
+    return { beneficiariesDeleted, disbursementsDeleted };
   }
 
   /**

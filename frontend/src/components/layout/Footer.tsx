@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { ShieldCheck, Terminal, ArrowUpRight } from 'lucide-react';
+import { Terminal, ArrowUpRight } from 'lucide-react';
 
 export const Footer: React.FC = () => {
   const navigate = useNavigate();
@@ -26,9 +26,11 @@ export const Footer: React.FC = () => {
           {/* Brand Column */}
           <div className="md:col-span-4 space-y-4">
             <Link to="/" className="flex items-center gap-2.5">
-              <div className="h-8 w-8 rounded-lg bg-blue-50 dark:bg-blue-600/10 border border-blue-500/30 flex items-center justify-center">
-                <ShieldCheck className="h-4 w-4 text-blue-500" />
-              </div>
+              <img
+                src="/logo.jpeg"
+                alt="FinTrace AI Logo"
+                className="h-8 w-8 rounded-lg object-cover border border-slate-200 dark:border-slate-800 shadow-sm"
+              />
               <span className="font-sans text-base font-bold tracking-tight text-slate-900 dark:text-white">
                 FinTrace <span className="text-blue-500 font-semibold">AI</span>
               </span>

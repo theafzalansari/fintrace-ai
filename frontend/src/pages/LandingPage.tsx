@@ -116,9 +116,9 @@ export const LandingPage: React.FC = () => {
     highRisks: number;
     isLive: boolean;
   }>({
-    beneficiaries: 250,
-    disbursements: 48192,
-    highRisks: 14,
+    beneficiaries: 0,
+    disbursements: 0,
+    highRisks: 0,
     isLive: false
   });
 
@@ -132,16 +132,18 @@ export const LandingPage: React.FC = () => {
           api.getRiskAnalysis().catch(() => ({ data: { summary: { highRiskCount: 0 } } }))
         ]);
 
-        if (benRes.data && benRes.data.length > 0) {
-          setTelemetry({
-            beneficiaries: benRes.data.length,
-            disbursements: disbRes.data?.length || 48192,
-            highRisks: riskRes.data?.summary?.highRiskCount || 14,
-            isLive: true
-          });
-        }
+        const benCount = benRes.data?.length ?? 0;
+        const disbCount = disbRes.data?.length ?? 0;
+        const riskCount = riskRes.data?.summary?.highRiskCount ?? 0;
+
+        setTelemetry({
+          beneficiaries: benCount,
+          disbursements: disbCount,
+          highRisks: riskCount,
+          isLive: true
+        });
       } catch {
-        // Fallback demo state active
+        // Fallback state active
       }
     }
     loadTelemetry();

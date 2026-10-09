@@ -169,6 +169,18 @@ FORENSIC AUDIT RULES:
     riskData: any,
     citedRecordsSet: Set<string>
   ): string {
+    if (beneficiaries.length === 0 && disbursements.length === 0) {
+      return `### FinTrace AI Audit Assistant
+
+The audit workspace is currently empty. No beneficiary or disbursement records have been imported yet.
+
+To begin forensic micro-auditing:
+1. Upload a **Beneficiary CSV file** via the **Beneficiary Ledger** or **Audit Dashboard**.
+2. Upload a **Disbursement CSV file** to analyze payout volumes and execution dates.
+
+Once data is ingested, I can explain risk flags, trace shared-account clusters, and answer specific inquiry questions.`;
+    }
+
     const q = query.toLowerCase();
 
     // Check if query targets a specific beneficiary ID

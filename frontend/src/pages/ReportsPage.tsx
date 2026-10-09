@@ -138,8 +138,25 @@ export const ReportsPage: React.FC = () => {
 
       {/* Printable PDF Audit Report Banner & Card Container */}
       <div className="space-y-6">
-        {/* Printable Report Document Card */}
-        <Card className="print-card border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900/90 shadow-xl overflow-hidden">
+        {!loading && totalBeneficiaries === 0 && totalDisbursements === 0 ? (
+          <Card className="p-12 text-center space-y-4 border-dashed border-slate-300 dark:border-slate-800">
+            <FileText className="w-12 h-12 text-slate-400 mx-auto" />
+            <div className="space-y-1">
+              <h3 className="text-base font-bold text-slate-900 dark:text-white">No Audit Data Available</h3>
+              <p className="text-xs text-slate-500 max-w-md mx-auto">
+                No beneficiary or disbursement records have been ingested into the workspace yet. Ingest CSV records to generate an official forensic audit report.
+              </p>
+            </div>
+            <div className="flex justify-center gap-3 pt-2">
+              <Button variant="primary" size="sm" onClick={loadReportData}>
+                <RefreshCw className="w-3.5 h-3.5 mr-1.5" />
+                Refresh Telemetry
+              </Button>
+            </div>
+          </Card>
+        ) : (
+          /* Printable Report Document Card */
+          <Card className="print-card border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900/90 shadow-xl overflow-hidden">
           <CardHeader className="border-b border-slate-200 dark:border-slate-800/80 pb-6 print:border-slate-300">
             <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
               <div className="space-y-1">
@@ -358,6 +375,7 @@ export const ReportsPage: React.FC = () => {
             </div>
           </CardContent>
         </Card>
+        )}
       </div>
     </div>
   );

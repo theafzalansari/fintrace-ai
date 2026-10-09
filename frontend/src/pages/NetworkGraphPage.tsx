@@ -17,6 +17,7 @@ import {
   Link,
   Search
 } from 'lucide-react';
+import { InteractiveForceGraph } from '../components/ui/InteractiveForceGraph';
 
 export const NetworkGraphPage: React.FC = () => {
   const [data, setData] = useState<GraphResponseData | null>(null);
@@ -83,27 +84,17 @@ export const NetworkGraphPage: React.FC = () => {
     return edges.filter((e) => e.source === selectedNodeId || e.target === selectedNodeId);
   }, [edges, selectedNodeId]);
 
-  // Layout calculations for interactive visual SVG network graph
-  const nodePositions = useMemo(() => {
-    const posMap = new Map<string, { x: number; y: number }>();
-    const count = filteredNodes.length;
-    if (count === 0) return posMap;
-
-    const width = 600;
-    const height = 400;
-    const centerX = width / 2;
-    const centerY = height / 2;
-    const radius = Math.min(width, height) * 0.38;
-
-    filteredNodes.forEach((node, idx) => {
-      const angle = (2 * Math.PI * idx) / count;
-      const x = centerX + radius * Math.cos(angle);
-      const y = centerY + radius * Math.sin(angle);
-      posMap.set(node.id, { x, y });
-    });
-
-    return posMap;
-  }, [filteredNodes]);
+  // Sync selectedNodeId when filters or search change
+  useEffect(() => {
+    if (filteredNodes.length > 0) {
+      const isSelectedStillVisible = filteredNodes.some((n) => n.id === selectedNodeId);
+      if (!isSelectedStillVisible) {
+        setSelectedNodeId(filteredNodes[0].id);
+      }
+    } else {
+      setSelectedNodeId(null);
+    }
+  }, [filteredNodes, selectedNodeId]);
 
   return (
     <div className="space-y-6 max-w-7xl mx-auto">
@@ -278,7 +269,7 @@ export const NetworkGraphPage: React.FC = () => {
                   <h3 className="text-base font-semibold text-slate-800 dark:text-slate-300">Graph Matrix Empty</h3>
                   <p className="text-xs text-slate-600 dark:text-slate-500 max-w-sm">
                     {nodes.length === 0
-                      ? 'No records ingested yet. Ingest sample beneficiary CSV to populate graph nodes.'
+                      ? 'No records ingested yet. Ingest a beneficiary CSV file to populate graph nodes.'
                       : 'No graph nodes match your search and filter options.'}
                   </p>
                 </div>
@@ -290,121 +281,12 @@ export const NetworkGraphPage: React.FC = () => {
                 )}
               </div>
             ) : (
-              <div className="relative w-full h-[450px] bg-slate-50 dark:bg-slate-950/80 rounded-xl border border-slate-200 dark:border-slate-800/80 overflow-hidden flex items-center justify-center">
-                <svg className="w-full h-full" viewBox="0 0 600 400">
-                  <defs>
-                    <marker
-                      id="arrow"
-                      viewBox="0 0 10 10"
-                      refX="20"
-                      refY="5"
-                      markerWidth="6"
-                      markerHeight="6"
-                      orient="auto-start-reverse"
-                    >
-                      <path d="M 0 0 L 10 5 L 0 10 z" fill="#64748b" />
-                    </marker>
-                  </defs>
-
-                  {/* Draw Edges */}
-                  {filteredEdges.map((edge) => {
-                    const srcPos = nodePositions.get(edge.source);
-                    const tgtPos = nodePositions.get(edge.target);
-                    if (!srcPos || !tgtPos) return null;
-
-                    const isSelected =
-                      selectedNodeId === edge.source || selectedNodeId === edge.target;
-
-                    const isShared = edge.relation.startsWith('SHARED_');
-
-                    return (
-                      <g key={edge.id}>
-                        <line
-                          x1={srcPos.x}
-                          y1={srcPos.y}
-                          x2={tgtPos.x}
-                          y2={tgtPos.y}
-                          stroke={
-                            isSelected
-                              ? isShared
-                                ? '#f59e0b'
-                                : '#3b82f6'
-                              : isShared
-                              ? '#d97706'
-                              : '#94a3b8'
-                          }
-                          strokeWidth={isSelected ? 2.5 : isShared ? 1.8 : 1}
-                          strokeDasharray={isShared ? '4,4' : 'none'}
-                          opacity={isSelected ? 1 : 0.65}
-                        />
-                      </g>
-                    );
-                  })}
-
-                  {/* Draw Nodes */}
-                  {filteredNodes.map((node) => {
-                    const pos = nodePositions.get(node.id);
-                    if (!pos) return null;
-
-                    const isSelected = selectedNodeId === node.id;
-                    let color = '#0284c7'; // beneficiary cyan (accessible)
-                    if (node.type === 'payout_account') color = '#059669'; // account emerald
-                    if (node.type === 'disbursement') color = '#d97706'; // disbursement amber
-
-                    return (
-                      <g
-                        key={node.id}
-                        transform={`translate(${pos.x}, ${pos.y})`}
-                        onClick={() => setSelectedNodeId(node.id)}
-                        className="cursor-pointer group"
-                      >
-                        {isSelected && (
-                          <circle
-                            r="22"
-                            fill="none"
-                            stroke={color}
-                            strokeWidth="2"
-                            className="animate-ping opacity-40"
-                          />
-                        )}
-
-                        <circle
-                          r="16"
-                          fill="currentColor"
-                          stroke={color}
-                          strokeWidth={isSelected ? 3 : 2}
-                          className="fill-white dark:fill-slate-900 transition hover:scale-110"
-                        />
-
-                        <text
-                          textAnchor="middle"
-                          dy="4"
-                          fill={color}
-                          fontSize="10"
-                          fontWeight="bold"
-                          fontFamily="monospace"
-                        >
-                          {node.type === 'beneficiary'
-                            ? 'BEN'
-                            : node.type === 'payout_account'
-                            ? 'ACC'
-                            : 'DISB'}
-                        </text>
-
-                        <text
-                          textAnchor="middle"
-                          dy="30"
-                          fontSize="9"
-                          fontFamily="sans-serif"
-                          className="fill-slate-700 dark:fill-slate-400 select-none pointer-events-none font-medium"
-                        >
-                          {node.label.length > 18 ? `${node.label.substring(0, 16)}...` : node.label}
-                        </text>
-                      </g>
-                    );
-                  })}
-                </svg>
-              </div>
+              <InteractiveForceGraph
+                nodes={filteredNodes}
+                edges={filteredEdges}
+                selectedNodeId={selectedNodeId}
+                onSelectNode={setSelectedNodeId}
+              />
             )}
           </CardContent>
         </Card>

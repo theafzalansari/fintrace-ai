@@ -248,7 +248,7 @@ DISB-2024-005,BEN-1005,-500.00,INR,invalid-date,,Unknown,Completed,REF-981241,In
               className="text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300 font-medium flex items-center gap-1 hover:underline"
             >
               <RefreshCw className={`w-3.5 h-3.5 ${loading ? 'animate-spin' : ''}`} />
-              Load Synthetic Demo Data
+              Load Synthetic Demo Data (For Testing Only)
             </button>
           </div>
         </div>

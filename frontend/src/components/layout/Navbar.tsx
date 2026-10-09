@@ -1,7 +1,7 @@
 import React from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { SignedIn, UserButton } from '@clerk/clerk-react';
-import { ShieldCheck, Activity, Globe, Menu } from 'lucide-react';
+import { Activity, Globe, Menu } from 'lucide-react';
 import { useHealth } from '../../hooks/useHealth';
 import { Badge } from '../ui/Badge';
 import { Button } from '../ui/Button';
@@ -35,11 +35,11 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenMobileDrawer }) => {
           to="/"
           className="flex items-center gap-3 group"
         >
-          <div className="h-9 w-9 rounded-xl bg-gradient-to-tr from-blue-600 via-cyan-500 to-emerald-400 p-0.5 shadow-lg shadow-cyan-500/10 flex items-center justify-center">
-            <div className="h-full w-full bg-slate-100 dark:bg-slate-950 rounded-[10px] flex items-center justify-center group-hover:bg-slate-200 dark:group-hover:bg-slate-900 transition">
-              <ShieldCheck className="h-5 w-5 text-emerald-600 dark:text-emerald-400" />
-            </div>
-          </div>
+          <img
+            src="/logo.jpeg"
+            alt="FinTrace AI Logo"
+            className="h-9 w-9 rounded-xl object-cover border border-slate-200 dark:border-slate-800 shadow-sm group-hover:border-blue-500 transition-colors"
+          />
           <div>
             <span className="text-base sm:text-lg font-bold tracking-tight text-slate-900 dark:text-white flex items-center gap-1.5">
               FinTrace <span className="text-blue-500 font-semibold">AI</span>
