@@ -4,6 +4,7 @@ import { BeneficiariesPage } from './pages/BeneficiariesPage';
 import { DisbursementsPage } from './pages/DisbursementsPage';
 import { RiskAnalysisPage } from './pages/RiskAnalysisPage';
 import { NetworkGraphPage } from './pages/NetworkGraphPage';
+import { CopilotPage } from './pages/CopilotPage';
 import { ScopePlaceholderPage } from './pages/ScopePlaceholderPage';
 
 export function App() {
@@ -20,7 +21,7 @@ export function App() {
           case 'network':
             return <NetworkGraphPage />;
           case 'copilot':
-            return <ScopePlaceholderPage title="AI Audit Copilot" module="copilot" />;
+            return <CopilotPage />;
           case 'reports':
             return <ScopePlaceholderPage title="Automated Audit Reports" module="reports" />;
           case 'dashboard':

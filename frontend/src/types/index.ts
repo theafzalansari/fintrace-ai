@@ -133,6 +133,18 @@ export interface IngestionResult {
   rejected: IngestionRowError[];
 }
 
+export interface ChatMessage {
+  role: 'user' | 'assistant';
+  content: string;
+}
+
+export interface CopilotChatResponseData {
+  answer: string;
+  citedRecords: string[];
+  provider: 'gemini-ai' | 'rule-engine-fallback';
+  disclaimer: string;
+}
+
 export interface ApiResponse<T = unknown> {
   success: boolean;
   data?: T;

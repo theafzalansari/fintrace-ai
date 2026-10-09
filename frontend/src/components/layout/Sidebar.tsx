@@ -22,7 +22,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ activeTab, setActiveTab }) => 
     { id: 'disbursements', label: 'Disbursement Records', icon: FileText },
     { id: 'investigations', label: 'Micro-Audit Risks', icon: SearchCode, badge: 'Rule Engine' },
     { id: 'network', label: 'Network Graph', icon: GitFork, badge: 'Adjacency' },
-    { id: 'copilot', label: 'Audit Copilot', icon: Bot, badge: 'Future' },
+    { id: 'copilot', label: 'Audit Copilot', icon: Bot, badge: 'AI Assistant' },
     { id: 'reports', label: 'Audit Reports', icon: FileCheck, badge: 'Future' }
   ];
 

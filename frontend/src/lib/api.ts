@@ -4,7 +4,9 @@ import {
   DisbursementRecord,
   GraphResponseData,
   RiskAnalysisResponseData,
-  IngestionResult
+  IngestionResult,
+  CopilotChatResponseData,
+  ChatMessage
 } from '../types';
 
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:5000/api';
@@ -64,6 +66,21 @@ export const api = {
   async getRiskAnalysis(): Promise<{ success: boolean; data: RiskAnalysisResponseData }> {
     const res = await fetch(`${API_BASE_URL}/analysis/risks`);
     return handleResponse<{ success: boolean; data: RiskAnalysisResponseData }>(res);
+  },
+
+  /**
+   * Send message to AI Audit Copilot endpoint
+   */
+  async sendCopilotMessage(
+    message: string,
+    history: ChatMessage[] = []
+  ): Promise<{ success: boolean; data: CopilotChatResponseData }> {
+    const res = await fetch(`${API_BASE_URL}/copilot/chat`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ message, history })
+    });
+    return handleResponse<{ success: boolean; data: CopilotChatResponseData }>(res);
   },
 
   /**
