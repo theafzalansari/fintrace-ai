@@ -28,3 +28,67 @@
 ::-webkit-scrollbar-thumb:hover {
   background: #334155;
 }
+
+/* Printable PDF Styling Rules */
+@media print {
+  body {
+    background-color: #ffffff !important;
+    color: #0f172a !important;
+  }
+
+  .no-print {
+    display: none !important;
+  }
+
+  .print-only-container {
+    padding: 0 !important;
+    margin: 0 !important;
+    width: 100% !important;
+    background: #ffffff !important;
+    color: #0f172a !important;
+  }
+
+  .print-card {
+    background-color: #ffffff !important;
+    border: 1px solid #cbd5e1 !important;
+    color: #0f172a !important;
+    box-shadow: none !important;
+  }
+
+  .print-text-dark {
+    color: #0f172a !important;
+  }
+
+  .print-text-muted {
+    color: #475569 !important;
+  }
+
+  .print-table {
+    border-collapse: collapse !important;
+    width: 100% !important;
+  }
+
+  .print-table th, .print-table td {
+    border: 1px solid #e2e8f0 !important;
+    padding: 8px 12px !important;
+    color: #0f172a !important;
+  }
+
+  .print-badge-high {
+    background-color: #fef2f2 !important;
+    color: #991b1b !important;
+    border: 1px solid #fecaca !important;
+  }
+
+  .print-badge-medium {
+    background-color: #fffbe6 !important;
+    color: #92400e !important;
+    border: 1px solid #fef08a !important;
+  }
+
+  .print-badge-low {
+    background-color: #f0fdf4 !important;
+    color: #166534 !important;
+    border: 1px solid #bbf7d0 !important;
+  }
+}

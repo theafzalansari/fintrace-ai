@@ -5,7 +5,7 @@ import { DisbursementsPage } from './pages/DisbursementsPage';
 import { RiskAnalysisPage } from './pages/RiskAnalysisPage';
 import { NetworkGraphPage } from './pages/NetworkGraphPage';
 import { CopilotPage } from './pages/CopilotPage';
-import { ScopePlaceholderPage } from './pages/ScopePlaceholderPage';
+import { ReportsPage } from './pages/ReportsPage';
 
 export function App() {
   return (
@@ -23,7 +23,7 @@ export function App() {
           case 'copilot':
             return <CopilotPage />;
           case 'reports':
-            return <ScopePlaceholderPage title="Automated Audit Reports" module="reports" />;
+            return <ReportsPage />;
           case 'dashboard':
           default:
             return <DashboardPage onNavigate={setActiveTab} />;
