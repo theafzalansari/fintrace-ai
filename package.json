@@ -1,0 +1,20 @@
+{
+  "name": "fintrace-ai-monorepo",
+  "version": "1.0.0",
+  "private": true,
+  "description": "FinTrace AI - Automated Financial Micro-Audit & Ghost-Beneficiary Detection Engine",
+  "workspaces": [
+    "frontend",
+    "backend"
+  ],
+  "scripts": {
+    "dev": "concurrently -k -p \"[{name}]\" -c \"cyan,magenta\" \"npm run dev --prefix backend\" \"npm run dev --prefix frontend\"",
+    "build": "npm run build --prefix backend && npm run build --prefix frontend",
+    "type-check": "npm run type-check --prefix backend && npm run type-check --prefix frontend",
+    "dev:backend": "npm run dev --prefix backend",
+    "dev:frontend": "npm run dev --prefix frontend"
+  },
+  "devDependencies": {
+    "concurrently": "^8.2.2"
+  }
+}

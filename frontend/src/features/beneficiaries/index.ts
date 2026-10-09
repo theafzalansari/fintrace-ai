@@ -1,0 +1,1 @@
+export const BENEFICIARIES_FEATURE_VERSION = '1.0.0';
