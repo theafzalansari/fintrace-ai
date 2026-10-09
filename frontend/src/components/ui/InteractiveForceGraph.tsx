@@ -10,7 +10,7 @@ import {
   CreditCard,
   AlertTriangle
 } from 'lucide-react';
-import { GraphNode, GraphEdge } from '../../types';
+import { GraphNode, GraphEdge, RiskFinding } from '../../types';
 
 interface Position {
   x: number;
@@ -25,6 +25,7 @@ interface InteractiveForceGraphProps {
   edges: GraphEdge[];
   selectedNodeId: string | null;
   onSelectNode: (nodeId: string) => void;
+  riskFindingMap?: Map<string, RiskFinding>;
 }
 
 export const InteractiveForceGraph: React.FC<InteractiveForceGraphProps> = ({
@@ -32,6 +33,7 @@ export const InteractiveForceGraph: React.FC<InteractiveForceGraphProps> = ({
   edges,
   selectedNodeId,
   onSelectNode,
+  riskFindingMap,
 }) => {
   const svgRef = useRef<SVGSVGElement | null>(null);
   const containerRef = useRef<HTMLDivElement | null>(null);
@@ -554,11 +556,15 @@ export const InteractiveForceGraph: React.FC<InteractiveForceGraphProps> = ({
             const isConnected = connectedNodeIds.has(node.id);
             const isDimmed = selectedNodeId && !isConnected;
 
+            const finding = riskFindingMap?.get(node.id);
             const isHighRiskEntity =
+              finding?.riskLevel === 'HIGH' ||
               node.id === 'BEN-3003' ||
               node.id === 'BEN-3004' ||
               node.metadata?.bankAccountNumber === 'ACC-SHARED-99' ||
               node.metadata?.identityHash === 'HASH-CORP-9900';
+
+            const isMediumRiskEntity = finding?.riskLevel === 'MEDIUM';
 
             let color = '#0284c7'; // beneficiary cyan
             let badgeText = 'BEN';
@@ -609,6 +615,17 @@ export const InteractiveForceGraph: React.FC<InteractiveForceGraphProps> = ({
                     stroke="#ef4444"
                     strokeWidth="2"
                     className="animate-ping opacity-35"
+                  />
+                )}
+
+                {/* Medium Risk Ring */}
+                {isMediumRiskEntity && !isHighRiskEntity && (
+                  <circle
+                    r="24"
+                    fill="none"
+                    stroke="#f59e0b"
+                    strokeWidth="2"
+                    className="opacity-50"
                   />
                 )}
 

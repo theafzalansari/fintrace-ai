@@ -6,7 +6,8 @@ import {
   RiskAnalysisResponseData,
   IngestionResult,
   CopilotChatResponseData,
-  ChatMessage
+  ChatMessage,
+  InvestigationCase
 } from '../types';
 
 const RAW_API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:5000/api';
@@ -144,5 +145,94 @@ export const api = {
       });
       return handleResponse<IngestionResult>(res);
     }
+  },
+
+  /**
+   * Fetch all Investigation Cases
+   */
+  async getCases(params?: { status?: string; priority?: string; search?: string }): Promise<{ success: boolean; count: number; data: InvestigationCase[] }> {
+    const query = new URLSearchParams();
+    if (params?.status) query.append('status', params.status);
+    if (params?.priority) query.append('priority', params.priority);
+    if (params?.search) query.append('search', params.search);
+
+    const queryString = query.toString() ? `?${query.toString()}` : '';
+    const res = await fetch(`${API_BASE_URL}/cases${queryString}`);
+    return handleResponse<{ success: boolean; count: number; data: InvestigationCase[] }>(res);
+  },
+
+  /**
+   * Fetch single Case by Case ID or _id
+   */
+  async getCaseById(id: string): Promise<{ success: boolean; data: InvestigationCase }> {
+    const res = await fetch(`${API_BASE_URL}/cases/${id}`);
+    return handleResponse<{ success: boolean; data: InvestigationCase }>(res);
+  },
+
+  /**
+   * Create a new Investigation Case
+   */
+  async createCase(payload: {
+    entityId: string;
+    entityType?: string;
+    title?: string;
+    description?: string;
+    priority?: string;
+    riskScore?: number;
+    ruleScore?: number;
+    anomalyScore?: number;
+    riskSeverity?: string;
+    relatedBeneficiaries?: string[];
+    relatedDisbursements?: string[];
+    relatedPayoutAccounts?: string[];
+    riskSignals?: any[];
+    explanations?: string[];
+    investigator?: string;
+  }): Promise<{ success: boolean; message: string; data: InvestigationCase }> {
+    const res = await fetch(`${API_BASE_URL}/cases`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload)
+    });
+    return handleResponse<{ success: boolean; message: string; data: InvestigationCase }>(res);
+  },
+
+  /**
+   * Update Investigation Case Status / Priority
+   */
+  async updateCase(id: string, updates: { status?: string; priority?: string; resolutionSummary?: string; investigator?: string; reason?: string }): Promise<{ success: boolean; message: string; data: InvestigationCase }> {
+    const res = await fetch(`${API_BASE_URL}/cases/${id}`, {
+      method: 'PATCH',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(updates)
+    });
+    return handleResponse<{ success: boolean; message: string; data: InvestigationCase }>(res);
+  },
+
+  /**
+   * Add Investigator Note to Case
+   */
+  async addCaseNote(id: string, content: string, author?: string): Promise<{ success: boolean; message: string; data: InvestigationCase }> {
+    const res = await fetch(`${API_BASE_URL}/cases/${id}/notes`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ content, author })
+    });
+    return handleResponse<{ success: boolean; message: string; data: InvestigationCase }>(res);
+  },
+
+  /**
+   * Fetch Linked Case Evidence Details
+   */
+  async getCaseEvidence(id: string): Promise<{ success: boolean; data: any }> {
+    const res = await fetch(`${API_BASE_URL}/cases/${id}/evidence`);
+    return handleResponse<{ success: boolean; data: any }>(res);
+  },
+
+  /**
+   * Get PDF Evidence Dossier Download URL
+   */
+  getCasePdfDossierUrl(id: string): string {
+    return `${API_BASE_URL}/reports/cases/${id}/pdf`;
   }
 };

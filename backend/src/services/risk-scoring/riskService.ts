@@ -37,6 +37,8 @@ export interface RiskAnalysisResponseData {
   };
 }
 
+import { caseService } from '../cases/caseService.js';
+
 export const RISK_DISCLAIMER =
   'Risk indicators are automated hybrid (explainable rules + ML anomaly detection) flags for forensic audit and require human review. They do not constitute legal proof of fraud.';
 
@@ -44,10 +46,26 @@ const humanReviewStatusStore = new Map<string, HumanReviewStatus>();
 
 export class RiskService {
   /**
-   * Updates human review status for a beneficiary entity.
+   * Updates human review status for a beneficiary entity and persists in InvestigationCase.
    */
-  public updateHumanReviewStatus(entityId: string, status: HumanReviewStatus): boolean {
+  public async updateHumanReviewStatus(entityId: string, status: HumanReviewStatus): Promise<boolean> {
     humanReviewStatusStore.set(entityId, status);
+    const mappedCaseStatus = caseService.mapReviewStatusToCaseStatus(status);
+
+    try {
+      const existingCase = await caseService.getCaseByEntityId(entityId);
+      if (existingCase) {
+        await caseService.updateCase(existingCase.caseId, { status: mappedCaseStatus });
+      } else {
+        await caseService.createCase({
+          entityId,
+          status: mappedCaseStatus as any,
+          title: `Investigation: Entity ${entityId}`
+        });
+      }
+    } catch (err) {
+      // Fallback silently if standalone
+    }
     return true;
   }
   /**
@@ -58,6 +76,9 @@ export class RiskService {
     const rawBeneficiaries = (await ingestionService.getBeneficiaries()) as any[];
     const rawDisbursements = (await ingestionService.getDisbursements()) as any[];
     const graphData = await graphService.buildGraph();
+    const existingCases = await caseService.getCases().catch(() => []);
+    const existingCasesMap = new Map<string, any>();
+    existingCases.forEach((c: any) => existingCasesMap.set(c.entityId, c));
 
     if (rawBeneficiaries.length === 0) {
       return {
@@ -329,6 +350,12 @@ export class RiskService {
 
       pendingReviewCount++;
 
+      let persistentReviewStatus: HumanReviewStatus = humanReviewStatusStore.get(benId) || 'PENDING_REVIEW';
+      const foundCase = existingCasesMap.get(benId);
+      if (foundCase) {
+        persistentReviewStatus = caseService.mapCaseStatusToReviewStatus(foundCase.status) as HumanReviewStatus;
+      }
+
       findings.push({
         entityId: benId,
         entityType: 'beneficiary',
@@ -337,7 +364,7 @@ export class RiskService {
         ruleScore,
         anomalyScore: Number(anomalyScore.toFixed(3)),
         riskLevel,
-        humanReviewStatus: humanReviewStatusStore.get(benId) || 'PENDING_REVIEW',
+        humanReviewStatus: persistentReviewStatus,
         disclaimer: RISK_DISCLAIMER,
         signals,
         explanations: signals.map((s) => s.description)

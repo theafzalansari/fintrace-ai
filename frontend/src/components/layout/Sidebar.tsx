@@ -4,6 +4,7 @@ import {
   Users,
   GitFork,
   SearchCode,
+  FolderLock,
   Bot,
   FileCheck,
   ChevronRight,
@@ -29,6 +30,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
     { id: 'beneficiaries', label: 'Beneficiary Ledger', icon: Users, badge: 'Ghost Detection' },
     { id: 'disbursements', label: 'Disbursement Records', icon: FileText },
     { id: 'investigations', label: 'Micro-Audit Risks', icon: SearchCode, badge: 'Hybrid Engine' },
+    { id: 'cases', label: 'Case Workspace', icon: FolderLock, badge: 'Persistent' },
     { id: 'network', label: 'Network Graph', icon: GitFork, badge: 'Adjacency' },
     { id: 'copilot', label: 'Audit Copilot', icon: Bot, badge: 'AI Assistant' },
     { id: 'reports', label: 'Audit Reports', icon: FileCheck, badge: 'PDF & CSV' }

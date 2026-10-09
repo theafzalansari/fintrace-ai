@@ -151,6 +151,60 @@ export interface CopilotChatResponseData {
   disclaimer: string;
 }
 
+export type CaseStatus = 'OPEN' | 'UNDER_REVIEW' | 'RESOLVED' | 'DISMISSED';
+export type CasePriority = 'HIGH' | 'MEDIUM' | 'LOW';
+
+export interface CaseNote {
+  noteId: string;
+  author: string;
+  content: string;
+  createdAt: string;
+}
+
+export interface StatusHistoryEntry {
+  fromStatus: string;
+  toStatus: string;
+  changedBy: string;
+  changedAt: string;
+  reason?: string;
+}
+
+export interface AuditLogEntry {
+  logId: string;
+  action: string;
+  details: string;
+  performedBy: string;
+  timestamp: string;
+}
+
+export interface InvestigationCase {
+  _id?: string;
+  caseId: string;
+  entityId: string;
+  entityType: 'beneficiary' | 'payout_account' | 'cluster';
+  title: string;
+  description: string;
+  status: CaseStatus;
+  priority: CasePriority;
+  riskScore: number;
+  ruleScore?: number;
+  anomalyScore?: number;
+  riskSeverity: 'HIGH' | 'MEDIUM' | 'LOW';
+  relatedBeneficiaries: string[];
+  relatedDisbursements: string[];
+  relatedPayoutAccounts: string[];
+  riskSignals: RiskSignal[];
+  explanations: string[];
+  investigator: string;
+  notes: CaseNote[];
+  statusHistory: StatusHistoryEntry[];
+  auditLog: AuditLogEntry[];
+  resolutionSummary?: string;
+  resolvedAt?: string;
+  createdAt: string;
+  updatedAt: string;
+}
+
 export interface ApiResponse<T = unknown> {
   success: boolean;
   data?: T;

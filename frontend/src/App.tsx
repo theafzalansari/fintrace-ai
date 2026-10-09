@@ -14,6 +14,8 @@ import { NetworkGraphPage } from './pages/NetworkGraphPage';
 import { CopilotPage } from './pages/CopilotPage';
 import { ReportsPage } from './pages/ReportsPage';
 
+import { CasesPage } from './pages/CasesPage';
+
 interface ProtectedRouteProps {
   children: React.ReactNode;
 }
@@ -79,6 +81,8 @@ export function App() {
                       return <DisbursementsPage />;
                     case 'investigations':
                       return <RiskAnalysisPage />;
+                    case 'cases':
+                      return <CasesPage />;
                     case 'network':
                       return <NetworkGraphPage />;
                     case 'copilot':

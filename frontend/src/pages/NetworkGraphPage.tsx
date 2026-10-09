@@ -4,7 +4,7 @@ import { Badge } from '../components/ui/Badge';
 import { Button } from '../components/ui/Button';
 import { CsvUploadModal } from '../components/ui/CsvUploadModal';
 import { api } from '../lib/api';
-import { GraphResponseData } from '../types';
+import { GraphResponseData, RiskAnalysisResponseData, RiskFinding } from '../types';
 import {
   GitFork,
   RefreshCw,
@@ -15,32 +15,54 @@ import {
   Info,
   Upload,
   Link,
-  Search
+  Search,
+  ShieldAlert,
+  Target,
+  AlertTriangle,
+  CheckCircle2
 } from 'lucide-react';
 import { InteractiveForceGraph } from '../components/ui/InteractiveForceGraph';
 
 export const NetworkGraphPage: React.FC = () => {
   const [data, setData] = useState<GraphResponseData | null>(null);
+  const [riskData, setRiskData] = useState<RiskAnalysisResponseData | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
 
-  const [selectedNodeId, setSelectedNodeId] = useState<string | null>(null);
+  // Mode & Filter States
+  const [viewMode, setViewMode] = useState<'risk' | 'all'>('risk'); // Default: Risk Investigation View
+  const [severityFilter, setSeverityFilter] = useState<'all' | 'HIGH' | 'MEDIUM' | 'LOW'>('all');
   const [nodeTypeFilter, setNodeTypeFilter] = useState<string>('all');
   const [relationFilter, setRelationFilter] = useState<string>('all');
   const [search, setSearch] = useState<string>('');
+  const [selectedNodeId, setSelectedNodeId] = useState<string | null>(null);
   const [isUploadOpen, setIsUploadOpen] = useState<boolean>(false);
 
   const loadData = async () => {
     try {
       setLoading(true);
       setError(null);
-      const res = await api.getGraphAnalysis();
-      setData(res.data || null);
-      if (res.data?.nodes && res.data.nodes.length > 0 && !selectedNodeId) {
-        setSelectedNodeId(res.data.nodes[0].id);
+
+      const [graphRes, riskRes] = await Promise.all([
+        api.getGraphAnalysis().catch(() => ({ success: false, data: { nodes: [], edges: [], summary: { totalNodes: 0, totalEdges: 0, beneficiaryCount: 0, payoutAccountCount: 0, disbursementCount: 0 } } })),
+        api.getRiskAnalysis().catch(() => ({ success: false, data: { findings: [], summary: { totalEntitiesAssessed: 0, highRiskCount: 0, mediumRiskCount: 0, lowRiskCount: 0, pendingReviewCount: 0 } } }))
+      ]);
+
+      setData(graphRes.data || null);
+      setRiskData(riskRes.data || null);
+
+      // Deterministic Initial Focus: Select highest risk finding on initial load
+      const findings = riskRes.data?.findings || [];
+      const highRisk = findings.filter((f) => f.riskLevel === 'HIGH').sort((a, b) => b.riskScore - a.riskScore);
+      const medRisk = findings.filter((f) => f.riskLevel === 'MEDIUM').sort((a, b) => b.riskScore - a.riskScore);
+      
+      const topRiskEntityId = highRisk[0]?.entityId || medRisk[0]?.entityId || (graphRes.data?.nodes[0]?.id || null);
+
+      if (topRiskEntityId && !selectedNodeId) {
+        setSelectedNodeId(topRiskEntityId);
       }
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Failed to fetch network graph');
+      setError(err instanceof Error ? err.message : 'Failed to fetch network graph telemetry');
     } finally {
       setLoading(false);
     }
@@ -52,49 +74,139 @@ export const NetworkGraphPage: React.FC = () => {
 
   const nodes = data?.nodes || [];
   const edges = data?.edges || [];
-  const summary = data?.summary || { totalNodes: 0, totalEdges: 0, beneficiaryCount: 0, payoutAccountCount: 0, disbursementCount: 0 };
+  const findings = riskData?.findings || [];
 
-  // Filter nodes & edges
-  const filteredNodes = useMemo(() => {
-    return nodes.filter((node) => {
-      const matchesType = nodeTypeFilter === 'all' || node.type === nodeTypeFilter;
-      const matchesSearch =
-        node.label.toLowerCase().includes(search.toLowerCase()) ||
-        node.id.toLowerCase().includes(search.toLowerCase());
-      return matchesType && matchesSearch;
+  // Map of entityId -> RiskFinding for fast lookup
+  const riskFindingMap = useMemo(() => {
+    const map = new Map<string, RiskFinding>();
+    findings.forEach((f) => {
+      map.set(f.entityId, f);
     });
-  }, [nodes, nodeTypeFilter, search]);
+    return map;
+  }, [findings]);
 
-  const filteredNodeIds = useMemo(() => new Set(filteredNodes.map((n) => n.id)), [filteredNodes]);
+  // Compute summary statistics
+  const summary = useMemo(() => {
+    const highCount = findings.filter((f) => f.riskLevel === 'HIGH').length;
+    const medCount = findings.filter((f) => f.riskLevel === 'MEDIUM').length;
+    const benCount = nodes.filter((n) => n.type === 'beneficiary').length;
+    const accCount = nodes.filter((n) => n.type === 'payout_account').length;
+    const disbCount = nodes.filter((n) => n.type === 'disbursement').length;
 
-  const filteredEdges = useMemo(() => {
-    return edges.filter((edge) => {
-      const matchesRelation = relationFilter === 'all' || edge.relation === relationFilter;
-      const matchesNodes = filteredNodeIds.has(edge.source) || filteredNodeIds.has(edge.target);
-      return matchesRelation && matchesNodes;
-    });
-  }, [edges, relationFilter, filteredNodeIds]);
+    return {
+      totalNodes: nodes.length,
+      totalEdges: edges.length,
+      beneficiaryCount: benCount,
+      payoutAccountCount: accCount,
+      disbursementCount: disbCount,
+      highRiskCount: highCount,
+      mediumRiskCount: medCount,
+    };
+  }, [nodes, edges, findings]);
 
+  // Build Sub-graph Nodes and Edges based on View Mode and Severity Filters
+  const { filteredNodes, filteredEdges } = useMemo(() => {
+    if (nodes.length === 0) return { filteredNodes: [], filteredEdges: [] };
+
+    if (viewMode === 'risk') {
+      // 1. Filter Risk Findings by Severity Filter
+      let targetFindings = findings;
+      if (severityFilter === 'HIGH') {
+        targetFindings = findings.filter((f) => f.riskLevel === 'HIGH');
+      } else if (severityFilter === 'MEDIUM') {
+        targetFindings = findings.filter((f) => f.riskLevel === 'MEDIUM');
+      } else if (severityFilter === 'LOW') {
+        targetFindings = findings.filter((f) => f.riskLevel === 'LOW');
+      } else {
+        // 'all' in Risk Mode defaults to HIGH and MEDIUM risk findings
+        targetFindings = findings.filter((f) => f.riskLevel === 'HIGH' || f.riskLevel === 'MEDIUM');
+      }
+
+      const riskEntityIds = new Set(targetFindings.map((f) => f.entityId));
+
+      // 2. Include 1-hop connected neighbors for risk entities
+      const visibleNodeIds = new Set<string>();
+      riskEntityIds.forEach((id) => visibleNodeIds.add(id));
+
+      edges.forEach((edge) => {
+        if (riskEntityIds.has(edge.source) || riskEntityIds.has(edge.target)) {
+          visibleNodeIds.add(edge.source);
+          visibleNodeIds.add(edge.target);
+        }
+      });
+
+      // 3. Filter Nodes in View
+      const subNodes = nodes.filter((node) => {
+        if (!visibleNodeIds.has(node.id)) return false;
+        const matchesType = nodeTypeFilter === 'all' || node.type === nodeTypeFilter;
+        const matchesSearch =
+          search === '' ||
+          node.label.toLowerCase().includes(search.toLowerCase()) ||
+          node.id.toLowerCase().includes(search.toLowerCase());
+        return matchesType && matchesSearch;
+      });
+
+      const subNodeIds = new Set(subNodes.map((n) => n.id));
+
+      // 4. Rebuild Visible Edges (ONLY edges connecting visible nodes)
+      const subEdges = edges.filter((edge) => {
+        const matchesRelation = relationFilter === 'all' || edge.relation === relationFilter;
+        return matchesRelation && subNodeIds.has(edge.source) && subNodeIds.has(edge.target);
+      });
+
+      return { filteredNodes: subNodes, filteredEdges: subEdges };
+    } else {
+      // All Relationships View
+      const subNodes = nodes.filter((node) => {
+        const matchesType = nodeTypeFilter === 'all' || node.type === nodeTypeFilter;
+        const matchesSearch =
+          search === '' ||
+          node.label.toLowerCase().includes(search.toLowerCase()) ||
+          node.id.toLowerCase().includes(search.toLowerCase());
+        return matchesType && matchesSearch;
+      });
+
+      const subNodeIds = new Set(subNodes.map((n) => n.id));
+
+      const subEdges = edges.filter((edge) => {
+        const matchesRelation = relationFilter === 'all' || edge.relation === relationFilter;
+        return matchesRelation && (subNodeIds.has(edge.source) || subNodeIds.has(edge.target));
+      });
+
+      return { filteredNodes: subNodes, filteredEdges: subEdges };
+    }
+  }, [nodes, edges, findings, viewMode, severityFilter, nodeTypeFilter, relationFilter, search]);
+
+  // Selected Node Object
   const selectedNode = useMemo(() => {
     return nodes.find((n) => n.id === selectedNodeId) || null;
   }, [nodes, selectedNodeId]);
 
+  // Selected Node Risk Finding (if any)
+  const selectedNodeRisk = useMemo(() => {
+    if (!selectedNodeId) return null;
+    return riskFindingMap.get(selectedNodeId) || null;
+  }, [selectedNodeId, riskFindingMap]);
+
+  // Connected Edges for Selected Node
   const connectedEdges = useMemo(() => {
     if (!selectedNodeId) return [];
     return edges.filter((e) => e.source === selectedNodeId || e.target === selectedNodeId);
   }, [edges, selectedNodeId]);
 
-  // Sync selectedNodeId when filters or search change
+  // Preserve selection if node remains in filteredNodes; otherwise reset
   useEffect(() => {
     if (filteredNodes.length > 0) {
-      const isSelectedStillVisible = filteredNodes.some((n) => n.id === selectedNodeId);
-      if (!isSelectedStillVisible) {
-        setSelectedNodeId(filteredNodes[0].id);
+      const isStillVisible = filteredNodes.some((n) => n.id === selectedNodeId);
+      if (!isStillVisible && selectedNodeId !== null) {
+        // If selected node is no longer visible, reset to top risk node in current view
+        const topVisibleRisk = filteredNodes.find((n) => riskFindingMap.has(n.id));
+        setSelectedNodeId(topVisibleRisk ? topVisibleRisk.id : filteredNodes[0].id);
       }
     } else {
       setSelectedNodeId(null);
     }
-  }, [filteredNodes, selectedNodeId]);
+  }, [filteredNodes, selectedNodeId, riskFindingMap]);
 
   return (
     <div className="space-y-6 max-w-7xl mx-auto">
@@ -102,14 +214,14 @@ export const NetworkGraphPage: React.FC = () => {
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-slate-200 dark:border-slate-800 pb-5">
         <div>
           <div className="flex items-center gap-2">
-            <Badge variant="cyan">Financial Web Graph Engine</Badge>
+            <Badge variant="cyan">Evidence-First Risk Graph</Badge>
             <Badge variant="outline">Adjacency Matrix</Badge>
           </div>
           <h1 className="text-2xl md:text-3xl font-extrabold text-slate-900 dark:text-white tracking-tight mt-1">
             Network Graph Explorer
           </h1>
           <p className="text-sm text-slate-600 dark:text-slate-400">
-            Interactive relational matrix linking beneficiaries, payout accounts, and circular transfer flags.
+            Interactive risk matrix linking suspicious beneficiaries, shared payout accounts, and transaction telemetry.
           </p>
         </div>
 
@@ -125,16 +237,16 @@ export const NetworkGraphPage: React.FC = () => {
         </div>
       </div>
 
-      {/* Summary Cards */}
+      {/* Summary Metrics */}
       <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
-        <Card className="border-l-4 border-l-blue-500">
+        <Card className="border-l-4 border-l-red-500">
           <CardContent className="p-4">
             <div className="flex items-center justify-between">
-              <span className="text-xs font-mono text-slate-600 dark:text-slate-400">Total Graph Nodes</span>
-              <GitFork className="w-4 h-4 text-blue-500" />
+              <span className="text-xs font-mono text-slate-600 dark:text-slate-400">High Risk Leads</span>
+              <ShieldAlert className="w-4 h-4 text-red-500" />
             </div>
-            <div className="text-xl font-bold text-slate-900 dark:text-white mt-1 font-mono">
-              {loading ? '...' : summary.totalNodes}
+            <div className="text-xl font-bold text-red-600 dark:text-red-400 mt-1 font-mono">
+              {loading ? '...' : summary.highRiskCount}
             </div>
           </CardContent>
         </Card>
@@ -176,15 +288,83 @@ export const NetworkGraphPage: React.FC = () => {
         </Card>
       </div>
 
-      {/* Filter and Search Controls */}
+      {/* View Mode Selector & Filters Toolbar */}
       <Card>
-        <CardContent className="p-4">
+        <CardContent className="p-4 space-y-4">
+          <div className="flex flex-col lg:flex-row items-start lg:items-center justify-between gap-4 border-b border-slate-200 dark:border-slate-800 pb-4">
+            {/* View Mode Toggle Buttons */}
+            <div className="flex items-center gap-2">
+              <span className="text-xs font-mono text-slate-500 mr-1">View Mode:</span>
+              <button
+                onClick={() => setViewMode('risk')}
+                className={`px-3.5 py-1.5 rounded-lg text-xs font-semibold flex items-center gap-2 transition ${
+                  viewMode === 'risk'
+                    ? 'bg-red-600 text-white shadow-sm'
+                    : 'bg-slate-100 dark:bg-slate-900 text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
+                }`}
+              >
+                <ShieldAlert className="w-3.5 h-3.5" />
+                Risk Investigation (Default)
+              </button>
+
+              <button
+                onClick={() => setViewMode('all')}
+                className={`px-3.5 py-1.5 rounded-lg text-xs font-semibold flex items-center gap-2 transition ${
+                  viewMode === 'all'
+                    ? 'bg-blue-600 text-white shadow-sm'
+                    : 'bg-slate-100 dark:bg-slate-900 text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
+                }`}
+              >
+                <GitFork className="w-3.5 h-3.5" />
+                All Relationships
+              </button>
+            </div>
+
+            {/* Severity Filter Pills (Active in Risk Investigation Mode) */}
+            {viewMode === 'risk' && (
+              <div className="flex items-center gap-1.5 flex-wrap text-xs">
+                <span className="text-slate-500 font-mono text-[11px]">Severity:</span>
+                <button
+                  onClick={() => setSeverityFilter('all')}
+                  className={`px-2.5 py-1 rounded-md text-[11px] font-medium transition ${
+                    severityFilter === 'all'
+                      ? 'bg-slate-800 dark:bg-slate-200 text-white dark:text-slate-900'
+                      : 'bg-slate-100 dark:bg-slate-900 text-slate-600 dark:text-slate-400'
+                  }`}
+                >
+                  All Risks ({summary.highRiskCount + summary.mediumRiskCount})
+                </button>
+                <button
+                  onClick={() => setSeverityFilter('HIGH')}
+                  className={`px-2.5 py-1 rounded-md text-[11px] font-medium transition ${
+                    severityFilter === 'HIGH'
+                      ? 'bg-red-500 text-white'
+                      : 'bg-red-500/10 text-red-600 dark:text-red-400 hover:bg-red-500/20'
+                  }`}
+                >
+                  High ({summary.highRiskCount})
+                </button>
+                <button
+                  onClick={() => setSeverityFilter('MEDIUM')}
+                  className={`px-2.5 py-1 rounded-md text-[11px] font-medium transition ${
+                    severityFilter === 'MEDIUM'
+                      ? 'bg-amber-500 text-white'
+                      : 'bg-amber-500/10 text-amber-600 dark:text-amber-400 hover:bg-amber-500/20'
+                  }`}
+                >
+                  Medium ({summary.mediumRiskCount})
+                </button>
+              </div>
+            )}
+          </div>
+
+          {/* Search and Secondary Select Filters */}
           <div className="flex flex-col md:flex-row gap-4 items-center justify-between">
             <div className="relative w-full md:w-80">
               <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 dark:text-slate-500" />
               <input
                 type="text"
-                placeholder="Search node label or ID..."
+                placeholder="Search entity name or ID..."
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
                 className="w-full bg-slate-50 dark:bg-slate-950 border border-slate-300 dark:border-slate-800 rounded-lg pl-9 pr-4 py-2 text-sm text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-slate-500 focus:outline-none focus:border-blue-500"
@@ -229,7 +409,7 @@ export const NetworkGraphPage: React.FC = () => {
       {error && (
         <div className="p-4 rounded-xl bg-red-500/10 border border-red-500/30 text-red-600 dark:text-red-400 text-sm flex items-center gap-3">
           <AlertCircle className="w-5 h-5 shrink-0" />
-          <span>Error loading network graph: {error}</span>
+          <span>Error loading network graph telemetry: {error}</span>
         </div>
       )}
 
@@ -241,7 +421,7 @@ export const NetworkGraphPage: React.FC = () => {
             <div className="flex items-center justify-between">
               <CardTitle className="text-base font-semibold text-slate-900 dark:text-white flex items-center gap-2">
                 <GitFork className="w-4 h-4 text-cyan-600 dark:text-cyan-400" />
-                Financial Relational Graph ({filteredNodes.length} nodes, {filteredEdges.length} edges)
+                {viewMode === 'risk' ? 'Risk Investigation Network' : 'Full Relationship Network'} ({filteredNodes.length} nodes, {filteredEdges.length} edges)
               </CardTitle>
               <div className="flex items-center gap-3 text-[10px] font-mono">
                 <span className="flex items-center gap-1 text-cyan-600 dark:text-cyan-400 font-medium">
@@ -256,23 +436,34 @@ export const NetworkGraphPage: React.FC = () => {
               </div>
             </div>
           </CardHeader>
+
           <CardContent className="p-4">
             {loading ? (
               <div className="h-96 flex flex-col items-center justify-center text-slate-500 space-y-3">
                 <RefreshCw className="w-6 h-6 animate-spin text-blue-500" />
-                <p className="text-xs font-mono">Constructing adjacency matrix & layout...</p>
+                <p className="text-xs font-mono">Running hybrid risk analysis & graph layout...</p>
               </div>
             ) : filteredNodes.length === 0 ? (
-              <div className="h-96 flex flex-col items-center justify-center text-center space-y-4">
-                <GitFork className="w-12 h-12 text-slate-400 dark:text-slate-700 mx-auto" />
+              <div className="h-96 flex flex-col items-center justify-center text-center space-y-4 p-6">
+                <ShieldAlert className="w-12 h-12 text-slate-400 dark:text-slate-600 mx-auto" />
                 <div className="space-y-1">
-                  <h3 className="text-base font-semibold text-slate-800 dark:text-slate-300">Graph Matrix Empty</h3>
-                  <p className="text-xs text-slate-600 dark:text-slate-500 max-w-sm">
+                  <h3 className="text-base font-semibold text-slate-800 dark:text-slate-200">
+                    {viewMode === 'risk' ? 'No Risk Findings Detected' : 'No Graph Nodes Match Filters'}
+                  </h3>
+                  <p className="text-xs text-slate-600 dark:text-slate-400 max-w-md mx-auto">
                     {nodes.length === 0
-                      ? 'No records ingested yet. Ingest a beneficiary CSV file to populate graph nodes.'
-                      : 'No graph nodes match your search and filter options.'}
+                      ? 'No beneficiaries ingested yet. Ingest a beneficiary CSV file to populate the graph.'
+                      : viewMode === 'risk'
+                      ? 'No entities in the current dataset match the selected severity filter. All records meet standard compliance parameters.'
+                      : 'No graph nodes match your search query or dropdown filter selections.'}
                   </p>
                 </div>
+                {viewMode === 'risk' && nodes.length > 0 && (
+                  <Button variant="outline" size="sm" onClick={() => setViewMode('all')}>
+                    <GitFork className="w-4 h-4 mr-2" />
+                    Switch to All Relationships View
+                  </Button>
+                )}
                 {nodes.length === 0 && (
                   <Button variant="primary" size="sm" onClick={() => setIsUploadOpen(true)}>
                     <Upload className="w-4 h-4 mr-2" />
@@ -286,22 +477,31 @@ export const NetworkGraphPage: React.FC = () => {
                 edges={filteredEdges}
                 selectedNodeId={selectedNodeId}
                 onSelectNode={setSelectedNodeId}
+                riskFindingMap={riskFindingMap}
               />
             )}
           </CardContent>
         </Card>
 
-        {/* Node Inspector Panel */}
+        {/* Evidence-First Node Inspector Panel */}
         <Card className="lg:col-span-1 border-l-4 border-l-blue-500">
           <CardHeader className="border-b border-slate-200 dark:border-slate-800 pb-3">
-            <CardTitle className="text-base font-semibold text-slate-900 dark:text-white flex items-center gap-2">
-              <Info className="w-4 h-4 text-blue-600 dark:text-blue-400" />
-              Node Inspector
+            <CardTitle className="text-base font-semibold text-slate-900 dark:text-white flex items-center justify-between">
+              <span className="flex items-center gap-2">
+                <Info className="w-4 h-4 text-blue-600 dark:text-blue-400" />
+                Node Inspector & Evidence
+              </span>
+              {selectedNodeRisk && (
+                <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-blue-500/10 text-blue-600 dark:text-blue-400 font-semibold">
+                  Evidence Panel
+                </span>
+              )}
             </CardTitle>
           </CardHeader>
           <CardContent className="p-4 space-y-4">
             {selectedNode ? (
               <div className="space-y-4">
+                {/* Node Identity Banner */}
                 <div>
                   <div className="flex items-center gap-2">
                     <Badge
@@ -320,7 +520,80 @@ export const NetworkGraphPage: React.FC = () => {
                   <h3 className="text-lg font-bold text-slate-900 dark:text-white mt-1">{selectedNode.label}</h3>
                 </div>
 
-                {/* Node Metadata Attributes */}
+                {/* Risk Evidence Box (If Selected Node is a Flagged Risk Finding) */}
+                {selectedNodeRisk ? (
+                  <div className="p-3.5 rounded-xl bg-red-500/5 dark:bg-red-950/20 border border-red-500/30 space-y-3">
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center gap-1.5 font-bold text-xs text-red-600 dark:text-red-400">
+                        <ShieldAlert className="w-4 h-4" />
+                        <span>{selectedNodeRisk.riskLevel} RISK FINDING</span>
+                      </div>
+                      <span className="text-xs font-mono font-extrabold text-red-600 dark:text-red-400">
+                        Hybrid Score: {selectedNodeRisk.riskScore}/100
+                      </span>
+                    </div>
+
+                    {/* Score Breakdown Pills */}
+                    <div className="grid grid-cols-2 gap-2 text-[10px] font-mono">
+                      <div className="p-2 rounded bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800">
+                        <span className="text-slate-500 block">Rule Score:</span>
+                        <span className="font-bold text-slate-800 dark:text-slate-200">{selectedNodeRisk.ruleScore ?? selectedNodeRisk.riskScore}/100</span>
+                      </div>
+                      <div className="p-2 rounded bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800">
+                        <span className="text-slate-500 block">Isolation Forest:</span>
+                        <span className="font-bold text-purple-600 dark:text-purple-400">
+                          {selectedNodeRisk.anomalyScore !== undefined ? `${Math.round(selectedNodeRisk.anomalyScore * 100)}% Anomaly` : 'N/A'}
+                        </span>
+                      </div>
+                    </div>
+
+                    {/* Triggered Rule Signals */}
+                    {selectedNodeRisk.signals.length > 0 && (
+                      <div className="space-y-1.5 pt-1">
+                        <span className="font-mono text-[10px] font-semibold text-slate-600 dark:text-slate-400 block uppercase">
+                          Triggered Risk Signals ({selectedNodeRisk.signals.length}):
+                        </span>
+                        {selectedNodeRisk.signals.map((sig, idx) => (
+                          <div
+                            key={idx}
+                            className="p-2 rounded bg-white dark:bg-slate-900 border border-red-200 dark:border-red-900/50 text-[11px] space-y-0.5"
+                          >
+                            <div className="flex items-center justify-between text-red-600 dark:text-red-400 font-mono font-bold text-[10px]">
+                              <span>[{sig.ruleId}]</span>
+                              <span>+{sig.points} pts</span>
+                            </div>
+                            <p className="text-slate-700 dark:text-slate-300 text-[10px] leading-relaxed">
+                              {sig.description}
+                            </p>
+                          </div>
+                        ))}
+                      </div>
+                    )}
+
+                    {/* Narrative Explanation */}
+                    {selectedNodeRisk.explanations.length > 0 && (
+                      <div className="space-y-1 text-[11px] text-slate-700 dark:text-slate-300 font-sans border-t border-red-500/20 pt-2">
+                        <span className="font-mono text-[10px] font-semibold text-slate-600 dark:text-slate-400 block uppercase">
+                          Investigative Lead Summary:
+                        </span>
+                        {selectedNodeRisk.explanations.map((exp, idx) => (
+                          <div key={idx} className="flex items-start gap-1.5 text-[10px] leading-relaxed">
+                            <span className="text-red-500 font-bold">•</span>
+                            <span>{exp}</span>
+                          </div>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+                ) : (
+                  /* Ordinary Node Notice */
+                  <div className="p-3 rounded-lg bg-emerald-500/5 dark:bg-emerald-950/20 border border-emerald-500/30 flex items-center gap-2 text-emerald-600 dark:text-emerald-400 text-xs">
+                    <CheckCircle2 className="w-4 h-4 shrink-0" />
+                    <span>Entity has no direct risk findings flagged in the compliance system.</span>
+                  </div>
+                )}
+
+                {/* Node Recorded Metadata Attributes */}
                 <div className="p-3 rounded-lg bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 space-y-2 text-xs">
                   <span className="font-mono font-semibold uppercase text-[10px] text-slate-500 dark:text-slate-400 block">
                     Recorded Metadata Attributes:
@@ -334,7 +607,9 @@ export const NetworkGraphPage: React.FC = () => {
                   {selectedNode.metadata.bankAccountNumber && (
                     <div className="flex justify-between text-slate-800 dark:text-slate-300">
                       <span className="text-slate-500">Bank Account:</span>
-                      <span className="font-mono">{selectedNode.metadata.bankAccountNumber}</span>
+                      <span className="font-mono font-semibold text-blue-600 dark:text-blue-400">
+                        {selectedNode.metadata.bankAccountNumber}
+                      </span>
                     </div>
                   )}
                   {selectedNode.metadata.ifscOrRoutingCode && (
@@ -355,17 +630,9 @@ export const NetworkGraphPage: React.FC = () => {
                       <span className="truncate max-w-[150px]">{selectedNode.metadata.email}</span>
                     </div>
                   )}
-                  {selectedNode.metadata.associatedBeneficiariesCount !== undefined && (
-                    <div className="flex justify-between text-slate-800 dark:text-slate-300">
-                      <span className="text-slate-500">Linked Beneficiaries:</span>
-                      <span className="font-mono text-emerald-600 dark:text-emerald-400 font-bold">
-                        {selectedNode.metadata.associatedBeneficiariesCount}
-                      </span>
-                    </div>
-                  )}
                   {selectedNode.metadata.amount !== undefined && (
                     <div className="flex justify-between text-slate-800 dark:text-slate-300">
-                      <span className="text-slate-500">Payout Amount:</span>
+                      <span className="text-slate-500">Disbursement Amount:</span>
                       <span className="font-mono text-emerald-600 dark:text-emerald-400 font-bold">
                         ₹{Number(selectedNode.metadata.amount).toLocaleString('en-IN')}
                       </span>
@@ -373,24 +640,24 @@ export const NetworkGraphPage: React.FC = () => {
                   )}
                 </div>
 
-                {/* Connected Edges & Reasons */}
+                {/* Connected Relationships & Recorded Evidence */}
                 <div className="space-y-2">
                   <span className="font-mono font-semibold uppercase text-[10px] text-slate-500 dark:text-slate-400 block">
-                    Connected Relationships ({connectedEdges.length}):
+                    Recorded Relationship Evidence ({connectedEdges.length}):
                   </span>
 
                   {connectedEdges.length === 0 ? (
                     <div className="text-xs text-slate-500 italic">No connected edges.</div>
                   ) : (
-                    <div className="space-y-2 max-h-48 overflow-y-auto pr-1">
+                    <div className="space-y-2 max-h-52 overflow-y-auto pr-1">
                       {connectedEdges.map((edge) => (
                         <div
                           key={edge.id}
                           className="p-2.5 rounded bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 text-[11px] font-mono space-y-1"
                         >
-                          <div className="flex items-center justify-between text-blue-600 dark:text-blue-400 font-semibold">
+                          <div className="flex items-center justify-between text-blue-600 dark:text-blue-400 font-semibold text-[10px]">
                             <span>{edge.relation}</span>
-                            <span className="text-[9px] text-slate-500">attr: {edge.sourceAttribute}</span>
+                            <span className="text-[9px] text-slate-500">Field: {edge.sourceAttribute}</span>
                           </div>
                           <div className="text-slate-700 dark:text-slate-300 text-[10px] font-sans leading-relaxed">
                             {edge.reason}
@@ -400,10 +667,27 @@ export const NetworkGraphPage: React.FC = () => {
                     </div>
                   )}
                 </div>
+
+                {/* Audit Disclaimer */}
+                <div className="p-2.5 rounded bg-slate-100 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 text-[10px] text-slate-500 dark:text-slate-400 leading-relaxed flex items-start gap-2">
+                  <AlertTriangle className="w-3.5 h-3.5 shrink-0 text-amber-500 mt-0.5" />
+                  <span>
+                    <strong>Audit Lead Disclaimer:</strong> Risk scores and shared account signals are investigative indicators requiring human review. They do not constitute legal proof of wrongdoing.
+                  </span>
+                </div>
               </div>
             ) : (
-              <div className="p-8 text-center text-slate-500 text-xs">
-                Select a graph node to inspect details and relationship reasons.
+              /* No Selection Prompt */
+              <div className="p-8 text-center space-y-3">
+                <Target className="w-10 h-10 text-blue-500 opacity-70 mx-auto" />
+                <div className="space-y-1">
+                  <h4 className="text-sm font-semibold text-slate-800 dark:text-slate-200">
+                    Select an Entity to Inspect
+                  </h4>
+                  <p className="text-xs text-slate-500 max-w-xs mx-auto leading-relaxed">
+                    Click any risk node or relationship link on the graph to inspect evidence, triggered rules, Isolation Forest anomaly scores, and recorded attributes.
+                  </p>
+                </div>
               </div>
             )}
           </CardContent>
