@@ -1,7 +1,7 @@
 import { parse } from 'csv-parse/sync';
 import mongoose from 'mongoose';
-import { Beneficiary, IBeneficiary } from '../../models/Beneficiary.js';
-import { Disbursement, IDisbursement } from '../../models/Disbursement.js';
+import { Beneficiary } from '../../models/Beneficiary.js';
+import { Disbursement } from '../../models/Disbursement.js';
 import { validateBeneficiaryRecord, BeneficiaryInput } from '../../validators/beneficiaryValidator.js';
 import { validateDisbursementRecord, DisbursementInput } from '../../validators/disbursementValidator.js';
 import { logger } from '../../utils/logger.js';
@@ -46,10 +46,10 @@ export class IngestionService {
   }
 
   /**
-   * Process and ingest beneficiary records (JSON array or objects)
+   * Process and ingest beneficiary records (JSON array or objects) idempotently.
    */
   public async ingestBeneficiaries(records: unknown[]): Promise<IngestionResult<BeneficiaryInput>> {
-    const accepted: BeneficiaryInput[] = [];
+    const acceptedMap = new Map<string, BeneficiaryInput>();
     const rejected: IngestionRowError[] = [];
 
     for (let index = 0; index < records.length; index++) {
@@ -68,12 +68,12 @@ export class IngestionService {
         });
       } else {
         const validatedData = result.data;
-        accepted.push(validatedData);
+        acceptedMap.set(validatedData.beneficiaryId, validatedData);
 
         // Store in memory store
         memoryBeneficiariesStore.set(validatedData.beneficiaryId, validatedData);
 
-        // Store in MongoDB if connected
+        // Idempotent upsert to MongoDB if connected
         if (mongoose.connection.readyState === 1) {
           try {
             await Beneficiary.findOneAndUpdate(
@@ -88,6 +88,8 @@ export class IngestionService {
       }
     }
 
+    const accepted = Array.from(acceptedMap.values());
+
     return {
       summary: {
         totalRows: records.length,
@@ -101,10 +103,10 @@ export class IngestionService {
   }
 
   /**
-   * Process and ingest disbursement records (JSON array or objects)
+   * Process and ingest disbursement records (JSON array or objects) idempotently.
    */
   public async ingestDisbursements(records: unknown[]): Promise<IngestionResult<DisbursementInput>> {
-    const accepted: DisbursementInput[] = [];
+    const acceptedMap = new Map<string, DisbursementInput>();
     const rejected: IngestionRowError[] = [];
 
     for (let index = 0; index < records.length; index++) {
@@ -123,12 +125,12 @@ export class IngestionService {
         });
       } else {
         const validatedData = result.data;
-        accepted.push(validatedData);
+        acceptedMap.set(validatedData.disbursementId, validatedData);
 
         // Store in memory store
         memoryDisbursementsStore.set(validatedData.disbursementId, validatedData);
 
-        // Store in MongoDB if connected
+        // Idempotent upsert to MongoDB if connected
         if (mongoose.connection.readyState === 1) {
           try {
             await Disbursement.findOneAndUpdate(
@@ -142,6 +144,8 @@ export class IngestionService {
         }
       }
     }
+
+    const accepted = Array.from(acceptedMap.values());
 
     return {
       summary: {
@@ -200,7 +204,7 @@ export class IngestionService {
   }
 
   /**
-   * Reset in-memory store (useful for tests)
+   * Reset in-memory store (useful for unit tests)
    */
   public clearMemoryStore(): void {
     memoryBeneficiariesStore.clear();

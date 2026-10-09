@@ -34,7 +34,7 @@ describe('Ingestion & Record API Endpoints', () => {
   it('GET /api/health - should return 200 OK and health status', async () => {
     const res = await fetch(`${baseUrl}/health`);
     assert.strictEqual(res.status, 200);
-    const body = await res.json() as any;
+    const body = (await res.json()) as any;
     assert.strictEqual(body.status, 'ok');
     assert.strictEqual(body.service, 'FinTrace AI Backend');
   });
@@ -63,7 +63,7 @@ describe('Ingestion & Record API Endpoints', () => {
     });
 
     assert.strictEqual(res.status, 200);
-    const body = await res.json() as any;
+    const body = (await res.json()) as any;
     assert.strictEqual(body.success, true);
     assert.strictEqual(body.summary.totalRows, 2);
     assert.strictEqual(body.summary.acceptedCount, 1);
@@ -91,7 +91,7 @@ describe('Ingestion & Record API Endpoints', () => {
     });
 
     assert.strictEqual(res.status, 200);
-    const body = await res.json() as any;
+    const body = (await res.json()) as any;
     assert.strictEqual(body.summary.acceptedCount, 1);
   });
 
@@ -107,7 +107,7 @@ BEN-CSV-2,,123,INVALID,`;
     });
 
     assert.strictEqual(res.status, 200);
-    const body = await res.json() as any;
+    const body = (await res.json()) as any;
     assert.strictEqual(body.summary.totalRows, 2);
     assert.strictEqual(body.summary.acceptedCount, 1);
     assert.strictEqual(body.summary.rejectedCount, 1);
@@ -129,8 +129,49 @@ BEN-CSV-2,,123,INVALID,`;
 
     const resBen = await fetch(`${baseUrl}/beneficiaries`);
     assert.strictEqual(resBen.status, 200);
-    const bodyBen = await resBen.json() as any;
+    const bodyBen = (await resBen.json()) as any;
     assert.strictEqual(bodyBen.count, 1);
     assert.strictEqual(bodyBen.data[0].beneficiaryId, 'BEN-GET-1');
+  });
+
+  it('POST /api/ingest/beneficiaries - should handle duplicate uploads idempotently', async () => {
+    const singlePayload = [
+      {
+        beneficiaryId: 'BEN-DUP-1',
+        name: 'Original Name',
+        bankAccountNumber: '111122223333',
+        ifscOrRoutingCode: 'SBIN0001111'
+      }
+    ];
+
+    const duplicatePayload = [
+      {
+        beneficiaryId: 'BEN-DUP-1',
+        name: 'Updated Name',
+        bankAccountNumber: '111122223333',
+        ifscOrRoutingCode: 'SBIN0001111'
+      }
+    ];
+
+    // First upload
+    await fetch(`${baseUrl}/ingest/beneficiaries`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(singlePayload)
+    });
+
+    // Duplicate upload with updated field
+    await fetch(`${baseUrl}/ingest/beneficiaries`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(duplicatePayload)
+    });
+
+    // Verify database/store has 1 record with updated values (no duplicate documents)
+    const res = await fetch(`${baseUrl}/beneficiaries`);
+    const body = (await res.json()) as any;
+    assert.strictEqual(body.count, 1);
+    assert.strictEqual(body.data[0].beneficiaryId, 'BEN-DUP-1');
+    assert.strictEqual(body.data[0].name, 'Updated Name');
   });
 });

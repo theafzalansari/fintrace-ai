@@ -1,0 +1,4 @@
+beneficiaryId,name,bankAccountNumber,ifscOrRoutingCode,category,phone,email,address,identityHash,status
+SYNTH-GHOST-01,Synthetic Ghost Ben 1,889900112233,SBIN0009999,Individual,+919900011111,ghost1@synthetic.local,"Block A, City",SYNTH-ID-HASH-99,Active
+SYNTH-GHOST-02,Synthetic Ghost Ben 2,889900112233,SBIN0009999,Individual,+919900022222,ghost2@synthetic.local,"Block B, City",SYNTH-ID-HASH-99,Active
+SYNTH-GHOST-03,Synthetic Ghost Ben 3,889900112233,SBIN0009999,Individual,+919900033333,ghost3@synthetic.local,"Block C, City",SYNTH-ID-HASH-99,Active

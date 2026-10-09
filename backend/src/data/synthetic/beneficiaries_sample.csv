@@ -1,6 +1,6 @@
 beneficiaryId,name,bankAccountNumber,ifscOrRoutingCode,category,phone,email,address,identityHash,status
 BEN-1001,Rajesh Kumar,918273645012,SBIN0001234,Individual,+919876543210,rajesh.k@example.com,"12 Civil Lines, New Delhi",HASH-BEN-1001,Active
-BEN-1002,Asha Workers Co-Op,451236987014,HDFC0005678,NGO,+919876543211,contact@ashacoop.org,"45 NGO Complex, Jaipur",HASH-BEN-1002,Active
+BEN-1002,Asha Workers Co-Op,918273645012,HDFC0005678,NGO,+919876543211,contact@ashacoop.org,"45 NGO Complex, Jaipur",HASH-BEN-1002,Active
 BEN-1003,Apex Infrastructure Ltd,789654123089,ICIC0009999,Contractor,+919876543212,info@apexinfra.com,"Sector 62, Noida",HASH-BEN-1003,Active
 BEN-1004,Sunita Devi,102938475601,PUNB0004321,Individual,,sunita@example.com,"Village Rampur, Bihar",HASH-BEN-1004,Active
 BEN-1005,,123,INVALID_IFSC,Unknown,,invalid-email-address,,HASH-BEN-1005,Active
