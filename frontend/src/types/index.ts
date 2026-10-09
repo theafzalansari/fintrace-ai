@@ -88,12 +88,17 @@ export interface RiskSignal {
   description: string;
 }
 
+export type HumanReviewStatus = 'PENDING_REVIEW' | 'IN_REVIEW' | 'VERIFIED_CLEAN' | 'CONFIRMED_RISK';
+
 export interface RiskFinding {
   entityId: string;
   entityType: 'beneficiary';
   name: string;
   riskScore: number;
+  ruleScore?: number;
+  anomalyScore?: number;
   riskLevel: 'HIGH' | 'MEDIUM' | 'LOW';
+  humanReviewStatus?: HumanReviewStatus;
   disclaimer: string;
   signals: RiskSignal[];
   explanations: string[];
@@ -106,6 +111,7 @@ export interface RiskAnalysisResponseData {
     highRiskCount: number;
     mediumRiskCount: number;
     lowRiskCount: number;
+    pendingReviewCount?: number;
   };
 }
 

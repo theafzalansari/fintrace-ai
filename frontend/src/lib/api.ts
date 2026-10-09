@@ -9,7 +9,8 @@ import {
   ChatMessage
 } from '../types';
 
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:5000/api';
+const RAW_API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:5000/api';
+const API_BASE_URL = RAW_API_BASE_URL.replace(/\/+$/, '');
 
 async function handleResponse<T>(response: Response): Promise<T> {
   if (!response.ok) {
@@ -66,6 +67,18 @@ export const api = {
   async getRiskAnalysis(): Promise<{ success: boolean; data: RiskAnalysisResponseData }> {
     const res = await fetch(`${API_BASE_URL}/analysis/risks`);
     return handleResponse<{ success: boolean; data: RiskAnalysisResponseData }>(res);
+  },
+
+  /**
+   * Update Human Review Status for a risk finding
+   */
+  async updateRiskStatus(entityId: string, status: string): Promise<{ success: boolean; message: string }> {
+    const res = await fetch(`${API_BASE_URL}/analysis/risks/status`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ entityId, status })
+    });
+    return handleResponse<{ success: boolean; message: string }>(res);
   },
 
   /**

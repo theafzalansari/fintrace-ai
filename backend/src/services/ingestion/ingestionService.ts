@@ -38,11 +38,15 @@ export class IngestionService {
    */
   public parseCsv(csvData: string | Buffer): Record<string, string>[] {
     const content = typeof csvData === 'string' ? csvData : csvData.toString('utf-8');
-    return parse(content, {
-      columns: true,
-      skip_empty_lines: true,
-      trim: true
-    });
+    try {
+      return parse(content, {
+        columns: true,
+        skip_empty_lines: true,
+        trim: true
+      });
+    } catch (err) {
+      throw new Error(`Invalid CSV syntax or malformed structure: ${err instanceof Error ? err.message : String(err)}`);
+    }
   }
 
   /**

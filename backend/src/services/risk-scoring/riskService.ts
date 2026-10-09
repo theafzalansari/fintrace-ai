@@ -1,5 +1,7 @@
 import { ingestionService } from '../ingestion/ingestionService.js';
-import { normalizePhone, normalizeEmail, normalizeAddress } from '../graph-analysis/graphService.js';
+import { graphService, normalizePhone, normalizeEmail, normalizeAddress } from '../graph-analysis/graphService.js';
+import { featureExtractor } from '../ml-anomaly/anomalyFeatureExtractor.js';
+import { IsolationForest } from '../ml-anomaly/isolationForest.js';
 
 export interface RiskSignal {
   ruleId: string;
@@ -8,12 +10,17 @@ export interface RiskSignal {
   description: string;
 }
 
+export type HumanReviewStatus = 'PENDING_REVIEW' | 'IN_REVIEW' | 'VERIFIED_CLEAN' | 'CONFIRMED_RISK';
+
 export interface RiskFinding {
   entityId: string;
   entityType: 'beneficiary';
   name: string;
-  riskScore: number;
+  riskScore: number; // Hybrid score (0.65 * ruleScore + 0.35 * (anomalyScore * 100))
+  ruleScore: number; // Rule-based score (0-100)
+  anomalyScore: number; // ML Isolation Forest Score (0.00 to 1.00)
   riskLevel: 'HIGH' | 'MEDIUM' | 'LOW';
+  humanReviewStatus: HumanReviewStatus;
   disclaimer: string;
   signals: RiskSignal[];
   explanations: string[];
@@ -26,28 +33,68 @@ export interface RiskAnalysisResponseData {
     highRiskCount: number;
     mediumRiskCount: number;
     lowRiskCount: number;
+    pendingReviewCount: number;
   };
 }
 
 export const RISK_DISCLAIMER =
-  'Risk indicators are automated rule-based flags for forensic audit and require human review. They do not constitute conclusive proof of fraud.';
+  'Risk indicators are automated hybrid (explainable rules + ML anomaly detection) flags for forensic audit and require human review. They do not constitute legal proof of fraud.';
+
+const humanReviewStatusStore = new Map<string, HumanReviewStatus>();
 
 export class RiskService {
   /**
-   * Performs explainable rule-based risk scoring on all ingested beneficiaries.
+   * Updates human review status for a beneficiary entity.
+   */
+  public updateHumanReviewStatus(entityId: string, status: HumanReviewStatus): boolean {
+    humanReviewStatusStore.set(entityId, status);
+    return true;
+  }
+  /**
+   * Performs hybrid explainable risk scoring combining rule-based point aggregation
+   * with in-house Isolation Forest ML anomaly scores.
    */
   public async calculateRisks(): Promise<RiskAnalysisResponseData> {
     const rawBeneficiaries = (await ingestionService.getBeneficiaries()) as any[];
     const rawDisbursements = (await ingestionService.getDisbursements()) as any[];
+    const graphData = await graphService.buildGraph();
 
-    // Group beneficiaries by attribute to detect clusters
+    if (rawBeneficiaries.length === 0) {
+      return {
+        findings: [],
+        summary: {
+          totalEntitiesAssessed: 0,
+          highRiskCount: 0,
+          mediumRiskCount: 0,
+          lowRiskCount: 0,
+          pendingReviewCount: 0
+        }
+      };
+    }
+
+    // 1. Feature Extraction & Isolation Forest Model Training
+    const featureVectors = featureExtractor.extractFeatures(
+      rawBeneficiaries,
+      rawDisbursements,
+      graphData.edges
+    );
+
+    const X = featureVectors.map((v) => v.features);
+    const model = new IsolationForest(40, 64);
+    model.fit(X);
+
+    const featureVectorMap = new Map<string, number[]>();
+    for (const fv of featureVectors) {
+      featureVectorMap.set(fv.beneficiaryId, fv.features);
+    }
+
+    // Group beneficiaries by attribute to detect rule clusters
     const bankAccountMap = new Map<string, any[]>();
     const phoneMap = new Map<string, any[]>();
     const emailMap = new Map<string, any[]>();
     const addressMap = new Map<string, any[]>();
     const identityHashMap = new Map<string, any[]>();
 
-    // Map disbursements to beneficiary IDs
     const disbursementsByBenId = new Map<string, any[]>();
     for (const disb of rawDisbursements) {
       if (!disb.beneficiaryId) continue;
@@ -95,11 +142,14 @@ export class RiskService {
     let highRiskCount = 0;
     let mediumRiskCount = 0;
     let lowRiskCount = 0;
+    let pendingReviewCount = 0;
 
     for (const ben of rawBeneficiaries) {
       if (!ben.beneficiaryId) continue;
       const benId = ben.beneficiaryId;
       const signals: RiskSignal[] = [];
+
+      // --- RULE-BASED SCORING SIGNALS ---
 
       // 1. Shared Payout Account Rule
       if (ben.bankAccountNumber && ben.bankAccountNumber.trim()) {
@@ -205,7 +255,7 @@ export class RiskService {
         }
       }
 
-      // 7. Payment Patterns (Disbursement analysis)
+      // 7. Payment Patterns
       const benDisbs = disbursementsByBenId.get(benId) || [];
       if (benDisbs.length > 0) {
         const totalAmount = benDisbs.reduce((sum, d) => sum + (Number(d.amount) || 0), 0);
@@ -217,7 +267,7 @@ export class RiskService {
             ruleId: 'HIGH_DISBURSEMENT_VOLUME',
             severity: 'MEDIUM',
             points: 15,
-            description: `High cumulative disbursement total of ₹${totalAmount.toLocaleString()} across ${count} payments.`
+            description: `High cumulative disbursement total of ₹${totalAmount.toLocaleString('en-IN')} across ${count} payments.`
           });
         }
 
@@ -240,34 +290,61 @@ export class RiskService {
         }
       }
 
-      // Calculate total raw score and clamp between 0 and 100
-      const rawScore = signals.reduce((sum, s) => sum + s.points, 0);
-      const riskScore = Math.min(100, Math.max(0, rawScore));
+      // Compute raw rule score (0 to 100)
+      const rawRulePoints = signals.reduce((sum, s) => sum + s.points, 0);
+      const ruleScore = Math.min(100, Math.max(0, rawRulePoints));
+
+      // --- ML ISOLATION FOREST ANOMALY SCORING ---
+      const features = featureVectorMap.get(benId) || [0, 0, 0, 0, 0, 0];
+      const anomalyScore = model.predictScore(features, rawBeneficiaries.length);
+
+      // If ML Anomaly score >= 0.55, append explicit ML signal
+      if (anomalyScore >= 0.55) {
+        const anomalySeverity = anomalyScore >= 0.75 ? 'HIGH' : 'MEDIUM';
+        const anomalyPoints = Math.round(anomalyScore * 35);
+        signals.push({
+          ruleId: 'ISOLATION_FOREST_ANOMALY',
+          severity: anomalySeverity,
+          points: anomalyPoints,
+          description: `Isolation Forest ML model detected structural anomaly (Anomaly Score: ${(anomalyScore * 100).toFixed(1)}/100).`
+        });
+      }
+
+      // Hybrid Composite Score calculation: 65% Rule Score + 35% ML Score
+      const hybridScore = Math.min(
+        100,
+        Math.max(0, Math.round(0.65 * ruleScore + 0.35 * (anomalyScore * 100)))
+      );
 
       let riskLevel: 'HIGH' | 'MEDIUM' | 'LOW' = 'LOW';
-      if (riskScore >= 70) {
+      if (hybridScore >= 70) {
         riskLevel = 'HIGH';
         highRiskCount++;
-      } else if (riskScore >= 30) {
+      } else if (hybridScore >= 30) {
         riskLevel = 'MEDIUM';
         mediumRiskCount++;
       } else {
         lowRiskCount++;
       }
 
+      pendingReviewCount++;
+
       findings.push({
         entityId: benId,
         entityType: 'beneficiary',
         name: ben.name || benId,
-        riskScore,
+        riskScore: hybridScore,
+        ruleScore,
+        anomalyScore: Number(anomalyScore.toFixed(3)),
         riskLevel,
+        humanReviewStatus: humanReviewStatusStore.get(benId) || 'PENDING_REVIEW',
         disclaimer: RISK_DISCLAIMER,
         signals,
         explanations: signals.map((s) => s.description)
       });
     }
 
-    // Rank findings by risk score descending
+    // Rank findings by hybrid risk score descending
     findings.sort((a, b) => b.riskScore - a.riskScore);
 
     return {
@@ -276,7 +353,8 @@ export class RiskService {
         totalEntitiesAssessed: findings.length,
         highRiskCount,
         mediumRiskCount,
-        lowRiskCount
+        lowRiskCount,
+        pendingReviewCount
       }
     };
   }

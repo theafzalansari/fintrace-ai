@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { Upload, X, CheckCircle2, AlertTriangle, FileText, RefreshCw } from 'lucide-react';
+import React, { useState, useRef } from 'react';
+import { Upload, X, CheckCircle2, AlertTriangle, FileText, RefreshCw, FileUp } from 'lucide-react';
 import { api } from '../../lib/api';
 import { IngestionResult } from '../../types';
 import { Button } from './Button';
@@ -19,22 +19,79 @@ export const CsvUploadModal: React.FC<CsvUploadModalProps> = ({
 }) => {
   const [file, setFile] = useState<File | null>(null);
   const [loading, setLoading] = useState<boolean>(false);
+  const [isDragging, setIsDragging] = useState<boolean>(false);
   const [result, setResult] = useState<IngestionResult | null>(null);
   const [error, setError] = useState<string | null>(null);
 
+  const fileInputRef = useRef<HTMLInputElement>(null);
+
   if (!isOpen) return null;
+
+  const validateAndSetFile = (selectedFile: File | undefined | null): boolean => {
+    if (!selectedFile) return false;
+
+    const fileName = selectedFile.name.toLowerCase();
+    const isCsvExtension = fileName.endsWith('.csv');
+    const isCsvMimeType = selectedFile.type === 'text/csv' || 
+                          selectedFile.type === 'application/vnd.ms-excel' || 
+                          selectedFile.type === 'text/plain';
+
+    if (!isCsvExtension && !isCsvMimeType) {
+      setError('Invalid file format. Please select a valid .csv file.');
+      setFile(null);
+      return false;
+    }
+
+    if (selectedFile.size === 0) {
+      setError('The selected CSV file is empty (0 bytes). Please choose a file containing data.');
+      setFile(null);
+      return false;
+    }
+
+    setFile(selectedFile);
+    setError(null);
+    setResult(null);
+    return true;
+  };
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0]) {
-      setFile(e.target.files[0]);
-      setError(null);
-      setResult(null);
+      validateAndSetFile(e.target.files[0]);
+    }
+  };
+
+  const handleDragOver = (e: React.DragEvent<HTMLDivElement>) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setIsDragging(true);
+  };
+
+  const handleDragLeave = (e: React.DragEvent<HTMLDivElement>) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setIsDragging(false);
+  };
+
+  const handleDrop = (e: React.DragEvent<HTMLDivElement>) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setIsDragging(false);
+
+    if (e.dataTransfer.files && e.dataTransfer.files[0]) {
+      validateAndSetFile(e.dataTransfer.files[0]);
+    }
+  };
+
+  const triggerFileBrowse = () => {
+    if (fileInputRef.current) {
+      fileInputRef.current.value = '';
+      fileInputRef.current.click();
     }
   };
 
   const handleUpload = async () => {
     if (!file) {
-      setError('Please select a CSV file to upload.');
+      setError('Please select a valid CSV file to upload.');
       return;
     }
 
@@ -94,6 +151,15 @@ DISB-2024-005,BEN-1005,-500.00,INR,invalid-date,,Unknown,Completed,REF-981241,In
     }
   };
 
+  const handleResetModal = () => {
+    setFile(null);
+    setResult(null);
+    setError(null);
+    if (fileInputRef.current) {
+      fileInputRef.current.value = '';
+    }
+  };
+
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/80 backdrop-blur-sm p-4 overflow-y-auto">
       <div className="bg-slate-900 border border-slate-800 rounded-2xl max-w-xl w-full p-6 shadow-2xl space-y-6">
@@ -112,36 +178,66 @@ DISB-2024-005,BEN-1005,-500.00,INR,invalid-date,,Unknown,Completed,REF-981241,In
             </div>
           </div>
           <button
-            onClick={onClose}
+            onClick={() => {
+              handleResetModal();
+              onClose();
+            }}
             className="p-1 rounded-lg text-slate-400 hover:text-white hover:bg-slate-800 transition"
           >
             <X className="w-5 h-5" />
           </button>
         </div>
 
-        {/* Upload & Sample Section */}
+        {/* Upload & Dropzone Area */}
         <div className="space-y-4">
-          <div className="border-2 border-dashed border-slate-800 hover:border-blue-500/50 rounded-xl p-6 text-center transition flex flex-col items-center justify-center space-y-2 bg-slate-950/40">
-            <FileText className="w-8 h-8 text-slate-500" />
-            <div className="text-sm text-slate-300">
-              {file ? (
-                <span className="font-medium text-blue-400">{file.name} ({Math.round(file.size / 1024)} KB)</span>
-              ) : (
-                <span>Select a CSV file from your device</span>
-              )}
-            </div>
+          <div
+            onClick={triggerFileBrowse}
+            onDragOver={handleDragOver}
+            onDragLeave={handleDragLeave}
+            onDrop={handleDrop}
+            className={`border-2 border-dashed rounded-xl p-6 text-center transition flex flex-col items-center justify-center space-y-2 cursor-pointer ${
+              isDragging
+                ? 'border-blue-500 bg-blue-500/10'
+                : file
+                ? 'border-emerald-500/50 bg-emerald-950/10'
+                : 'border-slate-800 hover:border-blue-500/50 bg-slate-950/40'
+            }`}
+          >
             <input
+              ref={fileInputRef}
               type="file"
               accept=".csv,text/csv"
               onChange={handleFileChange}
               className="hidden"
-              id="csv-file-input"
             />
-            <label htmlFor="csv-file-input">
-              <Button variant="outline" size="sm" type="button" className="cursor-pointer">
-                Browse Files
-              </Button>
-            </label>
+            {file ? (
+              <FileUp className="w-8 h-8 text-emerald-400 animate-bounce" />
+            ) : (
+              <FileText className="w-8 h-8 text-slate-500" />
+            )}
+            <div className="text-sm text-slate-300">
+              {file ? (
+                <span className="font-medium text-emerald-400">
+                  {file.name} ({Math.round(file.size / 1024) || 1} KB)
+                </span>
+              ) : (
+                <span>
+                  Drag & drop a <span className="text-blue-400 font-semibold">.csv</span> file here, or click to browse
+                </span>
+              )}
+            </div>
+            <Button
+              variant={file ? 'secondary' : 'outline'}
+              size="sm"
+              type="button"
+              onClick={(e) => {
+                e.stopPropagation();
+                triggerFileBrowse();
+              }}
+              className="mt-1"
+            >
+              {file ? 'Change File' : 'Browse Files'}
+            </Button>
           </div>
 
           <div className="flex items-center justify-between text-xs text-slate-400">
@@ -210,12 +306,31 @@ DISB-2024-005,BEN-1005,-500.00,INR,invalid-date,,Unknown,Completed,REF-981241,In
         )}
 
         <div className="flex items-center justify-end gap-3 pt-2">
-          <Button variant="ghost" size="sm" onClick={onClose}>
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={() => {
+              handleResetModal();
+              onClose();
+            }}
+          >
             {result ? 'Close' : 'Cancel'}
           </Button>
           {!result && (
-            <Button variant="primary" size="sm" onClick={handleUpload} disabled={loading || !file}>
-              {loading ? 'Processing...' : 'Upload & Process'}
+            <Button
+              variant="primary"
+              size="sm"
+              onClick={handleUpload}
+              disabled={loading || !file}
+            >
+              {loading ? (
+                <span className="flex items-center gap-1.5">
+                  <RefreshCw className="w-3.5 h-3.5 animate-spin" />
+                  Processing...
+                </span>
+              ) : (
+                'Upload & Process'
+              )}
             </Button>
           )}
         </div>

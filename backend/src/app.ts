@@ -13,9 +13,9 @@ export function createApp(): Express {
     credentials: true
   }));
 
-  app.use(express.json());
-  app.use(express.urlencoded({ extended: true }));
-  app.use(express.text({ type: ['text/csv', 'text/plain'] }));
+  app.use(express.json({ limit: '10mb' }));
+  app.use(express.urlencoded({ limit: '10mb', extended: true }));
+  app.use(express.text({ limit: '10mb', type: ['text/csv', 'text/plain'] }));
 
   // API Routes
   app.use('/api', routes);
