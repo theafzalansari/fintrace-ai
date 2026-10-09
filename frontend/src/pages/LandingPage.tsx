@@ -173,28 +173,41 @@ export const LandingPage: React.FC = () => {
   };
 
   return (
-    <div className="w-full text-slate-900 dark:text-slate-100 bg-slate-50 dark:bg-[#070A10] transition-colors duration-200 min-h-screen">
-      
-      {/* Notice Scrim Bar: Statutory Audit Requirement */}
-      <div className="w-full bg-blue-50 dark:bg-blue-950/40 text-blue-900 dark:text-blue-200 py-2.5 px-4 sm:px-6 border-b border-blue-200 dark:border-blue-900/50">
-        <div className="max-w-7xl mx-auto flex items-center justify-center gap-2 text-center text-xs">
-          <ShieldAlertIcon className="w-4 h-4 text-blue-600 dark:text-blue-400 shrink-0" />
-          <p className="font-sans tracking-normal leading-tight">
-            <span className="font-bold text-blue-700 dark:text-blue-300">Mandatory Audit Principle:</span> Algorithmic outputs are evidentiary risk signals, not definitive legal findings. Continuous certified investigator review required under SEC/FINRA Rule 3110.
-          </p>
-        </div>
-      </div>
+    <div className="relative w-full text-slate-900 dark:text-slate-100 min-h-screen bg-slate-50 dark:bg-[#070A10]">
+      {/* Continuous Fixed Background Image Layer */}
+      <div
+        className="fixed inset-0 bg-cover bg-center bg-no-repeat pointer-events-none z-0"
+        style={{ backgroundImage: "url('/hero-bg.png')" }}
+      />
 
-      {/* Hero Section */}
-      <section className="w-full py-16 md:py-24 px-4 sm:px-6 lg:px-8 relative overflow-hidden bg-white dark:bg-[#090D16] border-b border-slate-200 dark:border-slate-800/80">
-        <div className="max-w-7xl mx-auto flex flex-col items-center text-center relative z-10 space-y-8">
-          
-          {/* Overline Tag */}
-          <motion.div
-            initial={{ opacity: 0, y: -10 }}
-            animate={{ opacity: 1, y: 0 }}
-            className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-slate-100 dark:bg-slate-800/80 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-700 text-xs font-mono font-medium shadow-sm"
-          >
+      {/* Subtle Light/Dark Theme Overlay Layer */}
+      <div className="fixed inset-0 bg-white/80 dark:bg-[#070A10]/85 backdrop-blur-[0.5px] pointer-events-none z-0" />
+
+      {/* Content Container */}
+      <div className="relative z-10 w-full flex flex-col">
+        
+        {/* Notice Scrim Bar: Statutory Audit Requirement */}
+        <div className="w-full bg-blue-50/80 dark:bg-blue-950/40 text-blue-900 dark:text-blue-200 py-2.5 px-4 sm:px-6 border-b border-blue-200/70 dark:border-blue-900/50 backdrop-blur-sm">
+          <div className="max-w-7xl mx-auto flex items-center justify-center gap-2 text-center text-xs">
+            <ShieldAlertIcon className="w-4 h-4 text-blue-600 dark:text-blue-400 shrink-0" />
+            <p className="font-sans tracking-normal leading-tight">
+              <span className="font-bold text-blue-700 dark:text-blue-300">Mandatory Audit Principle:</span> Algorithmic outputs are evidentiary risk signals, not definitive legal findings. Continuous certified investigator review required under SEC/FINRA Rule 3110.
+            </p>
+          </div>
+        </div>
+
+        {/* Hero Section */}
+        <section
+          className="w-full py-16 md:py-24 px-4 sm:px-6 lg:px-8 relative overflow-hidden border-b border-slate-200/60 dark:border-slate-800/60"
+        >
+          <div className="max-w-7xl mx-auto flex flex-col items-center text-center relative z-10 space-y-8">
+            
+            {/* Overline Tag */}
+            <motion.div
+              initial={{ opacity: 0, y: -10 }}
+              animate={{ opacity: 1, y: 0 }}
+              className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-white/90 dark:bg-slate-800/80 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-700 text-xs font-mono font-medium shadow-sm backdrop-blur-sm"
+            >
             <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
             <span>Institutional Disbursement Ledger Forensic v2.4</span>
             <span className="text-slate-300 dark:text-slate-600">|</span>
@@ -297,7 +310,7 @@ export const LandingPage: React.FC = () => {
       </section>
 
       {/* Interactive Product Preview Component Section */}
-      <section className="w-full py-16 px-4 sm:px-6 lg:px-8 bg-slate-100/70 dark:bg-[#0B0F19]" id="product-preview">
+      <section className="w-full py-16 px-4 sm:px-6 lg:px-8 bg-slate-100/40 dark:bg-[#0B0F19]/40 backdrop-blur-sm border-b border-slate-200/60 dark:border-slate-800/60" id="product-preview">
         <div className="max-w-7xl mx-auto space-y-6">
           
           {/* Section Header */}
@@ -620,7 +633,7 @@ export const LandingPage: React.FC = () => {
       </section>
 
       {/* 5-Stage Forensic Lineage Workflow */}
-      <section className="w-full py-20 px-4 sm:px-6 lg:px-8 bg-white dark:bg-[#090D16] border-t border-b border-slate-200 dark:border-slate-800/80" id="workflow">
+      <section className="w-full py-20 px-4 sm:px-6 lg:px-8 bg-white/40 dark:bg-[#090D16]/40 backdrop-blur-sm border-t border-b border-slate-200/60 dark:border-slate-800/60" id="workflow">
         <div className="max-w-7xl mx-auto space-y-10">
           
           <div className="max-w-3xl space-y-2">
@@ -675,7 +688,7 @@ export const LandingPage: React.FC = () => {
             ].map((step, idx) => (
               <div
                 key={idx}
-                className="bg-slate-50 dark:bg-[#0E131F] p-5 rounded-2xl border border-slate-200 dark:border-slate-800 flex flex-col justify-between hover:border-blue-500/50 transition-all shadow-sm group"
+                className="bg-white/80 dark:bg-[#0E131F]/80 backdrop-blur-md p-5 rounded-2xl border border-slate-200/80 dark:border-slate-800/80 flex flex-col justify-between hover:border-blue-500/50 transition-all shadow-sm group"
               >
                 <div className="space-y-3">
                   <div className="flex items-center justify-between">
@@ -688,7 +701,7 @@ export const LandingPage: React.FC = () => {
                   <p className="text-xs text-slate-600 dark:text-slate-400 leading-relaxed">{step.desc}</p>
                 </div>
                 <div className="mt-6 pt-3 border-t border-slate-200/60 dark:border-slate-800">
-                  <span className="text-[10px] font-mono text-slate-600 dark:text-slate-400 bg-white dark:bg-slate-900 px-2 py-1 rounded border border-slate-200 dark:border-slate-800 block text-center font-medium">
+                  <span className="text-[10px] font-mono text-slate-600 dark:text-slate-400 bg-white/90 dark:bg-slate-900/90 px-2 py-1 rounded border border-slate-200 dark:border-slate-800 block text-center font-medium">
                     {step.badge}
                   </span>
                 </div>
@@ -700,7 +713,7 @@ export const LandingPage: React.FC = () => {
       </section>
 
       {/* Methodology Deep Dive: Dual Engine Architecture */}
-      <section className="w-full py-20 px-4 sm:px-6 lg:px-8 bg-slate-100/60 dark:bg-[#0B0F19]" id="methodology">
+      <section className="w-full py-20 px-4 sm:px-6 lg:px-8 bg-slate-100/40 dark:bg-[#0B0F19]/40 backdrop-blur-sm border-b border-slate-200/60 dark:border-slate-800/60" id="methodology">
         <div className="max-w-7xl mx-auto space-y-12">
           
           <div className="max-w-3xl space-y-2">
@@ -719,7 +732,7 @@ export const LandingPage: React.FC = () => {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
             
             {/* Engine A: Deterministic Rule-Based Heuristics */}
-            <div className="bg-white dark:bg-[#0E131F] p-8 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-md flex flex-col justify-between space-y-6">
+            <div className="bg-white/85 dark:bg-[#0E131F]/85 backdrop-blur-md p-8 rounded-2xl border border-slate-200/80 dark:border-slate-800/80 shadow-md flex flex-col justify-between space-y-6">
               <div className="space-y-4">
                 <div className="flex items-center justify-between pb-3 border-b border-slate-100 dark:border-slate-800">
                   <div className="flex items-center gap-2">
@@ -771,15 +784,15 @@ export const LandingPage: React.FC = () => {
               <div className="pt-4 border-t border-slate-100 dark:border-slate-800">
                 <span className="text-[10px] font-mono text-slate-500 uppercase font-bold tracking-wider block mb-2">Regulatory Standard Mapping:</span>
                 <div className="flex flex-wrap gap-2">
-                  <span className="text-[11px] font-mono px-2.5 py-1 rounded bg-slate-100 dark:bg-slate-800 text-slate-800 dark:text-slate-200 border border-slate-200 dark:border-slate-700">Bank Secrecy Act (BSA)</span>
-                  <span className="text-[11px] font-mono px-2.5 py-1 rounded bg-slate-100 dark:bg-slate-800 text-slate-800 dark:text-slate-200 border border-slate-200 dark:border-slate-700">FinCEN 314(a)</span>
-                  <span className="text-[11px] font-mono px-2.5 py-1 rounded bg-slate-100 dark:bg-slate-800 text-slate-800 dark:text-slate-200 border border-slate-200 dark:border-slate-700">EU 6AMLD</span>
+                  <span className="text-[11px] font-mono px-2.5 py-1 rounded bg-slate-100/90 dark:bg-slate-800/90 text-slate-800 dark:text-slate-200 border border-slate-200 dark:border-slate-700">Bank Secrecy Act (BSA)</span>
+                  <span className="text-[11px] font-mono px-2.5 py-1 rounded bg-slate-100/90 dark:bg-slate-800/90 text-slate-800 dark:text-slate-200 border border-slate-200 dark:border-slate-700">FinCEN 314(a)</span>
+                  <span className="text-[11px] font-mono px-2.5 py-1 rounded bg-slate-100/90 dark:bg-slate-800/90 text-slate-800 dark:text-slate-200 border border-slate-200 dark:border-slate-700">EU 6AMLD</span>
                 </div>
               </div>
             </div>
 
             {/* Engine B: Unsupervised Isolation Forest ML */}
-            <div className="bg-white dark:bg-[#0E131F] p-8 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-md flex flex-col justify-between space-y-6">
+            <div className="bg-white/85 dark:bg-[#0E131F]/85 backdrop-blur-md p-8 rounded-2xl border border-slate-200/80 dark:border-slate-800/80 shadow-md flex flex-col justify-between space-y-6">
               <div className="space-y-4">
                 <div className="flex items-center justify-between pb-3 border-b border-slate-100 dark:border-slate-800">
                   <div className="flex items-center gap-2">
@@ -831,9 +844,9 @@ export const LandingPage: React.FC = () => {
               <div className="pt-4 border-t border-slate-100 dark:border-slate-800">
                 <span className="text-[10px] font-mono text-slate-500 uppercase font-bold tracking-wider block mb-2">Model Calibration Profile:</span>
                 <div className="flex flex-wrap gap-2">
-                  <span className="text-[11px] font-mono px-2.5 py-1 rounded bg-slate-100 dark:bg-slate-800 text-slate-800 dark:text-slate-200 border border-slate-200 dark:border-slate-700">Contamination: 0.015</span>
-                  <span className="text-[11px] font-mono px-2.5 py-1 rounded bg-slate-100 dark:bg-slate-800 text-slate-800 dark:text-slate-200 border border-slate-200 dark:border-slate-700">Trees: 100</span>
-                  <span className="text-[11px] font-mono px-2.5 py-1 rounded bg-slate-100 dark:bg-slate-800 text-slate-800 dark:text-slate-200 border border-slate-200 dark:border-slate-700">Max Depth: 12</span>
+                  <span className="text-[11px] font-mono px-2.5 py-1 rounded bg-slate-100/90 dark:bg-slate-800/90 text-slate-800 dark:text-slate-200 border border-slate-200 dark:border-slate-700">Contamination: 0.015</span>
+                  <span className="text-[11px] font-mono px-2.5 py-1 rounded bg-slate-100/90 dark:bg-slate-800/90 text-slate-800 dark:text-slate-200 border border-slate-200 dark:border-slate-700">Trees: 100</span>
+                  <span className="text-[11px] font-mono px-2.5 py-1 rounded bg-slate-100/90 dark:bg-slate-800/90 text-slate-800 dark:text-slate-200 border border-slate-200 dark:border-slate-700">Max Depth: 12</span>
                 </div>
               </div>
             </div>
@@ -841,7 +854,7 @@ export const LandingPage: React.FC = () => {
           </div>
 
           {/* Statutory Auditor Verification Protocol Callout Box */}
-          <div className="p-6 rounded-2xl bg-white dark:bg-[#0E131F] border border-slate-200 dark:border-slate-800 shadow-sm flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
+          <div className="p-6 rounded-2xl bg-white/90 dark:bg-[#0E131F]/90 backdrop-blur-md border border-slate-200/80 dark:border-slate-800/80 shadow-sm flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
             <div className="flex items-start gap-4 max-w-3xl">
               <ShieldCheck className="w-7 h-7 text-blue-600 dark:text-blue-400 shrink-0 mt-0.5" />
               <div className="space-y-1">
@@ -865,8 +878,8 @@ export const LandingPage: React.FC = () => {
       </section>
 
       {/* Final Onboarding CTA Section */}
-      <section className="w-full py-20 px-4 sm:px-6 lg:px-8 bg-white dark:bg-[#090D16] border-t border-slate-200 dark:border-slate-800/80">
-        <div className="max-w-4xl mx-auto p-10 rounded-2xl bg-slate-50 dark:bg-[#0E131F] border border-slate-200 dark:border-slate-800 shadow-xl text-center flex flex-col items-center space-y-6">
+      <section className="w-full py-20 px-4 sm:px-6 lg:px-8 bg-white/40 dark:bg-[#090D16]/40 backdrop-blur-sm border-t border-slate-200/60 dark:border-slate-800/60">
+        <div className="max-w-4xl mx-auto p-10 rounded-2xl bg-white/85 dark:bg-[#0E131F]/85 backdrop-blur-md border border-slate-200/80 dark:border-slate-800/80 shadow-xl text-center flex flex-col items-center space-y-6">
           <div className="w-12 h-12 rounded-xl bg-blue-100 dark:bg-blue-950/80 flex items-center justify-center text-blue-600 dark:text-blue-400 shadow-sm">
             <Shield className="w-6 h-6" />
           </div>
@@ -907,76 +920,7 @@ export const LandingPage: React.FC = () => {
         </div>
       </section>
 
-      {/* Restrained Institutional Footer */}
-      <footer className="w-full bg-slate-900 text-slate-300 pt-16 pb-12 px-4 sm:px-6 lg:px-8 border-t border-slate-800">
-        <div className="max-w-7xl mx-auto space-y-12">
-          
-          <div className="grid grid-cols-1 md:grid-cols-5 gap-8">
-            <div className="md:col-span-2 space-y-4">
-              <div className="flex items-center gap-2">
-                <Shield className="w-6 h-6 text-blue-400" />
-                <span className="text-lg font-bold text-white tracking-tight">FinTrace AI Systems</span>
-              </div>
-              <p className="text-xs text-slate-400 max-w-sm leading-relaxed font-sans">
-                Institutional-grade explainable forensic financial micro-auditing infrastructure. Built to detect structured disbursement fraud, entity collisions, and synthetic account networks across high-velocity settlement corridors.
-              </p>
-              <div className="flex flex-wrap items-center gap-2 pt-1">
-                <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-slate-800 text-slate-300 border border-slate-700">SOC 2 TYPE II</span>
-                <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-slate-800 text-slate-300 border border-slate-700">FedRAMP In-Process</span>
-                <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-slate-800 text-slate-300 border border-slate-700">ISO 27001</span>
-              </div>
-            </div>
-
-            <div>
-              <p className="text-xs font-bold uppercase tracking-wider text-white mb-3 font-mono">Product</p>
-              <ul className="space-y-2 text-xs text-slate-400">
-                <li><button onClick={() => navigate('/dashboard')} className="hover:text-blue-400 transition-colors">Investigation Canvas</button></li>
-                <li><button onClick={() => navigate('/dashboard')} className="hover:text-blue-400 transition-colors">Disbursement Ingest</button></li>
-                <li><button onClick={() => navigate('/dashboard')} className="hover:text-blue-400 transition-colors">Dual Engine ML</button></li>
-                <li><button onClick={() => navigate('/dashboard')} className="hover:text-blue-400 transition-colors">Topology Explorer</button></li>
-                <li><button onClick={() => navigate('/dashboard')} className="hover:text-blue-400 transition-colors">Audit Export Dossiers</button></li>
-              </ul>
-            </div>
-
-            <div>
-              <p className="text-xs font-bold uppercase tracking-wider text-white mb-3 font-mono">Workspace</p>
-              <ul className="space-y-2 text-xs text-slate-400">
-                <li><button onClick={() => navigate('/dashboard')} className="hover:text-blue-400 transition-colors">Active Run Ledger</button></li>
-                <li><button onClick={() => navigate('/dashboard')} className="hover:text-blue-400 transition-colors">Rule Configuration</button></li>
-                <li><button onClick={() => navigate('/dashboard')} className="hover:text-blue-400 transition-colors">Isolation Hyperparameters</button></li>
-                <li><button onClick={() => navigate('/dashboard')} className="hover:text-blue-400 transition-colors">Investigator Sign-off Queues</button></li>
-                <li><button onClick={() => navigate('/dashboard')} className="hover:text-blue-400 transition-colors">Kafka & FedNow Connectors</button></li>
-              </ul>
-            </div>
-
-            <div>
-              <p className="text-xs font-bold uppercase tracking-wider text-white mb-3 font-mono">Governance</p>
-              <ul className="space-y-2 text-xs text-slate-400">
-                <li><button onClick={() => navigate('/dashboard')} className="hover:text-blue-400 transition-colors">SAR Filing Protocols</button></li>
-                <li><button onClick={() => navigate('/dashboard')} className="hover:text-blue-400 transition-colors">Model Explainability Report</button></li>
-                <li><button onClick={() => navigate('/dashboard')} className="hover:text-blue-400 transition-colors">Chain-of-Custody Hashing</button></li>
-                <li><button onClick={() => navigate('/dashboard')} className="hover:text-blue-400 transition-colors">Privacy & Data Residency</button></li>
-                <li><button onClick={() => navigate('/dashboard')} className="hover:text-blue-400 transition-colors">Responsible AI Charter</button></li>
-              </ul>
-            </div>
-          </div>
-
-          <div className="p-4 rounded-xl bg-slate-800/80 border border-slate-700/80 text-[11px] font-mono text-slate-400 leading-relaxed">
-            <span className="font-bold text-slate-200">STATUTORY REGULATORY DISCLAIMER:</span> FinTrace AI is an investigative decision-support system. All flagged records, anomaly risk indices, topological clusters, and algorithmic scores represent mathematical variations relative to baseline disbursements and do not constitute a conclusive legal determination of fraud, money laundering, sanctions evasion, or criminal culpability. Designated compliance officers and authorized forensic personnel must conduct independent evidentiary corroboration prior to filing Suspicious Activity Reports (SARs) or executing asset freezes.
-          </div>
-
-          <div className="flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-slate-500 pt-2 border-t border-slate-800">
-            <p>© 2026 FinTrace AI Technologies Inc. All rights reserved. Cryptographic integrity guaranteed under SHA-256 ledger seals.</p>
-            <div className="flex items-center gap-6">
-              <span className="hover:text-slate-300 cursor-pointer">Security Whitepaper</span>
-              <span className="hover:text-slate-300 cursor-pointer">API Docs</span>
-              <span className="hover:text-slate-300 cursor-pointer text-emerald-400 font-mono">System Status: Operational</span>
-            </div>
-          </div>
-
-        </div>
-      </footer>
-
+      </div>
     </div>
   );
 };
@@ -987,3 +931,4 @@ const ShieldAlertIcon: React.FC<{ className?: string }> = ({ className }) => (
     <path strokeLinecap="round" strokeLinejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
   </svg>
 );
+

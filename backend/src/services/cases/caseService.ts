@@ -145,6 +145,28 @@ export class CaseService {
     const randomHex = Math.floor(1000 + Math.random() * 9000);
     const caseId = `CASE-${dateCode}-${randomHex}`;
 
+    // Look up authoritative risk score & signals from riskService if missing or 0
+    if (input.riskScore === undefined || input.riskScore === null || input.riskScore === 0) {
+      try {
+        const { riskService } = await import('../risk-scoring/riskService.js');
+        const riskData = await riskService.calculateRisks();
+        const finding = riskData.findings.find((f) => f.entityId === input.entityId);
+        if (finding) {
+          input.riskScore = finding.riskScore;
+          input.ruleScore = finding.ruleScore;
+          input.anomalyScore = finding.anomalyScore;
+          input.riskSeverity = finding.riskLevel;
+          input.riskSignals = finding.signals;
+          input.explanations = finding.explanations;
+          if (!input.priority) {
+            input.priority = finding.riskLevel === 'HIGH' ? 'HIGH' : finding.riskLevel === 'MEDIUM' ? 'MEDIUM' : 'LOW';
+          }
+        }
+      } catch {
+        // Fallback safely if offline
+      }
+    }
+
     const priority: CasePriority = input.priority || (input.riskSeverity === 'HIGH' ? 'HIGH' : input.riskSeverity === 'MEDIUM' ? 'MEDIUM' : 'LOW');
     const title = input.title || `Investigation: Flagged Entity ${input.entityId}`;
     const description = input.description || `Automated investigation case opened for ${input.entityType || 'beneficiary'} ${input.entityId}.`;
@@ -172,7 +194,7 @@ export class CaseService {
       entityType: input.entityType || 'beneficiary',
       title,
       description,
-      status: 'OPEN' as CaseStatus,
+      status: (input.status || 'OPEN') as CaseStatus,
       priority,
       riskScore: input.riskScore || 0,
       ruleScore: input.ruleScore,

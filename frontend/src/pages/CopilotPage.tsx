@@ -73,9 +73,9 @@ export const CopilotPage: React.FC = () => {
   };
 
   const suggestedQuestions = [
+    'Tell me about the platform',
     'Why was BEN-1001 flagged?',
     'Are there shared-account relationships between beneficiaries?',
-    'Which records support this risk finding?',
     'Summarize the current audit findings.'
   ];
 

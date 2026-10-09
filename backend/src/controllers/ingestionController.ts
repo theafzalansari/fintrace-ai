@@ -6,10 +6,13 @@ export async function ingestBeneficiariesHandler(req: Request, res: Response): P
   try {
     const rawRecords = Array.isArray(req.body) ? req.body : [req.body];
     const result = await ingestionService.ingestBeneficiaries(rawRecords);
+    const isAccepted = result.summary.acceptedCount > 0;
     
-    res.status(200).json({
-      success: true,
-      message: `Processed ${result.summary.totalRows} beneficiary records. Accepted: ${result.summary.acceptedCount}, Rejected: ${result.summary.rejectedCount}`,
+    res.status(isAccepted ? 200 : 400).json({
+      success: isAccepted,
+      message: isAccepted
+        ? `Processed ${result.summary.totalRows} beneficiary records. Accepted: ${result.summary.acceptedCount}, Rejected: ${result.summary.rejectedCount}`
+        : `Ingestion Failed: 0 of ${result.summary.totalRows} records accepted. Check validation errors.`,
       ...result
     });
   } catch (error) {
@@ -28,10 +31,13 @@ export async function ingestDisbursementsHandler(req: Request, res: Response): P
   try {
     const rawRecords = Array.isArray(req.body) ? req.body : [req.body];
     const result = await ingestionService.ingestDisbursements(rawRecords);
+    const isAccepted = result.summary.acceptedCount > 0;
 
-    res.status(200).json({
-      success: true,
-      message: `Processed ${result.summary.totalRows} disbursement records. Accepted: ${result.summary.acceptedCount}, Rejected: ${result.summary.rejectedCount}`,
+    res.status(isAccepted ? 200 : 400).json({
+      success: isAccepted,
+      message: isAccepted
+        ? `Processed ${result.summary.totalRows} disbursement records. Accepted: ${result.summary.acceptedCount}, Rejected: ${result.summary.rejectedCount}`
+        : `Ingestion Failed: 0 of ${result.summary.totalRows} records accepted. Check validation errors.`,
       ...result
     });
   } catch (error) {
@@ -47,8 +53,11 @@ export async function ingestDisbursementsHandler(req: Request, res: Response): P
 }
 
 export async function ingestBeneficiariesCsvHandler(req: Request, res: Response): Promise<void> {
+  const reqId = `req_${Date.now()}_${Math.random().toString(36).substring(2, 7)}`;
   try {
     let csvContent: string | Buffer = '';
+    const filename = req.file?.originalname || 'raw_text_body';
+    logger.info(`[CSV Ingestion Diagnostic] [${reqId}] Received Beneficiary CSV upload: "${filename}"`);
 
     if (req.file) {
       csvContent = req.file.buffer;
@@ -66,15 +75,18 @@ export async function ingestBeneficiariesCsvHandler(req: Request, res: Response)
       return;
     }
 
-    const result = await ingestionService.ingestBeneficiariesCsv(csvContent);
+    const result = await ingestionService.ingestBeneficiariesCsv(csvContent, reqId);
+    const isAccepted = result.summary.acceptedCount > 0;
 
-    res.status(200).json({
-      success: true,
-      message: `CSV Ingestion Completed. Accepted: ${result.summary.acceptedCount}, Rejected: ${result.summary.rejectedCount}`,
+    res.status(isAccepted ? 200 : 400).json({
+      success: isAccepted,
+      message: isAccepted
+        ? `CSV Ingestion Completed. Accepted: ${result.summary.acceptedCount}, Rejected: ${result.summary.rejectedCount}`
+        : `CSV Ingestion Failed: 0 of ${result.summary.totalRows} records accepted. Check validation errors.`,
       ...result
     });
   } catch (error) {
-    logger.error('Error in ingestBeneficiariesCsvHandler:', error);
+    logger.error(`[CSV Ingestion Diagnostic] [${reqId}] Error in ingestBeneficiariesCsvHandler:`, error);
     const isClientError = error instanceof Error && (error.message.includes('missing required') || error.message.includes('Invalid CSV syntax'));
     res.status(isClientError ? 400 : 500).json({
       success: false,
@@ -87,8 +99,11 @@ export async function ingestBeneficiariesCsvHandler(req: Request, res: Response)
 }
 
 export async function ingestDisbursementsCsvHandler(req: Request, res: Response): Promise<void> {
+  const reqId = `req_${Date.now()}_${Math.random().toString(36).substring(2, 7)}`;
   try {
     let csvContent: string | Buffer = '';
+    const filename = req.file?.originalname || 'raw_text_body';
+    logger.info(`[CSV Ingestion Diagnostic] [${reqId}] Received Disbursement CSV upload: "${filename}"`);
 
     if (req.file) {
       csvContent = req.file.buffer;
@@ -106,15 +121,18 @@ export async function ingestDisbursementsCsvHandler(req: Request, res: Response)
       return;
     }
 
-    const result = await ingestionService.ingestDisbursementsCsv(csvContent);
+    const result = await ingestionService.ingestDisbursementsCsv(csvContent, reqId);
+    const isAccepted = result.summary.acceptedCount > 0;
 
-    res.status(200).json({
-      success: true,
-      message: `CSV Ingestion Completed. Accepted: ${result.summary.acceptedCount}, Rejected: ${result.summary.rejectedCount}`,
+    res.status(isAccepted ? 200 : 400).json({
+      success: isAccepted,
+      message: isAccepted
+        ? `CSV Ingestion Completed. Accepted: ${result.summary.acceptedCount}, Rejected: ${result.summary.rejectedCount}`
+        : `CSV Ingestion Failed: 0 of ${result.summary.totalRows} records accepted. Check validation errors.`,
       ...result
     });
   } catch (error) {
-    logger.error('Error in ingestDisbursementsCsvHandler:', error);
+    logger.error(`[CSV Ingestion Diagnostic] [${reqId}] Error in ingestDisbursementsCsvHandler:`, error);
     const isClientError = error instanceof Error && (error.message.includes('missing required') || error.message.includes('Invalid CSV syntax'));
     res.status(isClientError ? 400 : 500).json({
       success: false,

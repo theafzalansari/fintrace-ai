@@ -33,77 +33,139 @@ const memoryBeneficiariesStore = new Map<string, BeneficiaryInput>();
 const memoryDisbursementsStore = new Map<string, DisbursementInput>();
 
 function cleanHeaderKey(key: string): string {
-  return key.trim().replace(/^\uFEFF/, '').toLowerCase().replace(/[\s\-_]+/g, '');
+  return key.trim().replace(/^\uFEFF/, '').toLowerCase().replace(/[^a-z0-9]/g, '');
 }
 
 const BENEFICIARY_HEADER_MAP: Record<string, keyof BeneficiaryInput> = {
   beneficiaryid: 'beneficiaryId',
-  beneficiary_id: 'beneficiaryId',
   id: 'beneficiaryId',
+  benid: 'beneficiaryId',
+  recipientid: 'beneficiaryId',
+  memberid: 'beneficiaryId',
+
   name: 'name',
   beneficiaryname: 'name',
-  beneficiary_name: 'name',
+  fullname: 'name',
+  recipientname: 'name',
+
   bankaccountnumber: 'bankAccountNumber',
-  bank_account_number: 'bankAccountNumber',
   accountnumber: 'bankAccountNumber',
-  account_number: 'bankAccountNumber',
   accountno: 'bankAccountNumber',
-  account_no: 'bankAccountNumber',
+  accno: 'bankAccountNumber',
+  bankaccount: 'bankAccountNumber',
+  account: 'bankAccountNumber',
+
   ifscorroutingcode: 'ifscOrRoutingCode',
-  ifsc_or_routing_code: 'ifscOrRoutingCode',
   ifsc: 'ifscOrRoutingCode',
   ifsccode: 'ifscOrRoutingCode',
-  ifsc_code: 'ifscOrRoutingCode',
   routingcode: 'ifscOrRoutingCode',
-  routing_code: 'ifscOrRoutingCode',
+  swift: 'ifscOrRoutingCode',
+  swiftcode: 'ifscOrRoutingCode',
+  bankifsc: 'ifscOrRoutingCode',
+
   category: 'category',
+  type: 'category',
+  beneficiarytype: 'category',
+
   phone: 'phone',
   phonenumber: 'phone',
-  phone_number: 'phone',
   mobile: 'phone',
+  mobilenumber: 'phone',
+  contact: 'phone',
+  contactnumber: 'phone',
+
   email: 'email',
   emailaddress: 'email',
-  email_address: 'email',
+
   address: 'address',
+  location: 'address',
+  fulladdress: 'address',
+
   identityhash: 'identityHash',
-  identity_hash: 'identityHash',
-  aadhaar_hash: 'identityHash',
-  pan_hash: 'identityHash',
-  status: 'status'
+  aadhaarhash: 'identityHash',
+  panhash: 'identityHash',
+  hash: 'identityHash',
+  nationalid: 'identityHash',
+
+  status: 'status',
+  accountstatus: 'status'
 };
 
 const DISBURSEMENT_HEADER_MAP: Record<string, keyof DisbursementInput> = {
   disbursementid: 'disbursementId',
-  disbursement_id: 'disbursementId',
   id: 'disbursementId',
   txnid: 'disbursementId',
-  txn_id: 'disbursementId',
+  payoutid: 'disbursementId',
+  transactionid: 'disbursementId',
+  disbursementnumber: 'disbursementId',
+  disbursementno: 'disbursementId',
+  refid: 'disbursementId',
+
   beneficiaryid: 'beneficiaryId',
-  beneficiary_id: 'beneficiaryId',
+  benid: 'beneficiaryId',
+  recipientid: 'beneficiaryId',
+  memberid: 'beneficiaryId',
+
   amount: 'amount',
   payoutamount: 'amount',
-  payout_amount: 'amount',
   amt: 'amount',
+  disbursementamount: 'amount',
+  transactionamount: 'amount',
+  totalamount: 'amount',
+
   currency: 'currency',
+  curr: 'currency',
+
   disbursementdate: 'disbursementDate',
-  disbursement_date: 'disbursementDate',
   date: 'disbursementDate',
   txndate: 'disbursementDate',
-  txn_date: 'disbursementDate',
+  payoutdate: 'disbursementDate',
+  paymentdate: 'disbursementDate',
+  createdat: 'disbursementDate',
+  timestamp: 'disbursementDate',
+
   programcode: 'programCode',
-  program_code: 'programCode',
+  program: 'programCode',
+  programid: 'programCode',
+  programname: 'programCode',
   schemecode: 'programCode',
-  scheme_code: 'programCode',
+  scheme: 'programCode',
+  schemeid: 'programCode',
+  schemename: 'programCode',
+  projectcode: 'programCode',
+  project: 'programCode',
+  projectid: 'programCode',
+  projectname: 'programCode',
+  code: 'programCode',
+  grantcode: 'programCode',
+  fundcode: 'programCode',
+  budgetcode: 'programCode',
+
   paymentchannel: 'paymentChannel',
-  payment_channel: 'paymentChannel',
+  paymentmethod: 'paymentChannel',
   channel: 'paymentChannel',
+  paymenttype: 'paymentChannel',
+  mode: 'paymentChannel',
+  paymentmode: 'paymentChannel',
+
   status: 'status',
+  payoutstatus: 'status',
+  state: 'status',
+
   referencenumber: 'referenceNumber',
-  reference_number: 'referenceNumber',
+  transactionreference: 'referenceNumber',
   ref: 'referenceNumber',
+  refno: 'referenceNumber',
+  referenceno: 'referenceNumber',
+  utr: 'referenceNumber',
+  utrnumber: 'referenceNumber',
+
   remarks: 'remarks',
   remark: 'remarks',
-  description: 'remarks'
+  description: 'remarks',
+  note: 'remarks',
+  notes: 'remarks',
+  memo: 'remarks'
 };
 
 export class IngestionService {
@@ -142,6 +204,10 @@ export class IngestionService {
         normalized[key.trim().replace(/^\uFEFF/, '')] = cleanValue;
       }
     }
+    // Default programCode to GENERAL-PROGRAM if missing from CSV headers
+    if (!normalized.programCode || normalized.programCode === '') {
+      normalized.programCode = 'GENERAL-PROGRAM';
+    }
     return normalized;
   }
 
@@ -169,18 +235,22 @@ export class IngestionService {
   /**
    * Process and ingest beneficiary records (JSON array or objects) idempotently.
    */
-  public async ingestBeneficiaries(records: unknown[]): Promise<IngestionResult<BeneficiaryInput>> {
+  public async ingestBeneficiaries(records: unknown[], reqId = 'sys'): Promise<IngestionResult<BeneficiaryInput>> {
     const acceptedMap = new Map<string, BeneficiaryInput>();
     const rejected: IngestionRowError[] = [];
 
     // Header validation for beneficiary records
     if (records.length > 0 && typeof records[0] === 'object' && records[0] !== null) {
       const firstRowNormalized = this.normalizeBeneficiaryRawRecord(records[0]);
+      const rawHeaderKeys = Object.keys(records[0] as object);
+      const mappedHeaderKeys = Object.keys(firstRowNormalized);
+      logger.info(`[CSV Ingestion Diagnostic] [${reqId}] Beneficiary Raw Headers: [${rawHeaderKeys.join(', ')}] -> Mapped Canonical Keys: [${mappedHeaderKeys.join(', ')}]`);
+
       const requiredFields: (keyof BeneficiaryInput)[] = ['beneficiaryId', 'name', 'bankAccountNumber', 'ifscOrRoutingCode'];
-      const missingFields = requiredFields.filter(f => !(f in firstRowNormalized) || firstRowNormalized[f] === undefined || firstRowNormalized[f] === '');
+      const missingHeaders = requiredFields.filter(f => !(f in firstRowNormalized));
       
-      if (missingFields.length === requiredFields.length) {
-        throw new Error(`CSV missing required beneficiary headers. Missing: [${missingFields.join(', ')}]. Supported IFSC aliases: ifsc, ifscCode, ifsc_code, ifscOrRoutingCode, routing_code.`);
+      if (missingHeaders.length > 0) {
+        throw new Error(`CSV missing required beneficiary headers. Missing: [${missingHeaders.join(', ')}]. Supported IFSC aliases: ifsc, ifscCode, ifsc_code, ifscOrRoutingCode, routing_code.`);
       }
     }
 
@@ -254,18 +324,22 @@ export class IngestionService {
   /**
    * Process and ingest disbursement records (JSON array or objects) idempotently.
    */
-  public async ingestDisbursements(records: unknown[]): Promise<IngestionResult<DisbursementInput>> {
+  public async ingestDisbursements(records: unknown[], reqId = 'sys'): Promise<IngestionResult<DisbursementInput>> {
     const acceptedMap = new Map<string, DisbursementInput>();
     const rejected: IngestionRowError[] = [];
 
     // Header validation for disbursement records
     if (records.length > 0 && typeof records[0] === 'object' && records[0] !== null) {
       const firstRowNormalized = this.normalizeDisbursementRawRecord(records[0]);
-      const requiredFields: (keyof DisbursementInput)[] = ['disbursementId', 'beneficiaryId', 'amount', 'disbursementDate', 'programCode'];
-      const missingFields = requiredFields.filter(f => !(f in firstRowNormalized) || firstRowNormalized[f] === undefined || firstRowNormalized[f] === '');
+      const rawHeaderKeys = Object.keys(records[0] as object);
+      const mappedHeaderKeys = Object.keys(firstRowNormalized);
+      logger.info(`[CSV Ingestion Diagnostic] [${reqId}] Disbursement Raw Headers: [${rawHeaderKeys.join(', ')}] -> Mapped Canonical Keys: [${mappedHeaderKeys.join(', ')}]`);
+
+      const requiredFields: (keyof DisbursementInput)[] = ['disbursementId', 'beneficiaryId', 'amount', 'disbursementDate'];
+      const missingHeaders = requiredFields.filter(f => !(f in firstRowNormalized));
       
-      if (missingFields.length === requiredFields.length) {
-        throw new Error(`CSV missing required disbursement headers. Missing: [${missingFields.join(', ')}].`);
+      if (missingHeaders.length > 0) {
+        throw new Error(`CSV missing required disbursement headers. Missing: [${missingHeaders.join(', ')}]. Supported header aliases: disbursementId, beneficiaryId, amount, disbursementDate.`);
       }
     }
 
@@ -286,6 +360,34 @@ export class IngestionService {
         });
       } else {
         const validatedData = result.data;
+
+        // Check if referenced beneficiary exists
+        let beneficiaryExists = false;
+        if (mongoose.connection.readyState === 1) {
+          try {
+            const count = await Beneficiary.countDocuments({ beneficiaryId: validatedData.beneficiaryId });
+            beneficiaryExists = count > 0;
+          } catch {
+            beneficiaryExists = false;
+          }
+        } else {
+          beneficiaryExists = memoryBeneficiariesStore.has(validatedData.beneficiaryId);
+        }
+
+        if (!beneficiaryExists) {
+          rejected.push({
+            row: index + 1,
+            raw,
+            errors: [
+              {
+                field: 'beneficiaryId',
+                message: `Referenced beneficiaryId '${validatedData.beneficiaryId}' does not exist in the database. Upload beneficiaries CSV first.`
+              }
+            ]
+          });
+          continue;
+        }
+
         let isPersisted = true;
 
         // Idempotent upsert to MongoDB if connected
@@ -339,17 +441,17 @@ export class IngestionService {
   /**
    * Ingest CSV raw text/buffer for beneficiaries
    */
-  public async ingestBeneficiariesCsv(csvContent: string | Buffer): Promise<IngestionResult<BeneficiaryInput>> {
+  public async ingestBeneficiariesCsv(csvContent: string | Buffer, reqId = 'sys'): Promise<IngestionResult<BeneficiaryInput>> {
     const records = this.parseCsv(csvContent);
-    return this.ingestBeneficiaries(records);
+    return this.ingestBeneficiaries(records, reqId);
   }
 
   /**
    * Ingest CSV raw text/buffer for disbursements
    */
-  public async ingestDisbursementsCsv(csvContent: string | Buffer): Promise<IngestionResult<DisbursementInput>> {
+  public async ingestDisbursementsCsv(csvContent: string | Buffer, reqId = 'sys'): Promise<IngestionResult<DisbursementInput>> {
     const records = this.parseCsv(csvContent);
-    return this.ingestDisbursements(records);
+    return this.ingestDisbursements(records, reqId);
   }
 
   /**

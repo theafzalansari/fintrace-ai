@@ -73,6 +73,20 @@ describe('Ingestion & Record API Endpoints', () => {
   });
 
   it('POST /api/ingest/disbursements - should process JSON records and report summary', async () => {
+    // Ingest beneficiary first as required
+    await fetch(`${baseUrl}/ingest/beneficiaries`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify([
+        {
+          beneficiaryId: 'BEN-TEST-1',
+          name: 'Test Beneficiary',
+          bankAccountNumber: '998877665544',
+          ifscOrRoutingCode: 'SBIN0009999'
+        }
+      ])
+    });
+
     const payload = [
       {
         disbursementId: 'DISB-TEST-1',
@@ -209,6 +223,20 @@ val1,val2,val3`;
   });
 
   it('POST /api/ingest/disbursements/csv - process disbursement CSV', async () => {
+    // Ingest beneficiary first as required
+    await fetch(`${baseUrl}/ingest/beneficiaries`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify([
+        {
+          beneficiaryId: 'BEN-VAR-1',
+          name: 'Header Variation Test',
+          bankAccountNumber: '990088776655',
+          ifscOrRoutingCode: 'SBIN0005555'
+        }
+      ])
+    });
+
     const csvData = `disbursement_id,beneficiary_id,amount,currency,disbursement_date,program_code
 DISB-CSV-100,BEN-VAR-1,50000,INR,2024-03-25,SCHEME-AGRI`;
 
@@ -222,6 +250,131 @@ DISB-CSV-100,BEN-VAR-1,50000,INR,2024-03-25,SCHEME-AGRI`;
     const body = (await res.json()) as any;
     assert.strictEqual(body.summary.acceptedCount, 1);
     assert.strictEqual(body.accepted[0].disbursementId, 'DISB-CSV-100');
+  });
+
+  it('POST /api/ingest/disbursements/csv - should reject row referencing missing beneficiary and return 400', async () => {
+    const csvData = `disbursement_id,beneficiary_id,amount,currency,disbursement_date,program_code
+DISB-MISSING-1,BEN-NONEXISTENT-999,50000,INR,2024-03-25,SCHEME-AGRI`;
+
+    const res = await fetch(`${baseUrl}/ingest/disbursements/csv`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'text/csv' },
+      body: csvData
+    });
+
+    assert.strictEqual(res.status, 400);
+    const body = (await res.json()) as any;
+    assert.strictEqual(body.success, false);
+    assert.strictEqual(body.summary.acceptedCount, 0);
+    assert.strictEqual(body.summary.rejectedCount, 1);
+    assert.ok(body.rejected[0].errors[0].message.includes('does not exist'));
+  });
+
+  it('Demo CSV Ingestion Flow - beneficiaries_demo.csv and disbursements_demo_v2.csv', async () => {
+    const fs = await import('node:fs');
+    const path = await import('node:path');
+    const benCsv = fs.readFileSync(path.join(process.cwd(), 'src/data/demo-upload/beneficiaries_demo.csv'), 'utf-8');
+    const disbCsv = fs.readFileSync(path.join(process.cwd(), 'src/data/demo-upload/disbursements_demo_v2.csv'), 'utf-8');
+
+    // 1. Upload Beneficiaries CSV
+    const resBen = await fetch(`${baseUrl}/ingest/beneficiaries/csv`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'text/csv' },
+      body: benCsv
+    });
+    assert.strictEqual(resBen.status, 200);
+    const bodyBen = (await resBen.json()) as any;
+    assert.strictEqual(bodyBen.summary.acceptedCount, 10);
+    assert.strictEqual(bodyBen.summary.rejectedCount, 0);
+
+    // 2. Upload Disbursements CSV
+    const resDisb = await fetch(`${baseUrl}/ingest/disbursements/csv`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'text/csv' },
+      body: disbCsv
+    });
+    assert.strictEqual(resDisb.status, 200);
+    const bodyDisb = (await resDisb.json()) as any;
+    assert.strictEqual(bodyDisb.summary.acceptedCount, 20);
+    assert.strictEqual(bodyDisb.summary.rejectedCount, 0);
+  });
+
+  it('Regression Test - exact disbursements_demo_v2 (2).csv header row with BOM and program_code alias', async () => {
+    // Ingest beneficiary first
+    await fetch(`${baseUrl}/ingest/beneficiaries`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify([
+        { beneficiaryId: 'BEN-3001', name: 'Aarav Sharma', bankAccountNumber: '918273645001', ifscOrRoutingCode: 'SBIN0001234' }
+      ])
+    });
+
+    // Exact header row from disbursements_demo_v2 (2).csv with UTF-8 BOM
+    const csvWithBom = `\uFEFFdisbursementId,beneficiaryId,amount,currency,disbursementDate,programCode,paymentChannel,status,referenceNumber,remarks
+DISB-REG-1,BEN-3001,25000.00,INR,2024-03-01T10:00:00.000Z,SCHEME-AGRI-2024,Direct Transfer,Completed,REF-981001,Farmer grant`;
+
+    const res = await fetch(`${baseUrl}/ingest/disbursements/csv`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'text/csv' },
+      body: csvWithBom
+    });
+
+    assert.strictEqual(res.status, 200);
+    const body = (await res.json()) as any;
+    assert.strictEqual(body.summary.acceptedCount, 1);
+  });
+
+  it('Regression Test - header present but row 0 has empty programCode value defaults to GENERAL-PROGRAM', async () => {
+    await fetch(`${baseUrl}/ingest/beneficiaries`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify([
+        { beneficiaryId: 'BEN-3001', name: 'Aarav Sharma', bankAccountNumber: '918273645001', ifscOrRoutingCode: 'SBIN0001234' }
+      ])
+    });
+
+    // programCode header exists, but row 0 has empty string "" value
+    const csvData = `disbursementId,beneficiaryId,amount,currency,disbursementDate,programCode
+DISB-EMPTY-VAL,BEN-3001,10000,INR,2024-03-01,`;
+
+    const res = await fetch(`${baseUrl}/ingest/disbursements/csv`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'text/csv' },
+      body: csvData
+    });
+
+    assert.strictEqual(res.status, 200);
+    const body = (await res.json()) as any;
+    assert.strictEqual(body.success, true);
+    assert.strictEqual(body.summary.acceptedCount, 1);
+    assert.strictEqual(body.accepted[0].programCode, 'GENERAL-PROGRAM');
+  });
+
+  it('Regression Test - CSV without programCode header defaults programCode to GENERAL-PROGRAM', async () => {
+    await fetch(`${baseUrl}/ingest/beneficiaries`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify([
+        { beneficiaryId: 'BEN-3001', name: 'Aarav Sharma', bankAccountNumber: '918273645001', ifscOrRoutingCode: 'SBIN0001234' }
+      ])
+    });
+
+    const csvWithoutProgramCode = `disbursementId,beneficiaryId,amount,currency,disbursementDate,paymentMethod,transactionReference
+DISB-NO-PROG,BEN-3001,10000,INR,2024-03-01,Direct Transfer,REF-998877`;
+
+    const res = await fetch(`${baseUrl}/ingest/disbursements/csv`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'text/csv' },
+      body: csvWithoutProgramCode
+    });
+
+    assert.strictEqual(res.status, 200);
+    const body = (await res.json()) as any;
+    assert.strictEqual(body.success, true);
+    assert.strictEqual(body.summary.acceptedCount, 1);
+    assert.strictEqual(body.accepted[0].programCode, 'GENERAL-PROGRAM');
+    assert.strictEqual(body.accepted[0].paymentChannel, 'Direct Transfer');
+    assert.strictEqual(body.accepted[0].referenceNumber, 'REF-998877');
   });
 });
 

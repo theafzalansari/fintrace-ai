@@ -18,6 +18,15 @@ export interface CopilotChatResponse {
 }
 
 export class CopilotService {
+  private mockGenerateContentFn?: (params: any) => Promise<{ text?: string }>;
+
+  /**
+   * Allows setting a mock generator function for automated unit tests.
+   */
+  public setMockGenerator(fn?: (params: any) => Promise<{ text?: string }>): void {
+    this.mockGenerateContentFn = fn;
+  }
+
   /**
    * Processes an incoming audit copilot chat message and returns a grounded response.
    */
@@ -40,34 +49,37 @@ export class CopilotService {
       lowRiskCount: riskData.summary.lowRiskCount
     };
 
-    // Extract cited record IDs mentioned in data or answer
     const citedRecordsSet = new Set<string>();
+    const apiKey = (env.GEMINI_API_KEY || process.env.GEMINI_API_KEY || '').trim();
+    const modelName = env.GEMINI_MODEL || process.env.GEMINI_MODEL || 'gemini-3.5-flash';
 
-    const apiKey = env.GEMINI_API_KEY || process.env.GEMINI_API_KEY || '';
-
-    // If Gemini API key is configured, invoke Google GenAI SDK
-    if (apiKey && apiKey.trim() !== '') {
+    // 2. Invoke Gemini if API key is provided or mock function is active
+    if (this.mockGenerateContentFn || (apiKey && apiKey !== '' && apiKey !== 'your_gemini_api_key_here')) {
       try {
-        const ai = new GoogleGenAI({ apiKey: apiKey.trim() });
-
         const systemPrompt = `You are FinTrace AI Audit Copilot, an expert AI financial forensic assistant built for micro-audits, entity resolution, and ghost-beneficiary detection.
+
+ABOUT FINTRACE AI PLATFORM:
+FinTrace AI is an advanced financial forensic micro-audit workspace engineered to detect ghost beneficiaries, duplicate payout accounts, and anomalous disbursement patterns across public and enterprise welfare programs. Its core modules include:
+- Beneficiary & Disbursement Ledgers (CSV/JSON ingestion with automatic IFSC/routing code validation)
+- Hybrid Risk Engine (6-signal explainable risk rules combined with an in-house Isolation Forest ML anomaly detector)
+- Financial Web Graph Explorer (relational node/edge network visualizing shared accounts and suspicious clusters)
+- Persistent Investigation Case Management & PDF Evidence Dossiers
+- Grounded AI Audit Copilot
 
 LIVE AUDIT DATASET TELEMETRY:
 - Summary: ${JSON.stringify(contextSummary)}
 - Beneficiaries (${rawBeneficiaries.length}): ${JSON.stringify(
-          rawBeneficiaries.map((b) => ({
+          rawBeneficiaries.slice(0, 30).map((b) => ({
             id: b.beneficiaryId,
             name: b.name,
             account: b.bankAccountNumber,
             ifsc: b.ifscOrRoutingCode,
             category: b.category,
-            phone: b.phone,
-            email: b.email,
             status: b.status
           }))
         )}
 - Disbursements (${rawDisbursements.length}): ${JSON.stringify(
-          rawDisbursements.map((d) => ({
+          rawDisbursements.slice(0, 40).map((d) => ({
             id: d.disbursementId,
             benId: d.beneficiaryId,
             amount: d.amount,
@@ -77,7 +89,7 @@ LIVE AUDIT DATASET TELEMETRY:
           }))
         )}
 - Shared Attribute Graph Edges: ${JSON.stringify(
-          graphData.edges.map((e) => ({
+          graphData.edges.slice(0, 50).map((e) => ({
             source: e.source,
             target: e.target,
             relation: e.relation,
@@ -86,7 +98,7 @@ LIVE AUDIT DATASET TELEMETRY:
           }))
         )}
 - Risk Findings & Evidence Signals: ${JSON.stringify(
-          riskData.findings.map((f) => ({
+          riskData.findings.slice(0, 30).map((f) => ({
             id: f.entityId,
             name: f.name,
             score: f.riskScore,
@@ -96,47 +108,79 @@ LIVE AUDIT DATASET TELEMETRY:
         )}
 
 FORENSIC AUDIT RULES:
-1. Ground your answers strictly in the provided Live Audit Dataset Telemetry.
-2. Always cite specific record IDs (e.g. BEN-1001, DISB-2024-001, ACC-918273645012) when discussing findings or beneficiaries.
-3. Distinguish verified facts from inferences.
-4. Never invent missing findings or claim fraud is legally proven. Risk indicators require human review.
-5. If asked about a beneficiary or record not present in the data, state clearly that it is not found in the current audit dataset.
-6. Keep formatting clean with bullet points and bold record IDs.`;
+1. Ground your answers strictly in the provided Live Audit Dataset Telemetry and Platform Information.
+2. If asked about the platform or "Tell me about the platform", describe FinTrace AI accurately using the platform information provided above.
+3. Distinguish verified database facts (e.g., matching account numbers, exact disbursement amounts) from audit interpretations.
+4. Always cite specific record IDs (e.g., BEN-1001, DISB-2024-001, ACC-918273645012) when discussing findings or beneficiaries.
+5. When explaining why a record is flagged, describe the supporting risk signals, suggest appropriate human-review steps (e.g., physical address verification, phone confirmation, bank branch verification), and explicitly state that a risk flag is NOT proof of fraud.
+6. If evidence or records requested by the user are unavailable in the dataset, state clearly that it is not found rather than inventing an answer.
+7. Keep answers concise, clear, and professional. Use markdown formatting with bullet points and bold record IDs.`;
 
-        const response = await ai.models.generateContent({
-          model: 'gemini-2.5-flash',
-          contents: [
-            { role: 'user', parts: [{ text: systemPrompt }] },
-            ...history.map((h) => ({
-              role: h.role === 'assistant' ? 'model' : 'user',
-              parts: [{ text: h.content }]
-            })),
-            { role: 'user', parts: [{ text: message }] }
-          ]
-        });
+        let resultText = '';
 
-        const answerText = response.text || 'No response generated.';
+        if (this.mockGenerateContentFn) {
+          const res = await this.mockGenerateContentFn({
+            model: modelName,
+            contents: [
+              { role: 'user', parts: [{ text: systemPrompt }] },
+              ...history.map((h) => ({
+                role: h.role === 'assistant' ? 'model' : 'user',
+                parts: [{ text: h.content }]
+              })),
+              { role: 'user', parts: [{ text: message }] }
+            ]
+          });
+          resultText = res.text || 'No response generated.';
+        } else {
+          const ai = new GoogleGenAI({ apiKey });
+
+          const timeoutPromise = new Promise<never>((_, reject) => {
+            setTimeout(() => reject(new Error('Gemini API call timed out after 12 seconds')), 12000);
+          });
+
+          const generatePromise = ai.models.generateContent({
+            model: modelName,
+            contents: [
+              { role: 'user', parts: [{ text: systemPrompt }] },
+              ...history.map((h) => ({
+                role: h.role === 'assistant' ? 'model' : 'user',
+                parts: [{ text: h.content }]
+              })),
+              { role: 'user', parts: [{ text: message }] }
+            ],
+            config: {
+              maxOutputTokens: 1024,
+              temperature: 0.2
+            }
+          });
+
+          const response = await Promise.race([generatePromise, timeoutPromise]);
+          resultText = response.text || 'No response generated.';
+        }
 
         // Extract cited IDs from answer
         for (const b of rawBeneficiaries) {
-          if (b.beneficiaryId && answerText.includes(b.beneficiaryId)) {
+          if (b.beneficiaryId && resultText.includes(b.beneficiaryId)) {
             citedRecordsSet.add(b.beneficiaryId);
           }
         }
         for (const d of rawDisbursements) {
-          if (d.disbursementId && answerText.includes(d.disbursementId)) {
+          if (d.disbursementId && resultText.includes(d.disbursementId)) {
             citedRecordsSet.add(d.disbursementId);
           }
         }
 
         return {
-          answer: answerText,
+          answer: resultText,
           citedRecords: Array.from(citedRecordsSet),
           provider: 'gemini-ai',
           disclaimer: RISK_DISCLAIMER
         };
       } catch (err) {
-        logger.warn('Gemini API call failed or timed out, switching to Rule Engine Fallback:', err);
+        logger.warn(
+          'Gemini API call failed or timed out, switching to Rule Engine Fallback:',
+          err instanceof Error ? err.message : String(err)
+        );
       }
     }
 
@@ -169,6 +213,29 @@ FORENSIC AUDIT RULES:
     riskData: any,
     citedRecordsSet: Set<string>
   ): string {
+    const q = query.toLowerCase();
+
+    // 1. General platform description questions (works even when workspace is empty)
+    if (
+      q.includes('platform') ||
+      q.includes('fintrace') ||
+      q.includes('what is this') ||
+      q.includes('about the platform') ||
+      q.includes('tell me about') ||
+      q.includes('how does this work')
+    ) {
+      let resp = `### About **FinTrace AI** Micro-Audit Platform\n\n`;
+      resp += `**FinTrace AI** is an advanced financial forensic micro-audit workspace engineered to detect ghost beneficiaries, duplicate payout accounts, and anomalous disbursement patterns across public and enterprise welfare programs.\n\n`;
+      resp += `#### Core Capabilities:\n`;
+      resp += `• **Beneficiary & Disbursement Ledgers**: File upload & JSON ingestion with automatic IFSC/routing code validation.\n`;
+      resp += `• **Hybrid Risk Engine**: Combines 6 explainable risk rules (shared accounts, threshold spikes) with an in-house Isolation Forest ML anomaly detector.\n`;
+      resp += `• **Financial Web Graph Explorer**: Interactive node/edge graph visualizing shared attribute relationships across beneficiaries and accounts.\n`;
+      resp += `• **Persistent Case Management**: Formal investigation workflows with auditor notes and downloadable PDF evidence dossiers.\n`;
+      resp += `• **AI Audit Copilot**: Grounded forensic assistant for real-time risk inquiry and entity resolution.\n\n`;
+      resp += `*Workspace Telemetry*: Currently tracking **${beneficiaries.length}** ingested beneficiaries and **${disbursements.length}** disbursement records.`;
+      return resp;
+    }
+
     if (beneficiaries.length === 0 && disbursements.length === 0) {
       return `### FinTrace AI Audit Assistant
 
@@ -180,8 +247,6 @@ To begin forensic micro-auditing:
 
 Once data is ingested, I can explain risk flags, trace shared-account clusters, and answer specific inquiry questions.`;
     }
-
-    const q = query.toLowerCase();
 
     // Check if query targets a specific beneficiary ID
     const matchedBen = beneficiaries.find(
