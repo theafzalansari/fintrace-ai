@@ -3,7 +3,7 @@ import { Navbar } from './Navbar';
 import { Sidebar } from './Sidebar';
 
 interface LayoutProps {
-  children: (activeTab: string) => React.ReactNode;
+  children: (activeTab: string, setActiveTab: (tab: string) => void) => React.ReactNode;
 }
 
 export const Layout: React.FC<LayoutProps> = ({ children }) => {
@@ -15,7 +15,7 @@ export const Layout: React.FC<LayoutProps> = ({ children }) => {
       <div className="flex flex-1">
         <Sidebar activeTab={activeTab} setActiveTab={setActiveTab} />
         <main className="flex-1 p-6 md:p-8 overflow-y-auto">
-          {children(activeTab)}
+          {children(activeTab, setActiveTab)}
         </main>
       </div>
     </div>

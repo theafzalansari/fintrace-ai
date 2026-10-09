@@ -1,14 +1,31 @@
 import { Layout } from './components/layout/Layout';
 import { DashboardPage } from './pages/DashboardPage';
+import { BeneficiariesPage } from './pages/BeneficiariesPage';
+import { DisbursementsPage } from './pages/DisbursementsPage';
+import { RiskAnalysisPage } from './pages/RiskAnalysisPage';
+import { NetworkGraphPage } from './pages/NetworkGraphPage';
+import { ScopePlaceholderPage } from './pages/ScopePlaceholderPage';
 
 export function App() {
   return (
     <Layout>
-      {(activeTab) => {
+      {(activeTab, setActiveTab) => {
         switch (activeTab) {
+          case 'beneficiaries':
+            return <BeneficiariesPage />;
+          case 'disbursements':
+            return <DisbursementsPage />;
+          case 'investigations':
+            return <RiskAnalysisPage />;
+          case 'network':
+            return <NetworkGraphPage />;
+          case 'copilot':
+            return <ScopePlaceholderPage title="AI Audit Copilot" module="copilot" />;
+          case 'reports':
+            return <ScopePlaceholderPage title="Automated Audit Reports" module="reports" />;
           case 'dashboard':
           default:
-            return <DashboardPage />;
+            return <DashboardPage onNavigate={setActiveTab} />;
         }
       }}
     </Layout>
