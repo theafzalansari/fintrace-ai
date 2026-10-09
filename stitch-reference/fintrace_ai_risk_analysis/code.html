@@ -1,0 +1,586 @@
+<!DOCTYPE html>
+
+<html lang="en"><head><meta charset="utf-8"/><meta content="width=device-width, initial-scale=1.0" name="viewport"/><meta content="web_dashboard" name="shell-type"/><link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet"/><link href="https://fonts.googleapis.com" rel="preconnect"/><link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/><link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=JetBrains+Mono:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/><style>@layer base{html,body{margin:0;padding:0;}body{overscroll-behavior:none;}main>:first-child{margin-top:0!important;}main>:last-child{margin-bottom:0!important;}}::-webkit-scrollbar{display:none;}</style><script src="https://cdn.tailwindcss.com"></script><script id="tailwind-config">tailwind.config={darkMode:"class",theme:{extend:{colors:{"inverse-on-surface":"#eaf1ff","surface-container-lowest":"#ffffff","on-primary-fixed-variant":"#0039b5","on-tertiary-fixed-variant":"#005137","on-surface":"#0b1c30","on-primary":"#ffffff","outline":"#747686","on-secondary-fixed-variant":"#3f465c","on-tertiary-fixed":"#002114","outline-variant":"#c4c5d7","on-secondary-fixed":"#131b2e","tertiary-fixed-dim":"#68dba9","inverse-primary":"#b7c4ff","on-secondary-container":"#5c647a","surface-dim":"#cbdbf5","surface-variant":"#d3e4fe","tertiary":"#004f35","surface-tint":"#2151da","secondary-container":"#dae2fd","primary-container":"#1d4ed8","surface-bright":"#f8f9ff","error":"#ba1a1a","background":"#f8f9ff","tertiary-fixed":"#85f8c4","secondary-fixed-dim":"#bec6e0","surface-container-low":"#eff4ff","primary-fixed":"#dce1ff","on-tertiary":"#ffffff","on-secondary":"#ffffff","surface-container":"#e5eeff","inverse-surface":"#213145","on-error":"#ffffff","tertiary-container":"#006948","surface-container-highest":"#d3e4fe","on-primary-container":"#cad3ff","on-tertiary-container":"#76eab6","secondary":"#565e74","surface":"#f8f9ff","on-background":"#0b1c30","secondary-fixed":"#dae2fd","surface-container-high":"#dce9ff","on-error-container":"#93000a","error-container":"#ffdad6","on-surface-variant":"#434655","on-primary-fixed":"#001551","primary":"#0037b0","primary-fixed-dim":"#b7c4ff"},borderRadius:{DEFAULT:"0.125rem",lg:"0.25rem",xl:"0.5rem",full:"0.75rem"},spacing:{"space-lg":"1rem","margin-compact":"1rem","gutter-dense":"0.5rem","space-md":"0.75rem","space-xl":"1.5rem",gutter:"1rem","space-sm":"0.5rem","space-xs":"0.25rem",margin:"1.5rem"},fontFamily:{"body-sm":["Inter"],"label-sm":["Inter"],"headline-sm":["Inter"],"code-sm":["JetBrains Mono"],"headline-md":["Inter"],"label-md":["Inter"],"headline-lg":["Inter"],"body-md":["Inter"],"body-lg":["Inter"],"code-md":["JetBrains Mono"],"display-lg":["Inter"]},fontSize:{"body-sm":["12px",{lineHeight:"16px",fontWeight:"400"}],"label-sm":["11px",{lineHeight:"14px",letterSpacing:"0.03em",fontWeight:"500"}],"headline-sm":["16px",{lineHeight:"24px",letterSpacing:"-0.005em",fontWeight:"600"}],"code-sm":["11px",{lineHeight:"16px",fontWeight:"400"}],"headline-md":["20px",{lineHeight:"28px",letterSpacing:"-0.01em",fontWeight:"600"}],"label-md":["12px",{lineHeight:"16px",letterSpacing:"0.02em",fontWeight:"600"}],"headline-lg":["24px",{lineHeight:"32px",letterSpacing:"-0.015em",fontWeight:"600"}],"body-md":["13px",{lineHeight:"18px",fontWeight:"400"}],"body-lg":["15px",{lineHeight:"22px",fontWeight:"400"}],"code-md":["13px",{lineHeight:"18px",fontWeight:"500"}],"display-lg":["32px",{lineHeight:"40px",letterSpacing:"-0.02em",fontWeight:"700"}]}}}};</script></head><body class="bg-surface font-body-md text-on-surface min-h-screen"><aside class="fixed left-0 top-0 h-full w-64 bg-surface-container-lowest z-50 flex flex-col border-r border-outline-variant/30 shadow-[0_1px_8px_rgba(0,0,0,0.04)]"><div class="h-16 px-space-lg flex items-center gap-space-sm border-b border-outline-variant/20"><img alt="FinTrace AI Logo" class="h-8 w-auto object-contain" src="https://lh3.googleusercontent.com/aida/AEtjO1X_KYFdLXc_Cqi4hiINuicqzQ_N1zqOcKkcBktWPmdsuv4SgZ_mSxTRR8Oev5eEzUQZUZ3IP0eHrluCxH36Pb84M7BZAf8CQOaLMyFfCsxoL23UoZRLX8RAaCGiPbNGKVPJUnMjjBXzn4kLd2l1hcDufCbOZneA6sVWGS7-59kAIl1EG9P_CMXb_tbd5-kmHPRwC55tNU4DolmwKAfKlsXG41LjGqxr0WtkSwzJGVubycC-8VjoY3tC48k"/><div class="flex flex-col"><span class="font-headline-sm text-headline-sm text-on-surface tracking-tight leading-none">FinTrace<span class="text-primary-container">AI</span></span><span class="font-label-sm text-label-sm text-on-surface-variant uppercase tracking-wider">Forensic AML</span></div></div><div class="px-space-md py-space-sm border-b border-outline-variant/20 bg-surface-container-low/40"><label class="font-label-sm text-label-sm text-on-surface-variant uppercase tracking-wider block mb-space-xs">Workspace Scope</label><div class="flex items-center justify-between bg-surface-container-lowest border border-outline-variant/40 rounded px-space-sm py-space-xs cursor-pointer hover:border-outline"><div class="flex items-center gap-space-xs truncate"><span class="material-symbols-outlined text-primary text-[16px]">corporate_fare</span><span class="font-label-md text-label-md text-on-surface truncate">Batch Audit Q4-2024 / Fed Grants</span></div><span class="material-symbols-outlined text-on-surface-variant text-[16px]">unfold_more</span></div></div><div class="px-space-md pt-space-md pb-space-xs"><span class="font-label-sm text-label-sm text-on-surface-variant uppercase tracking-wider px-space-xs">Investigation Matrix</span></div><nav class="flex-1 px-space-sm space-y-space-xs overflow-y-auto" data-active-classes="bg-primary-container text-on-primary font-label-md rounded"><a class="flex items-center gap-space-sm px-space-md py-space-sm rounded font-label-md text-label-md text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-colors" data-path="overview" href="#"><span class="material-symbols-outlined text-[18px]">space_dashboard</span><span>Overview</span></a><a class="flex items-center gap-space-sm px-space-md py-space-sm rounded font-label-md text-label-md text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-colors" data-path="beneficiaries" href="#"><span class="material-symbols-outlined text-[18px]">badge</span><span>Beneficiaries</span></a><a class="flex items-center gap-space-sm px-space-md py-space-sm rounded font-label-md text-label-md text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-colors" data-path="disbursements" href="#"><span class="material-symbols-outlined text-[18px]">account_balance_wallet</span><span>Disbursements</span></a><a aria-current="page" class="flex items-center gap-space-sm px-space-md py-space-sm transition-colors bg-primary-container text-on-primary font-label-md rounded" data-path="risk-analysis" href="#"><span class="material-symbols-outlined text-[18px]">gshield</span><span>Risk Analysis</span></a><a class="flex items-center gap-space-sm px-space-md py-space-sm rounded font-label-md text-label-md text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-colors" data-path="network-graph" href="#"><span class="material-symbols-outlined text-[18px]">hub</span><span>Network Graph</span></a><a class="flex items-center gap-space-sm px-space-md py-space-sm rounded font-label-md text-label-md text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-colors" data-path="audit-copilot" href="#"><span class="material-symbols-outlined text-[18px]">smart_toy</span><span>Audit Copilot</span></a><a class="flex items-center gap-space-sm px-space-md py-space-sm rounded font-label-md text-label-md text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-colors" data-path="audit-reports" href="#"><span class="material-symbols-outlined text-[18px]">description</span><span>Audit Reports</span></a></nav><div class="p-space-sm border-t border-outline-variant/30 bg-surface-container-low/20"><button class="w-full flex items-center justify-between px-space-md py-space-sm rounded text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-colors" type="button"><span class="flex items-center gap-space-sm font-label-sm text-label-sm"><span class="material-symbols-outlined text-[18px]">left_panel_close</span><span>Collapse Sidebar</span></span><span class="font-code-sm text-code-sm text-outline">[</span></button></div></aside><div class="pl-64 flex flex-col min-h-screen"><header class="fixed top-0 left-64 right-0 h-16 bg-surface-container-lowest/90 backdrop-blur-md border-b border-outline-variant/30 shadow-[0_1px_8px_rgba(0,0,0,0.04)] z-40 px-space-lg flex items-center justify-between gap-space-md"><div class="flex items-center gap-space-md flex-1 max-w-xl"><div class="relative w-full"><span class="material-symbols-outlined absolute left-space-md top-1/2 -translate-y-1/2 text-outline text-[18px]">search</span><input class="w-full h-8 pl-9 pr-16 bg-surface border border-outline-variant/40 rounded font-body-md text-body-md text-on-surface placeholder:text-outline focus:outline-none focus:border-primary-container" placeholder="Search Beneficiary, TxID, Account..." type="text"/><kbd class="absolute right-space-sm top-1/2 -translate-y-1/2 font-code-sm text-code-sm text-outline border border-outline-variant/40 bg-surface-container-low px-1 rounded">Ctrl+K</kbd></div></div><div class="flex items-center gap-space-md"><div class="hidden xl:flex items-center gap-space-xs px-space-sm py-1 bg-surface-container-low border border-outline-variant/30 rounded"><span class="w-2 h-2 rounded-full bg-tertiary-container animate-pulse"></span><span class="font-label-sm text-label-sm text-on-surface">Audit Engine: Online</span><span class="text-outline font-label-sm text-label-sm">·</span><span class="font-code-sm text-code-sm text-on-surface-variant">Sync 4m ago</span></div><button aria-label="Toggle color mode" class="p-space-xs text-on-surface-variant hover:text-on-surface hover:bg-surface-container-high rounded transition-colors" type="button"><span class="material-symbols-outlined text-[20px]">dark_mode</span></button><div class="h-6 w-px bg-outline-variant/30"></div><div class="flex items-center gap-space-sm pl-space-xs"><div class="flex flex-col text-right hidden sm:flex"><span class="font-label-md text-label-md text-on-surface leading-tight">Lead Auditor J. Vance</span><span class="font-label-sm text-label-sm text-outline">Forensics Clearance L3</span></div><div class="w-8 h-8 rounded-full bg-primary flex items-center justify-center"><span class="material-symbols-outlined text-on-primary text-[18px]">person</span></div></div></div></header><main class="w-full pt-16 bg-surface px-space-lg py-space-lg flex-1"><div class="flex flex-col w-full space-y-space-lg">
+<!-- Statutory Disclaimer Notice -->
+<div class="relative overflow-hidden bg-surface-container-high text-on-surface rounded-lg p-space-md shadow-sm">
+<div class="absolute left-0 top-0 bottom-0 w-1.5 bg-primary"></div>
+<div class="flex items-start gap-space-md pl-space-xs">
+<span class="material-symbols-outlined text-primary text-[20px] shrink-0 mt-0.5">policy</span>
+<div class="space-y-space-xs">
+<div class="flex items-center gap-space-sm flex-wrap">
+<span class="font-label-md text-label-md text-primary uppercase tracking-wider font-semibold">Statutory Guidance Notice</span>
+<span class="font-code-sm text-code-sm text-on-surface-variant bg-surface-container-lowest px-2 py-0.5 rounded">28 U.S.C. § 2467 / BSA Regulatory Rule</span>
+</div>
+<p class="font-body-sm text-body-sm text-on-surface-variant leading-relaxed">
+          Statutory Guidance: Algorithmic risk scores represent evidentiary anomaly signals and statistical deviation from baseline distributions. They do not constitute a legal determination of fraud. All findings require independent auditor substantiation.
+        </p>
+</div>
+</div>
+</div>
+<!-- Header & Meta Matrix -->
+<div class="flex flex-col lg:flex-row lg:items-end justify-between gap-space-md bg-surface-container-lowest p-space-lg rounded-xl shadow-sm">
+<div class="space-y-space-xs">
+<div class="flex items-center gap-space-sm">
+<span class="px-2 py-0.5 rounded bg-primary-container text-on-primary font-code-sm text-code-sm uppercase tracking-wider font-semibold">ENGINE-V4.2</span>
+<span class="font-label-sm text-label-sm text-outline uppercase tracking-wider">Matrix Calibration: Q4 Grants</span>
+</div>
+<h1 class="font-headline-lg text-headline-lg text-on-surface tracking-tight">Risk Analysis Engine</h1>
+<p class="font-body-md text-body-md text-on-surface-variant max-w-3xl">
+        Dual-Engine Evaluation: Deterministic Regulatory Rules + Unsupervised Isolation Forest Anomaly Detection
+      </p>
+</div>
+<div class="flex items-center gap-space-sm flex-wrap shrink-0">
+<button class="inline-flex items-center gap-space-xs px-3 py-1.5 rounded bg-surface-container-low text-on-surface hover:bg-surface-container-high transition-colors font-label-md text-label-md shadow-sm" type="button">
+<span class="material-symbols-outlined text-[16px] text-outline">tune</span>
+<span>Recalibrate Weights</span>
+</button>
+<button class="inline-flex items-center gap-space-xs px-3 py-1.5 rounded bg-primary-container text-on-primary hover:bg-primary transition-colors font-label-md text-label-md shadow-sm" type="button">
+<span class="material-symbols-outlined text-[16px]">file_download</span>
+<span>Export Forensic Dossier</span>
+</button>
+</div>
+</div>
+<!-- Top Summary Metric Cards -->
+<div class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-space-md">
+<!-- Card 1: Cutoff Percentile -->
+<div class="bg-surface-container-lowest p-space-md rounded-lg shadow-sm flex flex-col justify-between">
+<div class="flex items-center justify-between text-on-surface-variant">
+<span class="font-label-sm text-label-sm uppercase tracking-wider">Anomaly Cutoff</span>
+<span class="material-symbols-outlined text-outline text-[18px]">query_stats</span>
+</div>
+<div class="my-space-sm">
+<div class="font-code-md text-display-lg text-on-surface leading-none">99.4th</div>
+<div class="font-label-sm text-label-sm text-outline mt-1">Percentile Isolation Cutoff</div>
+</div>
+<div class="pt-space-xs flex items-center justify-between text-on-surface-variant font-code-sm text-code-sm">
+<span>Tail Deviation</span>
+<span class="text-tertiary-container font-semibold">+3.82σ vs Baseline</span>
+</div>
+</div>
+<!-- Card 2: Severity Distribution -->
+<div class="bg-surface-container-lowest p-space-md rounded-lg shadow-sm flex flex-col justify-between">
+<div class="flex items-center justify-between text-on-surface-variant">
+<span class="font-label-sm text-label-sm uppercase tracking-wider">Severity Distribution</span>
+<span class="material-symbols-outlined text-outline text-[18px]">donut_small</span>
+</div>
+<div class="my-space-sm space-y-1.5">
+<div class="flex justify-between items-baseline font-code-sm text-code-sm">
+<span class="text-on-surface font-semibold">142 Flagged</span>
+<span class="text-outline">19 Critical / 42 High / 81 Med</span>
+</div>
+<!-- Multi-segment progress bar -->
+<div class="w-full h-2 rounded bg-surface-container-high overflow-hidden flex">
+<div class="bg-error h-full" style="width: 13.4%" title="Critical (13.4%)"></div>
+<div class="bg-primary-container h-full" style="width: 29.5%" title="High (29.5%)"></div>
+<div class="bg-surface-tint h-full" style="width: 57.1%" title="Medium (57.1%)"></div>
+</div>
+</div>
+<div class="pt-space-xs flex items-center justify-between font-label-sm text-label-sm">
+<span class="text-error font-code-sm text-code-sm">13.4% Critical</span>
+<span class="text-outline font-code-sm text-code-sm">57.1% Medium</span>
+</div>
+</div>
+<!-- Card 3: Trigger Rate -->
+<div class="bg-surface-container-lowest p-space-md rounded-lg shadow-sm flex flex-col justify-between">
+<div class="flex items-center justify-between text-on-surface-variant">
+<span class="font-label-sm text-label-sm uppercase tracking-wider">Rule Trigger Rate</span>
+<span class="material-symbols-outlined text-outline text-[18px]">rule_folder</span>
+</div>
+<div class="my-space-sm">
+<div class="font-code-md text-display-lg text-on-surface leading-none">1.4 <span class="font-body-md text-body-md text-outline">rules/rec</span></div>
+<div class="font-label-sm text-label-sm text-outline mt-1">Rule Multiplicity on Flags</div>
+</div>
+<div class="pt-space-xs flex items-center justify-between text-on-surface-variant font-code-sm text-code-sm">
+<span>Deterministic Overlap</span>
+<span class="text-primary font-semibold">88.3% Correlated</span>
+</div>
+</div>
+<!-- Card 4: Model Confidence Margin -->
+<div class="bg-surface-container-lowest p-space-md rounded-lg shadow-sm flex flex-col justify-between">
+<div class="flex items-center justify-between text-on-surface-variant">
+<span class="font-label-sm text-label-sm uppercase tracking-wider">Model Stability</span>
+<span class="material-symbols-outlined text-outline text-[18px]">verified</span>
+</div>
+<div class="my-space-sm">
+<div class="font-code-md text-display-lg text-tertiary-container leading-none">98.2%</div>
+<div class="font-label-sm text-label-sm text-outline mt-1">Statistical Variance Margin</div>
+</div>
+<div class="pt-space-xs flex items-center justify-between text-on-surface-variant font-code-sm text-code-sm">
+<span>Cross-Validation</span>
+<span class="text-on-surface font-semibold">k=10 Stratified</span>
+</div>
+</div>
+</div>
+<!-- Dual-Engine Architecture Comparison Layout -->
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-space-md">
+<!-- LEFT: Deterministic Compliance Rules (7 cols) -->
+<div class="lg:col-span-6 bg-surface-container-lowest rounded-xl p-space-lg shadow-sm flex flex-col justify-between">
+<div>
+<div class="flex items-center justify-between pb-space-md">
+<div class="flex items-center gap-space-sm">
+<span class="w-2.5 h-2.5 rounded-full bg-primary-container"></span>
+<div>
+<h2 class="font-headline-sm text-headline-sm text-on-surface">Deterministic Compliance Rules</h2>
+<p class="font-label-sm text-label-sm text-outline">Statutory Codification &amp; Hard Threshold Violations</p>
+</div>
+</div>
+<span class="font-code-sm text-code-sm bg-surface-container-high px-2 py-0.5 rounded text-on-surface font-semibold">14 Active Rules</span>
+</div>
+<div class="space-y-space-sm mt-space-sm">
+<!-- Rule 1 -->
+<div class="p-space-md rounded-lg bg-surface-container-low hover:bg-surface-container transition-colors">
+<div class="flex items-start justify-between gap-space-sm">
+<div class="space-y-1">
+<div class="flex items-center gap-space-xs flex-wrap">
+<span class="font-code-sm text-code-sm font-semibold text-primary">R-104</span>
+<span class="font-label-md text-label-md text-on-surface">Payout IBAN / Routing Collision</span>
+<span class="font-code-sm text-code-sm bg-error-container text-on-error-container px-1.5 py-0.2 rounded font-medium">Critical Flag</span>
+</div>
+<p class="font-body-sm text-body-sm text-on-surface-variant">Triggered on 3 distinct entities routing through matching shadow depository account.</p>
+</div>
+<span class="font-code-sm text-code-sm text-on-surface shrink-0 font-semibold bg-surface-container-lowest px-2 py-0.5 rounded">3 Hits</span>
+</div>
+<div class="mt-space-sm pt-space-xs flex items-center justify-between font-label-sm text-label-sm text-outline">
+<span>Regulatory Authority: FinCEN BSA 314(b) Information Sharing</span>
+<span class="text-primary hover:underline cursor-pointer">Inspect Nodes</span>
+</div>
+</div>
+<!-- Rule 2 -->
+<div class="p-space-md rounded-lg bg-surface-container-low hover:bg-surface-container transition-colors">
+<div class="flex items-start justify-between gap-space-sm">
+<div class="space-y-1">
+<div class="flex items-center gap-space-xs flex-wrap">
+<span class="font-code-sm text-code-sm font-semibold text-primary">R-208</span>
+<span class="font-label-md text-label-md text-on-surface">Structured Amounts Skirting $10k Threshold</span>
+<span class="font-code-sm text-code-sm bg-error-container text-on-error-container px-1.5 py-0.2 rounded font-medium">Critical Flag</span>
+</div>
+<p class="font-body-sm text-body-sm text-on-surface-variant">Repetitive $9,900 - $9,999 burst transfers initiated within sub-72 hour sliding windows.</p>
+</div>
+<span class="font-code-sm text-code-sm text-on-surface shrink-0 font-semibold bg-surface-container-lowest px-2 py-0.5 rounded">28 Hits</span>
+</div>
+<div class="mt-space-sm pt-space-xs flex items-center justify-between font-label-sm text-label-sm text-outline">
+<span>Regulatory Authority: CTR FinCEN 104 Anti-Structuring Provisions</span>
+<span class="text-primary hover:underline cursor-pointer">Inspect Nodes</span>
+</div>
+</div>
+<!-- Rule 3 -->
+<div class="p-space-md rounded-lg bg-surface-container-low hover:bg-surface-container transition-colors">
+<div class="flex items-start justify-between gap-space-sm">
+<div class="space-y-1">
+<div class="flex items-center gap-space-xs flex-wrap">
+<span class="font-code-sm text-code-sm font-semibold text-primary">R-312</span>
+<span class="font-label-md text-label-md text-on-surface">Fast Disbursal / Dormant Entity Awakening</span>
+<span class="font-code-sm text-code-sm bg-surface-variant text-on-surface-variant px-1.5 py-0.2 rounded font-medium">High Alert</span>
+</div>
+<p class="font-body-sm text-body-sm text-on-surface-variant">Entity dormant &gt;365 days suddenly receiving &gt;$500,000 in federal grant funding tranche.</p>
+</div>
+<span class="font-code-sm text-code-sm text-on-surface shrink-0 font-semibold bg-surface-container-lowest px-2 py-0.5 rounded">7 Hits</span>
+</div>
+<div class="mt-space-sm pt-space-xs flex items-center justify-between font-label-sm text-label-sm text-outline">
+<span>Regulatory Authority: 2 CFR 200 Sub-recipient Monitoring Compliance</span>
+<span class="text-primary hover:underline cursor-pointer">Inspect Nodes</span>
+</div>
+</div>
+<!-- Rule 4 -->
+<div class="p-space-md rounded-lg bg-surface-container-low hover:bg-surface-container transition-colors">
+<div class="flex items-start justify-between gap-space-sm">
+<div class="space-y-1">
+<div class="flex items-center gap-space-xs flex-wrap">
+<span class="font-code-sm text-code-sm font-semibold text-primary">R-405</span>
+<span class="font-label-md text-label-md text-on-surface">Address Co-location with Disqualified Vendor</span>
+<span class="font-code-sm text-code-sm bg-surface-variant text-on-surface-variant px-1.5 py-0.2 rounded font-medium">Sanctions</span>
+</div>
+<p class="font-body-sm text-body-sm text-on-surface-variant">Registered business address identically matches debarred Federal SAM.gov contractor.</p>
+</div>
+<span class="font-code-sm text-code-sm text-on-surface shrink-0 font-semibold bg-surface-container-lowest px-2 py-0.5 rounded">2 Hits</span>
+</div>
+<div class="mt-space-sm pt-space-xs flex items-center justify-between font-label-sm text-label-sm text-outline">
+<span>Regulatory Authority: OFAC / SAM Exclusion Registry 48 CFR 9.4</span>
+<span class="text-primary hover:underline cursor-pointer">Inspect Nodes</span>
+</div>
+</div>
+</div>
+</div>
+<div class="mt-space-md pt-space-sm flex items-center justify-between text-on-surface-variant font-label-sm text-label-sm">
+<span class="flex items-center gap-1">
+<span class="material-symbols-outlined text-[16px] text-tertiary-container">check_circle</span>
+<span>10 Other Baseline Verification Rules Passing</span>
+</span>
+<button class="text-primary font-semibold hover:underline" type="button">View All 14 Rules</button>
+</div>
+</div>
+<!-- RIGHT: Unsupervised Isolation Forest ML Engine (6 cols) -->
+<div class="lg:col-span-6 bg-surface-container-lowest rounded-xl p-space-lg shadow-sm flex flex-col justify-between">
+<div>
+<div class="flex items-center justify-between pb-space-md">
+<div class="flex items-center gap-space-sm">
+<span class="w-2.5 h-2.5 rounded-full bg-tertiary-container"></span>
+<div>
+<h2 class="font-headline-sm text-headline-sm text-on-surface">Unsupervised Isolation Forest Engine</h2>
+<p class="font-label-sm text-label-sm text-outline">High-Dimensional Feature Space Tree Partitioning</p>
+</div>
+</div>
+<span class="font-code-sm text-code-sm bg-surface-container-high px-2 py-0.5 rounded text-on-surface font-semibold">Scikit-Learn Calibrated</span>
+</div>
+<!-- Hyperparameter telemetry chips -->
+<div class="grid grid-cols-3 gap-space-sm py-space-sm">
+<div class="bg-surface-container-low p-space-sm rounded text-center">
+<div class="font-label-sm text-label-sm text-outline uppercase">Contamination</div>
+<div class="font-code-md text-headline-sm text-on-surface font-semibold">0.015</div>
+<div class="font-label-sm text-label-sm text-outline">Target Purity</div>
+</div>
+<div class="bg-surface-container-low p-space-sm rounded text-center">
+<div class="font-label-sm text-label-sm text-outline uppercase">Estimators</div>
+<div class="font-code-md text-headline-sm text-on-surface font-semibold">120</div>
+<div class="font-label-sm text-label-sm text-outline">Trees Built</div>
+</div>
+<div class="bg-surface-container-low p-space-sm rounded text-center">
+<div class="font-label-sm text-label-sm text-outline uppercase">Subsample</div>
+<div class="font-code-md text-headline-sm text-on-surface font-semibold">256</div>
+<div class="font-label-sm text-label-sm text-outline">Records / Tree</div>
+</div>
+</div>
+<!-- SHAP Feature Contributions Breakdown -->
+<div class="mt-space-md space-y-space-sm">
+<div class="flex items-center justify-between">
+<span class="font-label-md text-label-md text-on-surface uppercase tracking-wider">Top Anomalous Feature Contributions (SHAP)</span>
+<span class="font-code-sm text-code-sm text-outline">Mean Absolute |SHAP|</span>
+</div>
+<!-- Feature 1 -->
+<div class="space-y-1">
+<div class="flex items-center justify-between font-body-sm text-body-sm">
+<span class="text-on-surface font-medium">Payout Velocity Dispersion</span>
+<span class="font-code-sm text-code-sm text-error font-semibold">+38.4% importance</span>
+</div>
+<div class="w-full h-2 rounded bg-surface-container-high overflow-hidden">
+<div class="bg-error h-full rounded" style="width: 38.4%"></div>
+</div>
+<span class="font-label-sm text-label-sm text-outline block">Variance in hourly transaction frequency across weekend cycles</span>
+</div>
+<!-- Feature 2 -->
+<div class="space-y-1">
+<div class="flex items-center justify-between font-body-sm text-body-sm">
+<span class="text-on-surface font-medium">Payee-to-Bank Ratio Skew</span>
+<span class="font-code-sm text-code-sm text-primary font-semibold">+27.1% importance</span>
+</div>
+<div class="w-full h-2 rounded bg-surface-container-high overflow-hidden">
+<div class="bg-primary-container h-full rounded" style="width: 27.1%"></div>
+</div>
+<span class="font-label-sm text-label-sm text-outline block">Disproportionate cluster of distinct shell vendors funneling to 1 account</span>
+</div>
+<!-- Feature 3 -->
+<div class="space-y-1">
+<div class="flex items-center justify-between font-body-sm text-body-sm">
+<span class="text-on-surface font-medium">Disbursal Amount Clumping near $10k</span>
+<span class="font-code-sm text-code-sm text-surface-tint font-semibold">+21.9% importance</span>
+</div>
+<div class="w-full h-2 rounded bg-surface-container-high overflow-hidden">
+<div class="bg-surface-tint h-full rounded" style="width: 21.9%"></div>
+</div>
+<span class="font-label-sm text-label-sm text-outline block">Distribution kurtosis peaked within $9,800 - $9,995 bandwidth</span>
+</div>
+<!-- Feature 4 -->
+<div class="space-y-1">
+<div class="flex items-center justify-between font-body-sm text-body-sm">
+<span class="text-on-surface font-medium">Geographic Anomaly Index</span>
+<span class="font-code-sm text-code-sm text-on-surface font-semibold">+12.6% importance</span>
+</div>
+<div class="w-full h-2 rounded bg-surface-container-high overflow-hidden">
+<div class="bg-secondary h-full rounded" style="width: 12.6%"></div>
+</div>
+<span class="font-label-sm text-label-sm text-outline block">Discrepancy between recipient incorporation state and depository location</span>
+</div>
+</div>
+</div>
+<div class="mt-space-md pt-space-sm flex items-center justify-between text-on-surface-variant font-label-sm text-label-sm">
+<span class="font-code-sm text-code-sm text-outline">Isolation Path Depth: μ = 4.2 / max = 8.0</span>
+<button class="text-primary font-semibold hover:underline" type="button">SHAP Waterfall Visualizer</button>
+</div>
+</div>
+</div>
+<!-- Epistemic Framework Reference Bar -->
+<div class="grid grid-cols-1 md:grid-cols-3 gap-space-md bg-surface-container-lowest p-space-md rounded-lg shadow-sm">
+<div class="flex items-center gap-space-sm">
+<div class="w-8 h-8 rounded bg-surface-container-high flex items-center justify-center shrink-0">
+<span class="material-symbols-outlined text-[18px] text-on-surface">receipt_long</span>
+</div>
+<div>
+<div class="font-label-md text-label-md text-on-surface font-semibold">Observed Fact</div>
+<p class="font-body-sm text-body-sm text-on-surface-variant">Immutable ledger logs: raw Fedwire timestamps, amounts, IBAN endpoints.</p>
+</div>
+</div>
+<div class="flex items-center gap-space-sm">
+<div class="w-8 h-8 rounded bg-surface-container-high flex items-center justify-center shrink-0">
+<span class="material-symbols-outlined text-[18px] text-primary">neurology</span>
+</div>
+<div>
+<div class="font-label-md text-label-md text-on-surface font-semibold">Model Inference</div>
+<p class="font-body-sm text-body-sm text-on-surface-variant">Stochastic scores: Isolation tree path depths, topological cluster coefficients.</p>
+</div>
+</div>
+<div class="flex items-center gap-space-sm">
+<div class="w-8 h-8 rounded bg-surface-container-high flex items-center justify-center shrink-0">
+<span class="material-symbols-outlined text-[18px] text-tertiary">gavel</span>
+</div>
+<div>
+<div class="font-label-md text-label-md text-on-surface font-semibold">Auditor Finding</div>
+<p class="font-body-sm text-body-sm text-on-surface-variant">Admissible determinations: Certified substantiation by credentialed forensic staff.</p>
+</div>
+</div>
+</div>
+<!-- Bottom Data Grid: Ranked Flagged Entities with Dual Scoring -->
+<div class="bg-surface-container-lowest rounded-xl shadow-sm overflow-hidden">
+<!-- Header of Table -->
+<div class="p-space-lg flex flex-col md:flex-row md:items-center justify-between gap-space-md">
+<div>
+<h2 class="font-headline-sm text-headline-sm text-on-surface">Ranked Flagged Entities</h2>
+<p class="font-body-sm text-body-sm text-on-surface-variant">Entities ordered by Combined Empirical-Stochastic Risk Index</p>
+</div>
+<div class="flex items-center gap-space-sm flex-wrap">
+<div class="flex items-center bg-surface-container-low px-2 py-1 rounded">
+<span class="material-symbols-outlined text-[16px] text-outline mr-1">filter_list</span>
+<span class="font-label-sm text-label-sm text-on-surface-variant">Filter: All Severities (142)</span>
+</div>
+<div class="flex items-center bg-surface-container-low px-2 py-1 rounded">
+<span class="font-label-sm text-label-sm text-on-surface-variant">Sort: Combined Risk (Desc)</span>
+</div>
+</div>
+</div>
+<!-- Table Container -->
+<div class="overflow-x-auto">
+<table class="w-full text-left">
+<thead>
+<tr class="bg-surface-container-low font-label-md text-label-md text-on-surface-variant uppercase tracking-wider">
+<th class="py-space-md px-space-lg">Entity &amp; Identification</th>
+<th class="py-space-md px-space-md text-right">Deterministic Score</th>
+<th class="py-space-md px-space-md text-right">ML Anomaly (iForest)</th>
+<th class="py-space-md px-space-md text-right">Combined Index</th>
+<th class="py-space-md px-space-lg">Dominant Trigger Mechanism</th>
+<th class="py-space-md px-space-lg text-right">Auditor Investigation</th>
+</tr>
+</thead>
+<tbody class="font-body-md text-body-md divide-y divide-surface-container">
+<!-- Row 1 -->
+<tr class="hover:bg-surface-container-low/70 transition-colors">
+<td class="py-space-md px-space-lg">
+<div class="font-headline-sm text-headline-sm text-on-surface leading-tight">Apex Logistics Holdings LLC</div>
+<div class="font-code-sm text-code-sm text-outline flex items-center gap-space-xs mt-0.5">
+<span>BEN-849204</span>
+<span>•</span>
+<span>EIN: 47-2910482</span>
+<span>•</span>
+<span class="bg-surface-container px-1 rounded text-on-surface-variant">Grant Q4-A</span>
+</div>
+</td>
+<td class="py-space-md px-space-md text-right">
+<div class="font-code-md text-headline-sm text-error font-semibold">95/100</div>
+<span class="font-label-sm text-label-sm text-outline">3 Hard Rules Hit</span>
+</td>
+<td class="py-space-md px-space-md text-right">
+<div class="font-code-md text-headline-sm text-error font-semibold">0.912</div>
+<span class="font-label-sm text-label-sm text-outline">Path Depth: 2.1</span>
+</td>
+<td class="py-space-md px-space-md text-right">
+<span class="inline-flex items-center gap-1 bg-error-container text-on-error-container font-code-sm text-code-sm px-2 py-0.5 rounded font-bold">
+                94 CRITICAL
+              </span>
+</td>
+<td class="py-space-md px-space-lg">
+<div class="space-y-0.5">
+<span class="font-code-sm text-code-sm font-semibold text-primary">R-104 + R-208</span>
+<p class="font-body-sm text-body-sm text-on-surface-variant truncate max-w-xs">Routing IBAN Collision with 2 Sanctioned Shells; Structuring Bursts</p>
+</div>
+</td>
+<td class="py-space-md px-space-lg text-right">
+<button class="inline-flex items-center gap-1 bg-surface-container-high hover:bg-primary-container hover:text-on-primary text-on-surface px-3 py-1 rounded transition-colors font-label-md text-label-md" type="button">
+<span>Drill Down SHAP</span>
+<span class="material-symbols-outlined text-[16px]">arrow_forward</span>
+</button>
+</td>
+</tr>
+<!-- Row 2 -->
+<tr class="hover:bg-surface-container-low/70 transition-colors">
+<td class="py-space-md px-space-lg">
+<div class="font-headline-sm text-headline-sm text-on-surface leading-tight">Vanguard Defense Bio-Labs</div>
+<div class="font-code-sm text-code-sm text-outline flex items-center gap-space-xs mt-0.5">
+<span>BEN-391054</span>
+<span>•</span>
+<span>EIN: 82-0194821</span>
+<span>•</span>
+<span class="bg-surface-container px-1 rounded text-on-surface-variant">DoD Sub-Award</span>
+</div>
+</td>
+<td class="py-space-md px-space-md text-right">
+<div class="font-code-md text-headline-sm text-primary font-semibold">82/100</div>
+<span class="font-label-sm text-label-sm text-outline">2 Hard Rules Hit</span>
+</td>
+<td class="py-space-md px-space-md text-right">
+<div class="font-code-md text-headline-sm text-error font-semibold">0.884</div>
+<span class="font-label-sm text-label-sm text-outline">Path Depth: 2.4</span>
+</td>
+<td class="py-space-md px-space-md text-right">
+<span class="inline-flex items-center gap-1 bg-error-container text-on-error-container font-code-sm text-code-sm px-2 py-0.5 rounded font-bold">
+                86 CRITICAL
+              </span>
+</td>
+<td class="py-space-md px-space-lg">
+<div class="space-y-0.5">
+<span class="font-code-sm text-code-sm font-semibold text-primary">R-312 Dormant Awakening</span>
+<p class="font-body-sm text-body-sm text-on-surface-variant truncate max-w-xs">Entity formed 2021, zero filings, received $840,000 disbursement</p>
+</div>
+</td>
+<td class="py-space-md px-space-lg text-right">
+<button class="inline-flex items-center gap-1 bg-surface-container-high hover:bg-primary-container hover:text-on-primary text-on-surface px-3 py-1 rounded transition-colors font-label-md text-label-md" type="button">
+<span>Drill Down SHAP</span>
+<span class="material-symbols-outlined text-[16px]">arrow_forward</span>
+</button>
+</td>
+</tr>
+<!-- Row 3 -->
+<tr class="hover:bg-surface-container-low/70 transition-colors">
+<td class="py-space-md px-space-lg">
+<div class="font-headline-sm text-headline-sm text-on-surface leading-tight">NorthStar Maritime Logistics</div>
+<div class="font-code-sm text-code-sm text-outline flex items-center gap-space-xs mt-0.5">
+<span>BEN-902341</span>
+<span>•</span>
+<span>EIN: 13-9823019</span>
+<span>•</span>
+<span class="bg-surface-container px-1 rounded text-on-surface-variant">DOT Maritime F-7</span>
+</div>
+</td>
+<td class="py-space-md px-space-md text-right">
+<div class="font-code-md text-headline-sm text-on-surface font-semibold">68/100</div>
+<span class="font-label-sm text-label-sm text-outline">1 Hard Rule Hit</span>
+</td>
+<td class="py-space-md px-space-md text-right">
+<div class="font-code-md text-headline-sm text-primary font-semibold">0.765</div>
+<span class="font-label-sm text-label-sm text-outline">Path Depth: 3.1</span>
+</td>
+<td class="py-space-md px-space-md text-right">
+<span class="inline-flex items-center gap-1 bg-surface-variant text-on-surface-variant font-code-sm text-code-sm px-2 py-0.5 rounded font-bold">
+                73 HIGH
+              </span>
+</td>
+<td class="py-space-md px-space-lg">
+<div class="space-y-0.5">
+<span class="font-code-sm text-code-sm font-semibold text-primary">R-405 Debarred Match</span>
+<p class="font-body-sm text-body-sm text-on-surface-variant truncate max-w-xs">Shared headquarters address with SAM.gov excluded vendor</p>
+</div>
+</td>
+<td class="py-space-md px-space-lg text-right">
+<button class="inline-flex items-center gap-1 bg-surface-container-high hover:bg-primary-container hover:text-on-primary text-on-surface px-3 py-1 rounded transition-colors font-label-md text-label-md" type="button">
+<span>Drill Down SHAP</span>
+<span class="material-symbols-outlined text-[16px]">arrow_forward</span>
+</button>
+</td>
+</tr>
+<!-- Row 4 -->
+<tr class="hover:bg-surface-container-low/70 transition-colors">
+<td class="py-space-md px-space-lg">
+<div class="font-headline-sm text-headline-sm text-on-surface leading-tight">Civic Urban Development Alliance</div>
+<div class="font-code-sm text-code-sm text-outline flex items-center gap-space-xs mt-0.5">
+<span>BEN-118492</span>
+<span>•</span>
+<span>EIN: 52-4491023</span>
+<span>•</span>
+<span class="bg-surface-container px-1 rounded text-on-surface-variant">HUD Block Grant</span>
+</div>
+</td>
+<td class="py-space-md px-space-md text-right">
+<div class="font-code-md text-headline-sm text-outline font-semibold">42/100</div>
+<span class="font-label-sm text-label-sm text-outline">0 Hard Rules Hit</span>
+</td>
+<td class="py-space-md px-space-md text-right">
+<div class="font-code-md text-headline-sm text-surface-tint font-semibold">0.829</div>
+<span class="font-label-sm text-label-sm text-outline">Path Depth: 2.7</span>
+</td>
+<td class="py-space-md px-space-md text-right">
+<span class="inline-flex items-center gap-1 bg-surface-variant text-on-surface-variant font-code-sm text-code-sm px-2 py-0.5 rounded font-bold">
+                68 HIGH
+              </span>
+</td>
+<td class="py-space-md px-space-lg">
+<div class="space-y-0.5">
+<span class="font-code-sm text-code-sm font-semibold text-secondary">Pure ML Outlier (Velocity)</span>
+<p class="font-body-sm text-body-sm text-on-surface-variant truncate max-w-xs">Unprecedented midnight burst cadence; rapid outbound pass-through transfers</p>
+</div>
+</td>
+<td class="py-space-md px-space-lg text-right">
+<button class="inline-flex items-center gap-1 bg-surface-container-high hover:bg-primary-container hover:text-on-primary text-on-surface px-3 py-1 rounded transition-colors font-label-md text-label-md" type="button">
+<span>Drill Down SHAP</span>
+<span class="material-symbols-outlined text-[16px]">arrow_forward</span>
+</button>
+</td>
+</tr>
+<!-- Row 5 -->
+<tr class="hover:bg-surface-container-low/70 transition-colors">
+<td class="py-space-md px-space-lg">
+<div class="font-headline-sm text-headline-sm text-on-surface leading-tight">Solstice Energy Infrastructure Co</div>
+<div class="font-code-sm text-code-sm text-outline flex items-center gap-space-xs mt-0.5">
+<span>BEN-670192</span>
+<span>•</span>
+<span>EIN: 74-8819024</span>
+<span>•</span>
+<span class="bg-surface-container px-1 rounded text-on-surface-variant">DOE Clean Energy</span>
+</div>
+</td>
+<td class="py-space-md px-space-md text-right">
+<div class="font-code-md text-headline-sm text-outline font-semibold">30/100</div>
+<span class="font-label-sm text-label-sm text-outline">0 Hard Rules Hit</span>
+</td>
+<td class="py-space-md px-space-md text-right">
+<div class="font-code-md text-headline-sm text-outline font-semibold">0.691</div>
+<span class="font-label-sm text-label-sm text-outline">Path Depth: 3.5</span>
+</td>
+<td class="py-space-md px-space-md text-right">
+<span class="inline-flex items-center gap-1 bg-surface-container-high text-on-surface font-code-sm text-code-sm px-2 py-0.5 rounded font-bold">
+                51 MEDIUM
+              </span>
+</td>
+<td class="py-space-md px-space-lg">
+<div class="space-y-0.5">
+<span class="font-code-sm text-code-sm font-semibold text-secondary">Geographic Routing Skew</span>
+<p class="font-body-sm text-body-sm text-on-surface-variant truncate max-w-xs">Delaware shell sending to offshore depository jurisdiction without treaty</p>
+</div>
+</td>
+<td class="py-space-md px-space-lg text-right">
+<button class="inline-flex items-center gap-1 bg-surface-container-high hover:bg-primary-container hover:text-on-primary text-on-surface px-3 py-1 rounded transition-colors font-label-md text-label-md" type="button">
+<span>Drill Down SHAP</span>
+<span class="material-symbols-outlined text-[16px]">arrow_forward</span>
+</button>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<!-- Table Pagination / Audit Ledger Footer -->
+<div class="p-space-md bg-surface-container-low flex flex-col sm:flex-row items-center justify-between gap-space-sm font-label-sm text-label-sm text-on-surface-variant">
+<div class="flex items-center gap-space-md">
+<span>Showing 1 to 5 of 142 flagged entities</span>
+<span class="text-outline">|</span>
+<span class="font-code-sm text-code-sm">Cross-referencing Fedwire &amp; ACH FedACH-2024Q4</span>
+</div>
+<div class="flex items-center gap-space-xs">
+<button class="px-2 py-1 bg-surface-container-lowest text-outline rounded opacity-50 cursor-not-allowed" disabled="" type="button">Previous</button>
+<button class="px-2 py-1 bg-primary text-on-primary font-semibold rounded" type="button">1</button>
+<button class="px-2 py-1 bg-surface-container-lowest text-on-surface hover:bg-surface-container-high rounded" type="button">2</button>
+<button class="px-2 py-1 bg-surface-container-lowest text-on-surface hover:bg-surface-container-high rounded" type="button">3</button>
+<span class="px-1 text-outline">...</span>
+<button class="px-2 py-1 bg-surface-container-lowest text-on-surface hover:bg-surface-container-high rounded" type="button">29</button>
+<button class="px-2 py-1 bg-surface-container-lowest text-on-surface hover:bg-surface-container-high rounded" type="button">Next</button>
+</div>
+</div>
+</div>
+</div>
+<script>
+  // Simple micro-interaction for row selection highlighting
+  document.querySelectorAll('tbody tr').forEach(row => {
+    row.addEventListener('click', function(e) {
+      if (e.target.tagName !== 'BUTTON' && !e.target.closest('button')) {
+        document.querySelectorAll('tbody tr').forEach(r => r.classList.remove('bg-surface-container-high/60'));
+        this.classList.add('bg-surface-container-high/60');
+      }
+    });
+  });
+</script></main></div></body></html>

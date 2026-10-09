@@ -174,4 +174,54 @@ BEN-CSV-2,,123,INVALID,`;
     assert.strictEqual(body.data[0].beneficiaryId, 'BEN-DUP-1');
     assert.strictEqual(body.data[0].name, 'Updated Name');
   });
+
+  it('POST /api/ingest/beneficiaries/csv - header variations (ifsc, ifscCode, ifsc_code, BOM)', async () => {
+    const csvData = `\uFEFFbeneficiary_id,beneficiary_name,account_number,ifsc_code,category
+BEN-VAR-1,Header Variation Test,990088776655,SBIN0005555,Individual`;
+
+    const res = await fetch(`${baseUrl}/ingest/beneficiaries/csv`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'text/csv' },
+      body: csvData
+    });
+
+    assert.strictEqual(res.status, 200);
+    const body = (await res.json()) as any;
+    assert.strictEqual(body.summary.acceptedCount, 1);
+    assert.strictEqual(body.accepted[0].beneficiaryId, 'BEN-VAR-1');
+    assert.strictEqual(body.accepted[0].ifscOrRoutingCode, 'SBIN0005555');
+  });
+
+  it('POST /api/ingest/beneficiaries/csv - missing required header returns 400 error', async () => {
+    const csvData = `wrong_col_1,wrong_col_2,wrong_col_3
+val1,val2,val3`;
+
+    const res = await fetch(`${baseUrl}/ingest/beneficiaries/csv`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'text/csv' },
+      body: csvData
+    });
+
+    assert.strictEqual(res.status, 400);
+    const body = (await res.json()) as any;
+    assert.strictEqual(body.success, false);
+    assert.ok(body.error.details.includes('missing required beneficiary headers'));
+  });
+
+  it('POST /api/ingest/disbursements/csv - process disbursement CSV', async () => {
+    const csvData = `disbursement_id,beneficiary_id,amount,currency,disbursement_date,program_code
+DISB-CSV-100,BEN-VAR-1,50000,INR,2024-03-25,SCHEME-AGRI`;
+
+    const res = await fetch(`${baseUrl}/ingest/disbursements/csv`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'text/csv' },
+      body: csvData
+    });
+
+    assert.strictEqual(res.status, 200);
+    const body = (await res.json()) as any;
+    assert.strictEqual(body.summary.acceptedCount, 1);
+    assert.strictEqual(body.accepted[0].disbursementId, 'DISB-CSV-100');
+  });
 });
+

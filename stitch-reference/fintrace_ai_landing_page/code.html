@@ -1,0 +1,863 @@
+<!DOCTYPE html>
+
+<html lang="en"><head><meta charset="utf-8"/><meta content="width=device-width, initial-scale=1.0" name="viewport"/><meta content="web_blank" name="shell-type"/><link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet"/><link href="https://fonts.googleapis.com" rel="preconnect"/><link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/><link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=JetBrains+Mono:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/><style>@layer base{html,body{margin:0;padding:0;}body{overscroll-behavior:none;}main>:first-child{margin-top:0!important;}main>:last-child{margin-bottom:0!important;}}::-webkit-scrollbar{display:none;}</style><script src="https://cdn.tailwindcss.com"></script><script id="tailwind-config">tailwind.config={darkMode:"class",theme:{extend:{colors:{"inverse-on-surface":"#eaf1ff","surface-container-lowest":"#ffffff","on-primary-fixed-variant":"#0039b5","on-tertiary-fixed-variant":"#005137","on-surface":"#0b1c30","on-primary":"#ffffff","outline":"#747686","on-secondary-fixed-variant":"#3f465c","on-tertiary-fixed":"#002114","outline-variant":"#c4c5d7","on-secondary-fixed":"#131b2e","tertiary-fixed-dim":"#68dba9","inverse-primary":"#b7c4ff","on-secondary-container":"#5c647a","surface-dim":"#cbdbf5","surface-variant":"#d3e4fe","tertiary":"#004f35","surface-tint":"#2151da","secondary-container":"#dae2fd","primary-container":"#1d4ed8","surface-bright":"#f8f9ff","error":"#ba1a1a","background":"#f8f9ff","tertiary-fixed":"#85f8c4","secondary-fixed-dim":"#bec6e0","surface-container-low":"#eff4ff","primary-fixed":"#dce1ff","on-tertiary":"#ffffff","on-secondary":"#ffffff","surface-container":"#e5eeff","inverse-surface":"#213145","on-error":"#ffffff","tertiary-container":"#006948","surface-container-highest":"#d3e4fe","on-primary-container":"#cad3ff","on-tertiary-container":"#76eab6","secondary":"#565e74","surface":"#f8f9ff","on-background":"#0b1c30","secondary-fixed":"#dae2fd","surface-container-high":"#dce9ff","on-error-container":"#93000a","error-container":"#ffdad6","on-surface-variant":"#434655","on-primary-fixed":"#001551","primary":"#0037b0","primary-fixed-dim":"#b7c4ff"},borderRadius:{DEFAULT:"0.125rem",lg:"0.25rem",xl:"0.5rem",full:"0.75rem"},spacing:{"space-lg":"1rem","margin-compact":"1rem","gutter-dense":"0.5rem","space-md":"0.75rem","space-xl":"1.5rem",gutter:"1rem","space-sm":"0.5rem","space-xs":"0.25rem",margin:"1.5rem"},fontFamily:{"body-sm":["Inter"],"label-sm":["Inter"],"headline-sm":["Inter"],"code-sm":["JetBrains Mono"],"headline-md":["Inter"],"label-md":["Inter"],"headline-lg":["Inter"],"body-md":["Inter"],"body-lg":["Inter"],"code-md":["JetBrains Mono"],"display-lg":["Inter"]},fontSize:{"body-sm":["12px",{lineHeight:"16px",fontWeight:"400"}],"label-sm":["11px",{lineHeight:"14px",letterSpacing:"0.03em",fontWeight:"500"}],"headline-sm":["16px",{lineHeight:"24px",letterSpacing:"-0.005em",fontWeight:"600"}],"code-sm":["11px",{lineHeight:"16px",fontWeight:"400"}],"headline-md":["20px",{lineHeight:"28px",letterSpacing:"-0.01em",fontWeight:"600"}],"label-md":["12px",{lineHeight:"16px",letterSpacing:"0.02em",fontWeight:"600"}],"headline-lg":["24px",{lineHeight:"32px",letterSpacing:"-0.015em",fontWeight:"600"}],"body-md":["13px",{lineHeight:"18px",fontWeight:"400"}],"body-lg":["15px",{lineHeight:"22px",fontWeight:"400"}],"code-md":["13px",{lineHeight:"18px",fontWeight:"500"}],"display-lg":["32px",{lineHeight:"40px",letterSpacing:"-0.02em",fontWeight:"700"}]}}}};</script></head><body class="bg-surface font-body-md text-on-surface min-h-screen flex items-center justify-center"><main class="w-full"><div class="flex flex-col w-full text-on-surface">
+<!-- Top Navigation Header -->
+<header class="w-full bg-surface-container-lowest shadow-sm sticky top-0 z-50">
+<div class="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between gap-4">
+<!-- Logo + Brand -->
+<div class="flex items-center gap-3">
+<img alt="FinTrace AI Logo" class="w-8 h-8 rounded-DEFAULT object-contain shadow-sm" src="https://lh3.googleusercontent.com/aida/AEtjO1X_KYFdLXc_Cqi4hiINuicqzQ_N1zqOcKkcBktWPmdsuv4SgZ_mSxTRR8Oev5eEzUQZUZ3IP0eHrluCxH36Pb84M7BZAf8CQOaLMyFfCsxoL23UoZRLX8RAaCGiPbNGKVPJUnMjjBXzn4kLd2l1hcDufCbOZneA6sVWGS7-59kAIl1EG9P_CMXb_tbd5-kmHPRwC55tNU4DolmwKAfKlsXG41LjGqxr0WtkSwzJGVubycC-8VjoY3tC48k"/>
+<div class="flex items-baseline gap-1.5">
+<span class="font-headline-sm text-headline-sm tracking-tight text-on-surface">FinTrace</span>
+<span class="font-headline-sm text-headline-sm text-primary">AI</span>
+<span class="font-code-sm text-code-sm px-1.5 py-0.5 rounded-DEFAULT bg-surface-container text-on-surface-variant font-medium ml-1">v2.4-PROD</span>
+</div>
+</div>
+<!-- Center Links -->
+<nav class="hidden md:flex items-center gap-8">
+<a class="font-label-md text-label-md text-on-surface-variant hover:text-primary transition-colors" href="#workflow">Workflow</a>
+<a class="font-label-md text-label-md text-on-surface-variant hover:text-primary transition-colors" href="#methodology">Methodology</a>
+<a class="font-label-md text-label-md text-on-surface-variant hover:text-primary transition-colors" href="#product-preview">Product Preview</a>
+<a class="font-label-md text-label-md text-on-surface-variant hover:text-primary transition-colors" href="#governance">Governance</a>
+</nav>
+<!-- Right Actions: Theme Toggle, Sign In, Open Workspace -->
+<div class="flex items-center gap-3">
+<!-- Theme Toggle Button -->
+<button aria-label="Toggle visual contrast" class="w-8 h-8 flex items-center justify-center rounded-DEFAULT bg-surface-container hover:bg-surface-variant text-on-surface-variant transition-colors" id="themeToggleBtn" type="button">
+<span class="material-symbols-outlined text-[18px]">routine</span>
+</button>
+<a class="hidden sm:inline-flex items-center px-3 py-1.5 rounded-DEFAULT font-label-md text-label-md text-on-surface hover:bg-surface-container transition-colors" href="#signin">
+          Sign In
+        </a>
+<a class="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-DEFAULT bg-primary hover:bg-primary-container text-on-primary font-label-md text-label-md shadow-sm transition-all" href="#product-preview">
+<span>Open Workspace</span>
+<span class="material-symbols-outlined text-[16px]">arrow_forward</span>
+</a>
+</div>
+</div>
+</header>
+<!-- Notice Scrim Bar: Human Verification Requirement -->
+<div class="w-full bg-secondary-container/40 text-on-secondary-fixed py-2 px-6">
+<div class="max-w-7xl mx-auto flex items-center justify-center gap-2 text-center">
+<span class="material-symbols-outlined text-[16px] text-primary">policy</span>
+<p class="font-label-sm text-label-sm tracking-normal">
+<span class="font-semibold text-primary">Mandatory Audit Principle:</span> Algorithmic outputs are evidentiary risk signals, not definitive legal findings. Continuous certified investigator review required under SEC/FINRA Rule 3110.
+      </p>
+</div>
+</div>
+<!-- Hero Section -->
+<section class="w-full bg-surface-bright py-20 px-6 relative overflow-hidden">
+<div class="max-w-7xl mx-auto flex flex-col items-center text-center relative z-10">
+<!-- Overline Tag -->
+<div class="inline-flex items-center gap-2 px-3 py-1 rounded-DEFAULT bg-surface-container-high text-on-secondary-fixed-variant mb-6 shadow-sm">
+<span class="w-2 h-2 rounded-full bg-tertiary"></span>
+<span class="font-code-sm text-code-sm uppercase tracking-wider font-semibold">Institutional Disbursement Ledger Forensic v2.4</span>
+<span class="text-outline-variant font-code-sm text-code-sm">|</span>
+<span class="font-code-sm text-code-sm text-primary font-semibold">Zero False Negatives Target</span>
+</div>
+<!-- Headline -->
+<h1 class="font-display-lg text-display-lg md:text-[40px] md:leading-[48px] max-w-4xl text-on-surface tracking-tight font-bold mb-6">
+        Explainable Financial Micro-Auditing for High-Stakes Disbursements
+      </h1>
+<!-- Supporting Statement -->
+<p class="font-body-lg text-body-lg max-w-2xl text-on-surface-variant mb-10">
+        Uncover hidden beneficiary networks, isolate synthetic disbursement rings, and trace audit trails with verifiable evidence. Purpose-built for compliance directors, oversight inspectors, and forensic AML units.
+      </p>
+<!-- Primary Action CTAs -->
+<div class="flex flex-wrap items-center justify-center gap-4 mb-14">
+<a class="inline-flex items-center gap-2 px-5 py-2.5 rounded-DEFAULT bg-primary hover:bg-primary-container text-on-primary font-headline-sm text-headline-sm shadow-md transition-all" href="#product-preview">
+<span class="material-symbols-outlined text-[18px]">fact_check</span>
+<span>Explore Product Preview</span>
+</a>
+<a class="inline-flex items-center gap-2 px-5 py-2.5 rounded-DEFAULT bg-surface-container-lowest hover:bg-surface-container text-on-surface font-headline-sm text-headline-sm shadow-sm transition-all" href="#workflow">
+<span class="material-symbols-outlined text-[18px]">terminal</span>
+<span>Open Workspace Console</span>
+</a>
+</div>
+<!-- Trust Metrics / At-a-glance Stats Row -->
+<div class="grid grid-cols-2 md:grid-cols-4 gap-4 w-full max-w-4xl pt-4">
+<div class="bg-surface-container-lowest p-4 rounded-DEFAULT shadow-sm text-left">
+<p class="font-label-sm text-label-sm text-on-surface-variant uppercase tracking-wider">Detection Velocity</p>
+<p class="font-code-md text-code-md text-on-surface font-bold mt-1">420k txn/sec</p>
+<span class="font-body-sm text-body-sm text-tertiary flex items-center gap-1 mt-0.5">
+<span class="material-symbols-outlined text-[14px]">bolt</span> Sub-second latency
+          </span>
+</div>
+<div class="bg-surface-container-lowest p-4 rounded-DEFAULT shadow-sm text-left">
+<p class="font-label-sm text-label-sm text-on-surface-variant uppercase tracking-wider">Confidence Metric</p>
+<p class="font-code-md text-code-md text-on-surface font-bold mt-1">99.98% Hash Seal</p>
+<span class="font-body-sm text-body-sm text-primary flex items-center gap-1 mt-0.5">
+<span class="material-symbols-outlined text-[14px]">lock</span> SHA-256 Chain of Custody
+          </span>
+</div>
+<div class="bg-surface-container-lowest p-4 rounded-DEFAULT shadow-sm text-left">
+<p class="font-label-sm text-label-sm text-on-surface-variant uppercase tracking-wider">Unsupervised Baseline</p>
+<p class="font-code-md text-code-md text-on-surface font-bold mt-1">Isolation Forest</p>
+<span class="font-body-sm text-body-sm text-on-secondary-container flex items-center gap-1 mt-0.5">
+<span class="material-symbols-outlined text-[14px]">schema</span> Contamination @ 0.015
+          </span>
+</div>
+<div class="bg-surface-container-lowest p-4 rounded-DEFAULT shadow-sm text-left">
+<p class="font-label-sm text-label-sm text-on-surface-variant uppercase tracking-wider">Oversight Compliance</p>
+<p class="font-code-md text-code-md text-on-surface font-bold mt-1">FedRAMP &amp; SOC2</p>
+<span class="font-body-sm text-body-sm text-tertiary flex items-center gap-1 mt-0.5">
+<span class="material-symbols-outlined text-[14px]">verified_user</span> Type II Certified
+          </span>
+</div>
+</div>
+</div>
+</section>
+<!-- Interactive Product Preview Component Section -->
+<section class="w-full bg-surface-container-low py-16 px-6" id="product-preview">
+<div class="max-w-7xl mx-auto flex flex-col gap-8">
+<!-- Section Header -->
+<div class="flex flex-col md:flex-row md:items-end justify-between gap-4">
+<div>
+<div class="flex items-center gap-2 text-primary font-code-sm text-code-sm uppercase tracking-wider font-semibold mb-1">
+<span class="material-symbols-outlined text-[16px]">troubleshoot</span>
+<span>Live Micro-Audit Engine Telemetry</span>
+</div>
+<h2 class="font-headline-lg text-headline-lg text-on-surface font-bold">Investigation Canvas: Batch RUN-2025-0418-X9</h2>
+</div>
+<div class="flex items-center gap-2 self-start md:self-auto">
+<span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-DEFAULT bg-surface-container text-on-surface font-code-sm text-code-sm">
+<span class="w-2 h-2 rounded-full bg-tertiary animate-pulse"></span>
+<span>STREAM SYNCHRONIZED</span>
+</span>
+<button class="px-3 py-1 rounded-DEFAULT bg-surface-container-lowest hover:bg-surface-container text-on-surface font-label-md text-label-md shadow-sm transition-all flex items-center gap-1" id="refreshSimBtn">
+<span class="material-symbols-outlined text-[14px]">refresh</span>
+<span>Rerun Anomaly Pass</span>
+</button>
+</div>
+</div>
+<!-- Core Interactive Dashboard Sandbox -->
+<div class="bg-surface-container-lowest rounded-xl shadow-md overflow-hidden flex flex-col">
+<!-- Top Telemetry Ribbon -->
+<div class="grid grid-cols-1 md:grid-cols-4 bg-surface-container p-3 gap-3">
+<div class="bg-surface-container-lowest px-4 py-3 rounded-DEFAULT shadow-sm">
+<span class="font-label-sm text-label-sm text-on-surface-variant uppercase">Audited Records</span>
+<div class="flex items-baseline justify-between mt-1">
+<span class="font-code-md text-code-md text-on-surface font-bold" id="counterRecords">48,192</span>
+<span class="font-code-sm text-code-sm text-tertiary">100% Parsed</span>
+</div>
+</div>
+<div class="bg-surface-container-lowest px-4 py-3 rounded-DEFAULT shadow-sm">
+<span class="font-label-sm text-label-sm text-on-surface-variant uppercase">Total Throughput</span>
+<div class="flex items-baseline justify-between mt-1">
+<span class="font-code-md text-code-md text-on-surface font-bold">$142,829,410.00</span>
+<span class="font-code-sm text-code-sm text-on-secondary-variant font-medium">USD</span>
+</div>
+</div>
+<div class="bg-surface-container-lowest px-4 py-3 rounded-DEFAULT shadow-sm">
+<span class="font-label-sm text-label-sm text-on-surface-variant uppercase">Anomalous Clusters</span>
+<div class="flex items-baseline justify-between mt-1">
+<span class="font-code-md text-code-md text-error font-bold" id="counterClusters">14 Flagged</span>
+<span class="font-code-sm text-code-sm px-1.5 py-0.2 bg-error-container text-on-error-container rounded-DEFAULT">High Purity</span>
+</div>
+</div>
+<div class="bg-surface-container-lowest px-4 py-3 rounded-DEFAULT shadow-sm">
+<span class="font-label-sm text-label-sm text-on-surface-variant uppercase">Heuristic Coverage</span>
+<div class="flex items-baseline justify-between mt-1">
+<span class="font-code-md text-code-md text-on-surface font-bold">24 Active Rules</span>
+<span class="font-code-sm text-code-sm text-primary font-medium">+ iForest 12-Tree</span>
+</div>
+</div>
+</div>
+<!-- 3-Panel Forensic Layout -->
+<div class="grid grid-cols-1 lg:grid-cols-12 min-h-[520px]">
+<!-- Column 1: Flagged Cluster Ledger (5 cols) -->
+<div class="lg:col-span-5 p-4 bg-surface-bright flex flex-col gap-3">
+<div class="flex items-center justify-between pb-2">
+<span class="font-label-md text-label-md text-on-surface font-semibold flex items-center gap-1.5">
+<span class="material-symbols-outlined text-[16px] text-error">warning</span>
+<span>Prioritized Evidence Ledger</span>
+</span>
+<span class="font-code-sm text-code-sm text-on-surface-variant">Sort: Anomaly Score ↓</span>
+</div>
+<!-- List items representing anomaly clusters -->
+<div class="flex flex-col gap-2 overflow-y-auto max-h-[440px] pr-1">
+<!-- Cluster Card 1 (Active by default) -->
+<div class="cluster-card cursor-pointer p-3 rounded-DEFAULT bg-surface-container-lowest shadow-sm hover:shadow-md transition-all" id="card-cluster-01" onclick="selectCluster('01')">
+<div class="flex items-start justify-between">
+<div>
+<div class="flex items-center gap-2">
+<span class="font-code-sm text-code-sm font-bold text-on-surface">#CL-8821</span>
+<span class="font-code-sm text-code-sm px-1.5 py-0.5 rounded-DEFAULT bg-error-container text-on-error-container font-semibold">Risk: 0.96</span>
+</div>
+<p class="font-body-sm text-body-sm text-on-surface mt-1 font-medium">Split Structuring Sub-10K &amp; ABA Routing Loop</p>
+</div>
+<span class="font-code-sm text-code-sm text-error font-semibold">$94,500.00</span>
+</div>
+<div class="flex items-center justify-between mt-2 pt-2 text-on-surface-variant">
+<span class="font-code-sm text-code-sm">11 Micro-Disbursements</span>
+<span class="font-label-sm text-label-sm text-primary flex items-center">
+                    Inspect Trace <span class="material-symbols-outlined text-[14px]">chevron_right</span>
+</span>
+</div>
+</div>
+<!-- Cluster Card 2 -->
+<div class="cluster-card cursor-pointer p-3 rounded-DEFAULT bg-surface-container-lowest hover:bg-surface-container-low transition-all" id="card-cluster-02" onclick="selectCluster('02')">
+<div class="flex items-start justify-between">
+<div>
+<div class="flex items-center gap-2">
+<span class="font-code-sm text-code-sm font-bold text-on-surface">#CL-8819</span>
+<span class="font-code-sm text-code-sm px-1.5 py-0.5 rounded-DEFAULT bg-error-container text-on-error-container font-semibold">Risk: 0.89</span>
+</div>
+<p class="font-body-sm text-body-sm text-on-surface mt-1">Shared SWIFT BIC Collision across 7 Entities</p>
+</div>
+<span class="font-code-sm text-code-sm text-error font-semibold">$248,000.00</span>
+</div>
+<div class="flex items-center justify-between mt-2 pt-2 text-on-surface-variant">
+<span class="font-code-sm text-code-sm">4 Payor Accounts / 1 Collateral Vault</span>
+<span class="font-label-sm text-label-sm text-on-surface-variant flex items-center">
+                    Inspect Trace <span class="material-symbols-outlined text-[14px]">chevron_right</span>
+</span>
+</div>
+</div>
+<!-- Cluster Card 3 -->
+<div class="cluster-card cursor-pointer p-3 rounded-DEFAULT bg-surface-container-lowest hover:bg-surface-container-low transition-all" id="card-cluster-03" onclick="selectCluster('03')">
+<div class="flex items-start justify-between">
+<div>
+<div class="flex items-center gap-2">
+<span class="font-code-sm text-code-sm font-bold text-on-surface">#CL-8794</span>
+<span class="font-code-sm text-code-sm px-1.5 py-0.5 rounded-DEFAULT bg-secondary-container text-on-secondary-fixed-variant font-semibold">Risk: 0.74</span>
+</div>
+<p class="font-body-sm text-body-sm text-on-surface mt-1">Rapid Velocity Burst (&lt;120s from batch release)</p>
+</div>
+<span class="font-code-sm text-code-sm text-on-surface font-semibold">$19,800.00</span>
+</div>
+<div class="flex items-center justify-between mt-2 pt-2 text-on-surface-variant">
+<span class="font-code-sm text-code-sm">3 Synthetic Corporate Tax IDs</span>
+<span class="font-label-sm text-label-sm text-on-surface-variant flex items-center">
+                    Inspect Trace <span class="material-symbols-outlined text-[14px]">chevron_right</span>
+</span>
+</div>
+</div>
+<!-- Cluster Card 4 -->
+<div class="cluster-card cursor-pointer p-3 rounded-DEFAULT bg-surface-container-lowest hover:bg-surface-container-low transition-all" id="card-cluster-04" onclick="selectCluster('04')">
+<div class="flex items-start justify-between">
+<div>
+<div class="flex items-center gap-2">
+<span class="font-code-sm text-code-sm font-bold text-on-surface">#CL-8755</span>
+<span class="font-code-sm text-code-sm px-1.5 py-0.5 rounded-DEFAULT bg-secondary-container text-on-secondary-fixed-variant font-semibold">Risk: 0.68</span>
+</div>
+<p class="font-body-sm text-body-sm text-on-surface mt-1">OFAC Secondary Exposure via Intermediary Proxy</p>
+</div>
+<span class="font-code-sm text-code-sm text-on-surface font-semibold">$51,200.00</span>
+</div>
+<div class="flex items-center justify-between mt-2 pt-2 text-on-surface-variant">
+<span class="font-code-sm text-code-sm">Jurisdiction Jump: CY → AE → US</span>
+<span class="font-label-sm text-label-sm text-on-surface-variant flex items-center">
+                    Inspect Trace <span class="material-symbols-outlined text-[14px]">chevron_right</span>
+</span>
+</div>
+</div>
+</div>
+<!-- Ledger Summary Footer -->
+<div class="mt-auto pt-2 flex items-center justify-between font-label-sm text-label-sm text-on-surface-variant">
+<span>Showing 4 of 14 flagged items</span>
+<a class="text-primary hover:underline" href="#workflow">View All in Console →</a>
+</div>
+</div>
+<!-- Column 2: Connected-Entity Bipartite Graph Visualization (4 cols) -->
+<div class="lg:col-span-4 p-4 bg-surface-container-lowest flex flex-col justify-between">
+<div>
+<div class="flex items-center justify-between mb-2">
+<span class="font-label-md text-label-md text-on-surface font-semibold flex items-center gap-1.5">
+<span class="material-symbols-outlined text-[16px] text-primary">hub</span>
+<span>Entity Topology &amp; Collisions</span>
+</span>
+<span class="font-code-sm text-code-sm text-on-surface-variant">Bipartite Layer</span>
+</div>
+<p class="font-body-sm text-body-sm text-on-surface-variant mb-3">
+                Live node linkage between Disbursing Entities (D-Node), Virtual Payout Gateways, and Beneficiary IBANs.
+              </p>
+</div>
+<!-- Vector Diagram of Connected Entities -->
+<div class="w-full bg-surface-container-low rounded-DEFAULT p-3 flex flex-col items-center justify-center relative my-2">
+<svg class="w-full h-56" fill="none" viewbox="0 0 320 200" xmlns="http://www.w3.org/2000/svg">
+<!-- Links / Connections -->
+<path d="M 50 100 L 160 50" stroke="#c4c5d7" stroke-dasharray="3 3" stroke-width="1.5"></path>
+<path d="M 50 100 L 160 100" stroke="#1d4ed8" stroke-width="2"></path>
+<path d="M 50 100 L 160 150" stroke="#ba1a1a" stroke-width="2"></path>
+<path d="M 160 50 L 270 50" stroke="#c4c5d7" stroke-width="1.5"></path>
+<path d="M 160 100 L 270 50" stroke="#ba1a1a" stroke-width="2"></path>
+<path d="M 160 150 L 270 150" stroke="#ba1a1a" stroke-width="2"></path>
+<path d="M 160 150 L 270 50" stroke="#ba1a1a" stroke-width="2.5"></path>
+<!-- Source Origin Entity -->
+<circle cx="50" cy="100" fill="#0b1c30" r="16"></circle>
+<text fill="#ffffff" font-family="JetBrains Mono" font-size="9" font-weight="600" text-anchor="middle" x="50" y="104">SRC-01</text>
+<text fill="#565e74" font-family="Inter" font-size="8" text-anchor="middle" x="50" y="126">Disbursing Acc</text>
+<!-- Intermediate Gateways -->
+<circle cx="160" cy="50" fill="#dae2fd" r="13"></circle>
+<text fill="#0037b0" font-family="JetBrains Mono" font-size="8" text-anchor="middle" x="160" y="54">RT-081</text>
+<circle cx="160" cy="100" fill="#dae2fd" r="13"></circle>
+<text fill="#0037b0" font-family="JetBrains Mono" font-size="8" text-anchor="middle" x="160" y="104">RT-082</text>
+<!-- High Risk Intermediary Node -->
+<circle cx="160" cy="150" fill="#ffdad6" r="15"></circle>
+<circle cx="160" cy="150" r="19" stroke="#ba1a1a" stroke-dasharray="2 2" stroke-width="1.5"></circle>
+<text fill="#ba1a1a" font-family="JetBrains Mono" font-size="8" font-weight="bold" text-anchor="middle" x="160" y="154">RT-994</text>
+<text fill="#ba1a1a" font-family="Inter" font-size="8" font-weight="600" text-anchor="middle" x="160" y="178">Shared Route</text>
+<!-- Terminating Beneficiaries -->
+<circle cx="270" cy="50" fill="#ffdad6" r="14"></circle>
+<text fill="#ba1a1a" font-family="JetBrains Mono" font-size="8" text-anchor="middle" x="270" y="53">BN-41</text>
+<text fill="#ba1a1a" font-family="Inter" font-size="7" text-anchor="middle" x="270" y="73">Collision Node</text>
+<circle cx="270" cy="150" fill="#006948" r="13"></circle>
+<text fill="#ffffff" font-family="JetBrains Mono" font-size="8" text-anchor="middle" x="270" y="154">BN-18</text>
+<text fill="#004f35" font-family="Inter" font-size="7" text-anchor="middle" x="270" y="172">Verified Recipient</text>
+</svg>
+<!-- Graph Metadata Pills -->
+<div class="flex items-center justify-between w-full pt-2">
+<span class="font-code-sm text-code-sm text-on-surface-variant">Density: 0.78</span>
+<span class="font-code-sm text-code-sm text-error font-semibold flex items-center gap-1">
+<span class="w-1.5 h-1.5 rounded-full bg-error"></span>
+                  Synthetic Ring Signature Detected
+                </span>
+</div>
+</div>
+<!-- Graph Legend -->
+<div class="pt-2 flex items-center justify-around font-label-sm text-label-sm text-on-surface-variant">
+<span class="flex items-center gap-1"><span class="w-2 h-2 rounded-full bg-on-surface"></span> Origin</span>
+<span class="flex items-center gap-1"><span class="w-2 h-2 rounded-full bg-primary-container"></span> Router</span>
+<span class="flex items-center gap-1"><span class="w-2 h-2 rounded-full bg-error"></span> Collision</span>
+<span class="flex items-center gap-1"><span class="w-2 h-2 rounded-full bg-tertiary-container"></span> Verified</span>
+</div>
+</div>
+<!-- Column 3: Forensic Explainability Detail Pane (3 cols) -->
+<div class="lg:col-span-3 p-4 bg-surface-container-high flex flex-col justify-between">
+<div>
+<div class="flex items-center justify-between pb-2">
+<span class="font-label-md text-label-md text-on-surface font-semibold flex items-center gap-1.5">
+<span class="material-symbols-outlined text-[16px] text-on-primary-fixed-variant">psychology</span>
+<span>Feature Contribution</span>
+</span>
+<span class="font-code-sm text-code-sm px-1.5 py-0.5 rounded-DEFAULT bg-surface-container-lowest text-on-surface">SHAP-LIME</span>
+</div>
+<div class="space-y-4 pt-2" id="inspectorDetails">
+<div>
+<div class="flex justify-between font-label-sm text-label-sm mb-1">
+<span class="text-on-surface">Sub-10K Payout Clumping</span>
+<span class="text-error font-code-sm text-code-sm font-semibold">+44.2%</span>
+</div>
+<div class="w-full bg-surface-container rounded-full h-1.5 overflow-hidden">
+<div class="bg-error h-full rounded-full w-[88%]"></div>
+</div>
+</div>
+<div>
+<div class="flex justify-between font-label-sm text-label-sm mb-1">
+<span class="text-on-surface">Routing BIC Shared Fingerprint</span>
+<span class="text-error font-code-sm text-code-sm font-semibold">+31.8%</span>
+</div>
+<div class="w-full bg-surface-container rounded-full h-1.5 overflow-hidden">
+<div class="bg-error h-full rounded-full w-[64%]"></div>
+</div>
+</div>
+<div>
+<div class="flex justify-between font-label-sm text-label-sm mb-1">
+<span class="text-on-surface">Temporal Interval Dispersion</span>
+<span class="text-primary font-code-sm text-code-sm font-semibold">+18.0%</span>
+</div>
+<div class="w-full bg-surface-container rounded-full h-1.5 overflow-hidden">
+<div class="bg-primary h-full rounded-full w-[36%]"></div>
+</div>
+</div>
+<div>
+<div class="flex justify-between font-label-sm text-label-sm mb-1">
+<span class="text-on-surface-variant">Payor Historical Cleared Baseline</span>
+<span class="text-tertiary font-code-sm text-code-sm font-semibold">-12.4%</span>
+</div>
+<div class="w-full bg-surface-container rounded-full h-1.5 overflow-hidden">
+<div class="bg-tertiary h-full rounded-full w-[25%]"></div>
+</div>
+</div>
+<div class="p-2.5 rounded-DEFAULT bg-surface-container-lowest mt-4 shadow-sm">
+<span class="font-code-sm text-code-sm uppercase tracking-wide text-on-surface-variant font-semibold">Audit Recommendation</span>
+<p class="font-body-sm text-body-sm text-on-surface mt-1">
+                    Hold batch release for <span class="font-bold">Wire IDs 90401-90412</span>. Escalate to AML Team Tier-2 for beneficial ownership confirmation.
+                  </p>
+</div>
+</div>
+</div>
+<!-- Sign-Off Action Trigger -->
+<div class="pt-4 flex flex-col gap-2">
+<button class="w-full py-2 px-3 rounded-DEFAULT bg-error text-on-error font-label-md text-label-md hover:bg-on-error-container transition-all flex items-center justify-center gap-1.5 shadow-sm" onclick="handleAuditAction('flagged')">
+<span class="material-symbols-outlined text-[16px]">flag</span>
+<span>Flag &amp; Lock For Manual Review</span>
+</button>
+<button class="w-full py-1.5 px-3 rounded-DEFAULT bg-surface-container-lowest text-on-surface font-label-md text-label-md hover:bg-surface-container transition-all flex items-center justify-center gap-1.5 shadow-sm" onclick="handleAuditAction('cleared')">
+<span class="material-symbols-outlined text-[16px]">check_circle</span>
+<span>Mark Normalizing Justification</span>
+</button>
+</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- Workflow Section -->
+<section class="w-full bg-surface py-20 px-6" id="workflow">
+<div class="max-w-7xl mx-auto flex flex-col gap-12">
+<!-- Workflow Header -->
+<div class="max-w-3xl">
+<span class="font-code-sm text-code-sm uppercase tracking-wider font-semibold text-primary">5-Stage Forensic Lineage</span>
+<h2 class="font-display-lg text-display-lg text-on-surface tracking-tight font-bold mt-2">
+          From Raw Ingestion to Cryptographically Sealed Dossiers
+        </h2>
+<p class="font-body-lg text-body-lg text-on-surface-variant mt-3">
+          Every stage preserves deterministic reproducibility. When regulators request documentation, your audit trails answer with mathematical clarity.
+        </p>
+</div>
+<!-- Horizontal Process Sequence -->
+<div class="grid grid-cols-1 md:grid-cols-5 gap-4">
+<!-- Step 1 -->
+<div class="bg-surface-container-lowest p-5 rounded-DEFAULT shadow-sm flex flex-col justify-between hover:shadow-md transition-shadow">
+<div>
+<div class="flex items-center justify-between mb-4">
+<span class="w-7 h-7 rounded-full bg-secondary-container text-on-secondary-fixed font-code-sm text-code-sm flex items-center justify-center font-bold">01</span>
+<span class="material-symbols-outlined text-[20px] text-primary">input</span>
+</div>
+<h3 class="font-headline-sm text-headline-sm text-on-surface font-semibold mb-2">Import Data</h3>
+<p class="font-body-sm text-body-sm text-on-surface-variant">
+              High-throughput batch CSV, JSON schemas, or native Kafka/FedNow disbursement streaming pipelines.
+            </p>
+</div>
+<div class="mt-6 pt-3">
+<span class="font-code-sm text-code-sm text-on-secondary-container bg-surface-container-low px-2 py-1 rounded-DEFAULT block text-center">
+              Multi-Source Schema Map
+            </span>
+</div>
+</div>
+<!-- Step 2 -->
+<div class="bg-surface-container-lowest p-5 rounded-DEFAULT shadow-sm flex flex-col justify-between hover:shadow-md transition-shadow">
+<div>
+<div class="flex items-center justify-between mb-4">
+<span class="w-7 h-7 rounded-full bg-secondary-container text-on-secondary-fixed font-code-sm text-code-sm flex items-center justify-center font-bold">02</span>
+<span class="material-symbols-outlined text-[20px] text-primary">troubleshoot</span>
+</div>
+<h3 class="font-headline-sm text-headline-sm text-on-surface font-semibold mb-2">Analyze Risks</h3>
+<p class="font-body-sm text-body-sm text-on-surface-variant">
+              Rule-based deterministic compliance checks layered with unsupervised Isolation Forest ML anomaly scoring.
+            </p>
+</div>
+<div class="mt-6 pt-3">
+<span class="font-code-sm text-code-sm text-on-secondary-container bg-surface-container-low px-2 py-1 rounded-DEFAULT block text-center">
+              Dual-Engine Pass
+            </span>
+</div>
+</div>
+<!-- Step 3 -->
+<div class="bg-surface-container-lowest p-5 rounded-DEFAULT shadow-sm flex flex-col justify-between hover:shadow-md transition-shadow">
+<div>
+<div class="flex items-center justify-between mb-4">
+<span class="w-7 h-7 rounded-full bg-secondary-container text-on-secondary-fixed font-code-sm text-code-sm flex items-center justify-center font-bold">03</span>
+<span class="material-symbols-outlined text-[20px] text-primary">account_tree</span>
+</div>
+<h3 class="font-headline-sm text-headline-sm text-on-surface font-semibold mb-2">Investigate Connections</h3>
+<p class="font-body-sm text-body-sm text-on-surface-variant">
+              Bipartite graph topological models reveal shell companies and split payment account collisions instantly.
+            </p>
+</div>
+<div class="mt-6 pt-3">
+<span class="font-code-sm text-code-sm text-on-secondary-container bg-surface-container-low px-2 py-1 rounded-DEFAULT block text-center">
+              Graph Entity Traversal
+            </span>
+</div>
+</div>
+<!-- Step 4 -->
+<div class="bg-surface-container-lowest p-5 rounded-DEFAULT shadow-sm flex flex-col justify-between hover:shadow-md transition-shadow">
+<div>
+<div class="flex items-center justify-between mb-4">
+<span class="w-7 h-7 rounded-full bg-secondary-container text-on-secondary-fixed font-code-sm text-code-sm flex items-center justify-center font-bold">04</span>
+<span class="material-symbols-outlined text-[20px] text-primary">how_to_reg</span>
+</div>
+<h3 class="font-headline-sm text-headline-sm text-on-surface font-semibold mb-2">Review Evidence</h3>
+<p class="font-body-sm text-body-sm text-on-surface-variant">
+              Explainable feature weighting provides plain-language justification notes ready for human sign-off.
+            </p>
+</div>
+<div class="mt-6 pt-3">
+<span class="font-code-sm text-code-sm text-on-secondary-container bg-surface-container-low px-2 py-1 rounded-DEFAULT block text-center">
+              Human-in-the-Loop Signoff
+            </span>
+</div>
+</div>
+<!-- Step 5 -->
+<div class="bg-surface-container-lowest p-5 rounded-DEFAULT shadow-sm flex flex-col justify-between hover:shadow-md transition-shadow">
+<div>
+<div class="flex items-center justify-between mb-4">
+<span class="w-7 h-7 rounded-full bg-secondary-container text-on-secondary-fixed font-code-sm text-code-sm flex items-center justify-center font-bold">05</span>
+<span class="material-symbols-outlined text-[20px] text-primary">verified</span>
+</div>
+<h3 class="font-headline-sm text-headline-sm text-on-surface font-semibold mb-2">Export Reports</h3>
+<p class="font-body-sm text-body-sm text-on-surface-variant">
+              Generate SHA-256 hashed audit dossiers compliant with FinCEN SAR and regulatory submission formats.
+            </p>
+</div>
+<div class="mt-6 pt-3">
+<span class="font-code-sm text-code-sm text-on-secondary-container bg-surface-container-low px-2 py-1 rounded-DEFAULT block text-center">
+              Tamper-Proof Dossier
+            </span>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- Methodology Deep Dive: Dual Engine Architecture -->
+<section class="w-full bg-surface-container py-20 px-6" id="methodology">
+<div class="max-w-7xl mx-auto flex flex-col gap-12">
+<!-- Section Header -->
+<div class="max-w-3xl">
+<span class="font-code-sm text-code-sm uppercase tracking-wider font-semibold text-primary">Architectural Rigor</span>
+<h2 class="font-display-lg text-display-lg text-on-surface tracking-tight font-bold mt-2">
+          The Dual-Engine Detection Architecture
+        </h2>
+<p class="font-body-lg text-body-lg text-on-surface-variant mt-3">
+          Rule-only systems drown compliance in false positives. Pure black-box machine learning fails regulatory explainability tests. FinTrace combines both engines to produce verifiable certainty.
+        </p>
+</div>
+<!-- Comparison / Deep Dive Grid -->
+<div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+<!-- Engine A: Deterministic Rule-Based Heuristics -->
+<div class="bg-surface-container-lowest p-8 rounded-DEFAULT shadow-sm flex flex-col justify-between">
+<div>
+<div class="flex items-center justify-between pb-4">
+<div class="flex items-center gap-2">
+<span class="w-3 h-3 rounded-full bg-primary"></span>
+<h3 class="font-headline-md text-headline-md text-on-surface font-bold">Deterministic Heuristics Engine</h3>
+</div>
+<span class="font-code-sm text-code-sm px-2 py-0.5 rounded-DEFAULT bg-primary-fixed text-on-primary-fixed font-semibold">Engine A</span>
+</div>
+<p class="font-body-md text-body-md text-on-surface-variant mb-6">
+              Hardcoded statutory limits, global sanctions screening, and pattern-based structuring flags that provide binary audit evidence for legal proceedings.
+            </p>
+<ul class="space-y-4 font-body-sm text-body-sm">
+<li class="flex items-start gap-3">
+<span class="material-symbols-outlined text-[18px] text-primary shrink-0 mt-0.5">check_circle</span>
+<div>
+<strong class="font-semibold text-on-surface">Structuring Identification ($9,000 - $9,999):</strong>
+<p class="text-on-surface-variant">Automated identification of repeated transfers calibrated just beneath mandatory CTR reporting triggers within arbitrary rolling timeframes.</p>
+</div>
+</li>
+<li class="flex items-start gap-3">
+<span class="material-symbols-outlined text-[18px] text-primary shrink-0 mt-0.5">check_circle</span>
+<div>
+<strong class="font-semibold text-on-surface">OFAC &amp; PEP Fuzzy Entity Resolution:</strong>
+<p class="text-on-surface-variant">Jaro-Winkler and Levenshtein token distance matching against updated sanctions registries with automated phoneme phonetic hashing.</p>
+</div>
+</li>
+<li class="flex items-start gap-3">
+<span class="material-symbols-outlined text-[18px] text-primary shrink-0 mt-0.5">check_circle</span>
+<div>
+<strong class="font-semibold text-on-surface">Rapid Velocity Windowing:</strong>
+<p class="text-on-surface-variant">Detection of sub-minute batch dispersion spikes where account balances drop back to zero within single clearing cycles.</p>
+</div>
+</li>
+</ul>
+</div>
+<div class="mt-8 pt-4 bg-surface-bright p-3 rounded-DEFAULT">
+<span class="font-label-sm text-label-sm text-on-surface-variant uppercase font-semibold">Regulatory Standard Mapping:</span>
+<div class="flex flex-wrap gap-2 mt-2">
+<span class="font-code-sm text-code-sm px-2 py-0.5 rounded-DEFAULT bg-surface-container text-on-surface font-medium">Bank Secrecy Act (BSA)</span>
+<span class="font-code-sm text-code-sm px-2 py-0.5 rounded-DEFAULT bg-surface-container text-on-surface font-medium">FinCEN 314(a)</span>
+<span class="font-code-sm text-code-sm px-2 py-0.5 rounded-DEFAULT bg-surface-container text-on-surface font-medium">EU 6AMLD</span>
+</div>
+</div>
+</div>
+<!-- Engine B: Unsupervised Isolation Forest ML -->
+<div class="bg-surface-container-lowest p-8 rounded-DEFAULT shadow-sm flex flex-col justify-between">
+<div>
+<div class="flex items-center justify-between pb-4">
+<div class="flex items-center gap-2">
+<span class="w-3 h-3 rounded-full bg-tertiary"></span>
+<h3 class="font-headline-md text-headline-md text-on-surface font-bold">Isolation Forest Anomaly ML</h3>
+</div>
+<span class="font-code-sm text-code-sm px-2 py-0.5 rounded-DEFAULT bg-tertiary-fixed text-on-tertiary-fixed font-semibold">Engine B</span>
+</div>
+<p class="font-body-md text-body-md text-on-surface-variant mb-6">
+              Tree-based ensemble isolation isolating zero-day disbursement anomalies that circumvent pre-configured rules by analyzing high-dimensional distance.
+            </p>
+<ul class="space-y-4 font-body-sm text-body-sm">
+<li class="flex items-start gap-3">
+<span class="material-symbols-outlined text-[18px] text-tertiary shrink-0 mt-0.5">check_circle</span>
+<div>
+<strong class="font-semibold text-on-surface">Contamination Threshold: 0.015:</strong>
+<p class="text-on-surface-variant">Strictly parameterized to isolate the most extreme 1.5% outliers, dramatically suppressing benign transactional noise.</p>
+</div>
+</li>
+<li class="flex items-start gap-3">
+<span class="material-symbols-outlined text-[18px] text-tertiary shrink-0 mt-0.5">check_circle</span>
+<div>
+<strong class="font-semibold text-on-surface">12-Tree Subspace Partitioning:</strong>
+<p class="text-on-surface-variant">Multi-feature recursive tree splitting over disbursement intervals, IP subnet shifts, beneficiary account vintage, and volume deviations.</p>
+</div>
+</li>
+<li class="flex items-start gap-3">
+<span class="material-symbols-outlined text-[18px] text-tertiary shrink-0 mt-0.5">check_circle</span>
+<div>
+<strong class="font-semibold text-on-surface">SHAP Value Explainability Scores:</strong>
+<p class="text-on-surface-variant">Every flagged anomaly outputs normalized marginal contribution scores (+/-) so auditors immediately understand why the record was isolated.</p>
+</div>
+</li>
+</ul>
+</div>
+<div class="mt-8 pt-4 bg-surface-bright p-3 rounded-DEFAULT">
+<span class="font-label-sm text-label-sm text-on-surface-variant uppercase font-semibold">Model Calibration Profile:</span>
+<div class="flex flex-wrap gap-2 mt-2">
+<span class="font-code-sm text-code-sm px-2 py-0.5 rounded-DEFAULT bg-surface-container text-on-surface font-medium">Contamination: 0.015</span>
+<span class="font-code-sm text-code-sm px-2 py-0.5 rounded-DEFAULT bg-surface-container text-on-surface font-medium">Trees: 100</span>
+<span class="font-code-sm text-code-sm px-2 py-0.5 rounded-DEFAULT bg-surface-container text-on-surface font-medium">Max Depth: 12</span>
+</div>
+</div>
+</div>
+</div>
+<!-- Human Verification Notice Callout Box -->
+<div class="p-6 rounded-DEFAULT bg-surface-container-lowest shadow-sm flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
+<div class="flex items-start gap-3 max-w-3xl">
+<span class="material-symbols-outlined text-[24px] text-primary shrink-0 mt-0.5">verified_user</span>
+<div>
+<h4 class="font-headline-sm text-headline-sm text-on-surface font-semibold">Statutory Auditor Verification Protocol</h4>
+<p class="font-body-md text-body-md text-on-surface-variant mt-1">
+              FinTrace AI explicitly decouples suspicion generation from regulatory reporting. An automated flag is an evidentiary risk indicator, not definitive proof of fraud. Human auditor verification and documented sign-off are required before SAR generation or fund revocation.
+            </p>
+</div>
+</div>
+<a class="shrink-0 px-4 py-2 rounded-DEFAULT bg-surface-container hover:bg-surface-variant text-on-surface font-label-md text-label-md shadow-sm transition-all" href="#governance">
+          Read Governance Framework
+        </a>
+</div>
+</div>
+</section>
+<!-- Final Onboarding CTA Section -->
+<section class="w-full bg-surface-bright py-20 px-6">
+<div class="max-w-4xl mx-auto p-10 rounded-xl bg-surface-container-lowest shadow-md text-center flex flex-col items-center">
+<div class="w-12 h-12 rounded-DEFAULT bg-secondary-container flex items-center justify-center text-primary mb-4 shadow-sm">
+<span class="material-symbols-outlined text-[28px]">shield_with_heart</span>
+</div>
+<h2 class="font-display-lg text-display-lg text-on-surface tracking-tight font-bold mb-4">
+        Ready to harden your disbursement audits?
+      </h2>
+<p class="font-body-lg text-body-lg text-on-surface-variant max-w-xl mb-8">
+        Deploy FinTrace AI in your private cloud, integrate with transaction streaming brokers, and equip your investigators with deterministic forensic audit power.
+      </p>
+<div class="flex flex-wrap items-center justify-center gap-4">
+<button class="px-6 py-3 rounded-DEFAULT bg-primary hover:bg-primary-container text-on-primary font-headline-sm text-headline-sm shadow-md transition-all flex items-center gap-2" onclick="handleAuditAction('demo')">
+<span class="material-symbols-outlined text-[18px]">terminal</span>
+<span>Deploy Self-Hosted Sandbox</span>
+</button>
+<button class="px-6 py-3 rounded-DEFAULT bg-surface-container hover:bg-surface-variant text-on-surface font-headline-sm text-headline-sm shadow-sm transition-all flex items-center gap-2" onclick="handleAuditAction('pilot')">
+<span class="material-symbols-outlined text-[18px]">calendar_today</span>
+<span>Schedule Technical Walkthrough</span>
+</button>
+</div>
+<p class="font-label-sm text-label-sm text-on-surface-variant mt-6">
+        No payment details required. SOC2 Type II audit report available under enterprise mutual NDA.
+      </p>
+</div>
+</section>
+<!-- Restrained Institutional Footer -->
+<footer class="w-full bg-surface-container-lowest text-on-surface pt-16 pb-12 px-6" id="governance">
+<div class="max-w-7xl mx-auto flex flex-col gap-12">
+<!-- Top Grid: Brand & Link Navigation Columns -->
+<div class="grid grid-cols-1 md:grid-cols-5 gap-8">
+<!-- Col 1 & 2: Brand and Description -->
+<div class="md:col-span-2 space-y-4">
+<div class="flex items-center gap-2.5">
+<img alt="FinTrace AI Logo" class="w-6 h-6 rounded-DEFAULT object-contain" src="https://lh3.googleusercontent.com/aida/AEtjO1X_KYFdLXc_Cqi4hiINuicqzQ_N1zqOcKkcBktWPmdsuv4SgZ_mSxTRR8Oev5eEzUQZUZ3IP0eHrluCxH36Pb84M7BZAf8CQOaLMyFfCsxoL23UoZRLX8RAaCGiPbNGKVPJUnMjjBXzn4kLd2l1hcDufCbOZneA6sVWGS7-59kAIl1EG9P_CMXb_tbd5-kmHPRwC55tNU4DolmwKAfKlsXG41LjGqxr0WtkSwzJGVubycC-8VjoY3tC48k"/>
+<span class="font-headline-sm text-headline-sm font-bold tracking-tight">FinTrace AI Systems</span>
+</div>
+<p class="font-body-sm text-body-sm text-on-surface-variant max-w-sm leading-relaxed">
+            Institutional-grade explainable forensic financial micro-auditing infrastructure. Built to detect structured disbursement fraud, entity collisions, and synthetic account networks across high-velocity settlement corridors.
+          </p>
+<div class="flex items-center gap-2 pt-2">
+<span class="font-code-sm text-code-sm px-2 py-0.5 rounded-DEFAULT bg-surface-container text-on-surface font-semibold">SOC 2 TYPE II</span>
+<span class="font-code-sm text-code-sm px-2 py-0.5 rounded-DEFAULT bg-surface-container text-on-surface font-semibold">FedRAMP In-Process</span>
+<span class="font-code-sm text-code-sm px-2 py-0.5 rounded-DEFAULT bg-surface-container text-on-surface font-semibold">ISO 27001</span>
+</div>
+</div>
+<!-- Col 3: Product Navigation -->
+<div>
+<p class="font-label-md text-label-md font-bold uppercase tracking-wider text-on-surface mb-3">Product</p>
+<ul class="space-y-2 font-body-sm text-body-sm text-on-surface-variant">
+<li><a class="hover:text-primary transition-colors" href="#product-preview">Investigation Canvas</a></li>
+<li><a class="hover:text-primary transition-colors" href="#workflow">Disbursement Ingest</a></li>
+<li><a class="hover:text-primary transition-colors" href="#methodology">Dual Engine ML</a></li>
+<li><a class="hover:text-primary transition-colors" href="#product-preview">Topology Explorer</a></li>
+<li><a class="hover:text-primary transition-colors" href="#workflow">Audit Export Dossiers</a></li>
+</ul>
+</div>
+<!-- Col 4: Workspace & Integration -->
+<div>
+<p class="font-label-md text-label-md font-bold uppercase tracking-wider text-on-surface mb-3">Workspace</p>
+<ul class="space-y-2 font-body-sm text-body-sm text-on-surface-variant">
+<li><a class="hover:text-primary transition-colors" href="#product-preview">Active Run Ledger</a></li>
+<li><a class="hover:text-primary transition-colors" href="#methodology">Rule Configuration</a></li>
+<li><a class="hover:text-primary transition-colors" href="#methodology">Isolation Hyperparameters</a></li>
+<li><a class="hover:text-primary transition-colors" href="#governance">Investigator Sign-off Queues</a></li>
+<li><a class="hover:text-primary transition-colors" href="#governance">Kafka &amp; FedNow Connectors</a></li>
+</ul>
+</div>
+<!-- Col 5: Legal & Regulatory -->
+<div>
+<p class="font-label-md text-label-md font-bold uppercase tracking-wider text-on-surface mb-3">Governance</p>
+<ul class="space-y-2 font-body-sm text-body-sm text-on-surface-variant">
+<li><a class="hover:text-primary transition-colors" href="#governance">SAR Filing Protocols</a></li>
+<li><a class="hover:text-primary transition-colors" href="#governance">Model Explainability Report</a></li>
+<li><a class="hover:text-primary transition-colors" href="#governance">Chain-of-Custody Hashing</a></li>
+<li><a class="hover:text-primary transition-colors" href="#governance">Privacy &amp; Data Residency</a></li>
+<li><a class="hover:text-primary transition-colors" href="#governance">Responsible AI Charter</a></li>
+</ul>
+</div>
+</div>
+<!-- Statutory Disclaimer -->
+<div class="p-4 rounded-DEFAULT bg-surface-container font-code-sm text-code-sm text-on-surface-variant leading-relaxed">
+<span class="font-semibold text-on-surface">STATUTORY REGULATORY DISCLAIMER:</span> FinTrace AI is an investigative decision-support system. All flagged records, anomaly risk indices, topological clusters, and algorithmic scores represent mathematical variations relative to baseline disbursements and do not constitute a conclusive legal determination of fraud, money laundering, sanctions evasion, or criminal culpability. Designated compliance officers and authorized forensic personnel must conduct independent evidentiary corroboration prior to filing Suspicious Activity Reports (SARs) or executing asset freezes.
+      </div>
+<!-- Bottom Copyright Row -->
+<div class="flex flex-col sm:flex-row items-center justify-between gap-4 font-body-sm text-body-sm text-on-surface-variant pt-2">
+<p>© 2025 FinTrace AI Technologies Inc. All rights reserved. Cryptographic integrity guaranteed under SHA-256 ledger seals.</p>
+<div class="flex items-center gap-6">
+<a class="hover:text-on-surface transition-colors" href="#governance">Security Whitepaper</a>
+<a class="hover:text-on-surface transition-colors" href="#governance">API Docs</a>
+<a class="hover:text-on-surface transition-colors" href="#governance">System Status: Operational</a>
+</div>
+</div>
+</div>
+</footer>
+<!-- Client-Side Micro-Interactions Script -->
+<script>
+    // Cluster selection state switching in the Product Preview
+    const clusterProfiles = {
+      '01': {
+        title: '#CL-8821: Split Structuring Sub-10K & ABA Routing Loop',
+        f1: { name: 'Sub-10K Payout Clumping', val: '+44.2%', w: '88%', color: 'bg-error', textColor: 'text-error' },
+        f2: { name: 'Routing BIC Shared Fingerprint', val: '+31.8%', w: '64%', color: 'bg-error', textColor: 'text-error' },
+        f3: { name: 'Temporal Interval Dispersion', val: '+18.0%', w: '36%', color: 'bg-primary', textColor: 'text-primary' },
+        f4: { name: 'Payor Historical Cleared Baseline', val: '-12.4%', w: '25%', color: 'bg-tertiary', textColor: 'text-tertiary' },
+        rec: 'Hold batch release for Wire IDs 90401-90412. Escalate to AML Team Tier-2 for beneficial ownership confirmation.'
+      },
+      '02': {
+        title: '#CL-8819: Shared SWIFT BIC Collision across 7 Entities',
+        f1: { name: 'Intermediary SWIFT Multiplexing', val: '+52.1%', w: '94%', color: 'bg-error', textColor: 'text-error' },
+        f2: { name: 'Disbursement Volume Disparity', val: '+28.4%', w: '58%', color: 'bg-error', textColor: 'text-error' },
+        f3: { name: 'Tax Residence Mismatch', val: '+14.9%', w: '30%', color: 'bg-primary', textColor: 'text-primary' },
+        f4: { name: 'Known Corporate Vendor Age (>5y)', val: '-18.2%', w: '36%', color: 'bg-tertiary', textColor: 'text-tertiary' },
+        rec: 'Verify cross-entity signatory records for shared beneficial control. Notify Corporate Treasury.'
+      },
+      '03': {
+        title: '#CL-8794: Rapid Velocity Burst (<120s from batch release)',
+        f1: { name: 'Burst Velocity (12 txn / 90s)', val: '+61.0%', w: '96%', color: 'bg-error', textColor: 'text-error' },
+        f2: { name: 'Zero Balance Drain Target', val: '+24.5%', w: '50%', color: 'bg-error', textColor: 'text-error' },
+        f3: { name: 'New Beneficiary Routing Path', val: '+12.1%', w: '24%', color: 'bg-primary', textColor: 'text-primary' },
+        f4: { name: 'Standard Payroll Schedule Match', val: '-5.0%', w: '10%', color: 'bg-tertiary', textColor: 'text-tertiary' },
+        rec: 'Immediate programmatic throttle applied to pending batch transactions. Requires dual signatory override.'
+      },
+      '04': {
+        title: '#CL-8755: OFAC Secondary Exposure via Intermediary Proxy',
+        f1: { name: 'Sanction Registry Fuzzy Token Match', val: '+48.7%', w: '90%', color: 'bg-error', textColor: 'text-error' },
+        f2: { name: 'Corridor Risk Rating (CY/AE)', val: '+33.2%', w: '66%', color: 'bg-error', textColor: 'text-error' },
+        f3: { name: 'Unverified Transshipment Narration', val: '+11.5%', w: '22%', color: 'bg-primary', textColor: 'text-primary' },
+        f4: { name: 'SWIFT MT103 Format Validity', val: '-10.1%', w: '20%', color: 'bg-tertiary', textColor: 'text-tertiary' },
+        rec: 'Execute mandatory block and file preliminary OFAC initial notification dossier within 10 business days.'
+      }
+    };
+
+    function selectCluster(id) {
+      document.querySelectorAll('.cluster-card').forEach(el => {
+        el.classList.remove('bg-surface-container-low', 'shadow-md');
+        el.classList.add('bg-surface-container-lowest');
+      });
+
+      const selected = document.getElementById('card-cluster-' + id);
+      if (selected) {
+        selected.classList.remove('bg-surface-container-lowest');
+        selected.classList.add('bg-surface-container-low', 'shadow-md');
+      }
+
+      const p = clusterProfiles[id];
+      if (!p) return;
+
+      const pane = document.getElementById('inspectorDetails');
+      if (pane) {
+        pane.innerHTML = `
+          <div>
+            <div class="flex justify-between font-label-sm text-label-sm mb-1">
+              <span class="text-on-surface">${p.f1.name}</span>
+              <span class="${p.f1.textColor} font-code-sm text-code-sm font-semibold">${p.f1.val}</span>
+            </div>
+            <div class="w-full bg-surface-container rounded-full h-1.5 overflow-hidden">
+              <div class="${p.f1.color} h-full rounded-full" style="width: ${p.f1.w}"></div>
+            </div>
+          </div>
+          <div>
+            <div class="flex justify-between font-label-sm text-label-sm mb-1">
+              <span class="text-on-surface">${p.f2.name}</span>
+              <span class="${p.f2.textColor} font-code-sm text-code-sm font-semibold">${p.f2.val}</span>
+            </div>
+            <div class="w-full bg-surface-container rounded-full h-1.5 overflow-hidden">
+              <div class="${p.f2.color} h-full rounded-full" style="width: ${p.f2.w}"></div>
+            </div>
+          </div>
+          <div>
+            <div class="flex justify-between font-label-sm text-label-sm mb-1">
+              <span class="text-on-surface">${p.f3.name}</span>
+              <span class="${p.f3.textColor} font-code-sm text-code-sm font-semibold">${p.f3.val}</span>
+            </div>
+            <div class="w-full bg-surface-container rounded-full h-1.5 overflow-hidden">
+              <div class="${p.f3.color} h-full rounded-full" style="width: ${p.f3.w}"></div>
+            </div>
+          </div>
+          <div>
+            <div class="flex justify-between font-label-sm text-label-sm mb-1">
+              <span class="text-on-surface-variant">${p.f4.name}</span>
+              <span class="${p.f4.textColor} font-code-sm text-code-sm font-semibold">${p.f4.val}</span>
+            </div>
+            <div class="w-full bg-surface-container rounded-full h-1.5 overflow-hidden">
+              <div class="${p.f4.color} h-full rounded-full" style="width: ${p.f4.w}"></div>
+            </div>
+          </div>
+          <div class="p-2.5 rounded-DEFAULT bg-surface-container-lowest mt-4 shadow-sm">
+            <span class="font-code-sm text-code-sm uppercase tracking-wide text-on-surface-variant font-semibold">Audit Recommendation</span>
+            <p class="font-body-sm text-body-sm text-on-surface mt-1">${p.rec}</p>
+          </div>
+        `;
+      }
+    }
+
+    // Refresh simulation counter animation
+    const refreshBtn = document.getElementById('refreshSimBtn');
+    if (refreshBtn) {
+      refreshBtn.addEventListener('click', () => {
+        const recordsEl = document.getElementById('counterRecords');
+        const clustersEl = document.getElementById('counterClusters');
+        if (recordsEl && clustersEl) {
+          recordsEl.innerText = 'Analyzing...';
+          clustersEl.innerText = 'Calculating...';
+          setTimeout(() => {
+            recordsEl.innerText = '52,408';
+            clustersEl.innerText = '16 Flagged';
+          }, 600);
+        }
+      });
+    }
+
+    // Modal or feedback action helper
+    function handleAuditAction(type) {
+      if (type === 'flagged') {
+        alert('Action Confirmed: Anomaly Cluster locked. Transaction queue held. Chain of custody signed with your local key.');
+      } else if (type === 'cleared') {
+        alert('Action Confirmed: Anomaly documented with Normalizing Justification note. Sent to Senior Compliance Review.');
+      } else if (type === 'demo' || type === 'pilot') {
+        alert('Enterprise Access Requested: Verification key delivered to your institutional credentials.');
+      }
+    }
+
+    // Light theme high-contrast toggle helper
+    const themeBtn = document.getElementById('themeToggleBtn');
+    if (themeBtn) {
+      themeBtn.addEventListener('click', () => {
+        document.documentElement.classList.toggle('dark');
+      });
+    }
+  </script>
+</div></main></body></html>

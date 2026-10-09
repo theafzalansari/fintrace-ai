@@ -1,0 +1,787 @@
+<!DOCTYPE html>
+
+<html lang="en"><head><meta charset="utf-8"/><meta content="width=device-width, initial-scale=1.0" name="viewport"/><meta content="web_dashboard" name="shell-type"/><link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet"/><link href="https://fonts.googleapis.com" rel="preconnect"/><link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/><link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=JetBrains+Mono:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/><style>@layer base{html,body{margin:0;padding:0;}body{overscroll-behavior:none;}main>:first-child{margin-top:0!important;}main>:last-child{margin-bottom:0!important;}}::-webkit-scrollbar{display:none;}</style><script src="https://cdn.tailwindcss.com"></script><script id="tailwind-config">tailwind.config={darkMode:"class",theme:{extend:{colors:{"inverse-on-surface":"#eaf1ff","surface-container-lowest":"#ffffff","on-primary-fixed-variant":"#0039b5","on-tertiary-fixed-variant":"#005137","on-surface":"#0b1c30","on-primary":"#ffffff","outline":"#747686","on-secondary-fixed-variant":"#3f465c","on-tertiary-fixed":"#002114","outline-variant":"#c4c5d7","on-secondary-fixed":"#131b2e","tertiary-fixed-dim":"#68dba9","inverse-primary":"#b7c4ff","on-secondary-container":"#5c647a","surface-dim":"#cbdbf5","surface-variant":"#d3e4fe","tertiary":"#004f35","surface-tint":"#2151da","secondary-container":"#dae2fd","primary-container":"#1d4ed8","surface-bright":"#f8f9ff","error":"#ba1a1a","background":"#f8f9ff","tertiary-fixed":"#85f8c4","secondary-fixed-dim":"#bec6e0","surface-container-low":"#eff4ff","primary-fixed":"#dce1ff","on-tertiary":"#ffffff","on-secondary":"#ffffff","surface-container":"#e5eeff","inverse-surface":"#213145","on-error":"#ffffff","tertiary-container":"#006948","surface-container-highest":"#d3e4fe","on-primary-container":"#cad3ff","on-tertiary-container":"#76eab6","secondary":"#565e74","surface":"#f8f9ff","on-background":"#0b1c30","secondary-fixed":"#dae2fd","surface-container-high":"#dce9ff","on-error-container":"#93000a","error-container":"#ffdad6","on-surface-variant":"#434655","on-primary-fixed":"#001551","primary":"#0037b0","primary-fixed-dim":"#b7c4ff"},borderRadius:{DEFAULT:"0.125rem",lg:"0.25rem",xl:"0.5rem",full:"0.75rem"},spacing:{"space-lg":"1rem","margin-compact":"1rem","gutter-dense":"0.5rem","space-md":"0.75rem","space-xl":"1.5rem",gutter:"1rem","space-sm":"0.5rem","space-xs":"0.25rem",margin:"1.5rem"},fontFamily:{"body-sm":["Inter"],"label-sm":["Inter"],"headline-sm":["Inter"],"code-sm":["JetBrains Mono"],"headline-md":["Inter"],"label-md":["Inter"],"headline-lg":["Inter"],"body-md":["Inter"],"body-lg":["Inter"],"code-md":["JetBrains Mono"],"display-lg":["Inter"]},fontSize:{"body-sm":["12px",{lineHeight:"16px",fontWeight:"400"}],"label-sm":["11px",{lineHeight:"14px",letterSpacing:"0.03em",fontWeight:"500"}],"headline-sm":["16px",{lineHeight:"24px",letterSpacing:"-0.005em",fontWeight:"600"}],"code-sm":["11px",{lineHeight:"16px",fontWeight:"400"}],"headline-md":["20px",{lineHeight:"28px",letterSpacing:"-0.01em",fontWeight:"600"}],"label-md":["12px",{lineHeight:"16px",letterSpacing:"0.02em",fontWeight:"600"}],"headline-lg":["24px",{lineHeight:"32px",letterSpacing:"-0.015em",fontWeight:"600"}],"body-md":["13px",{lineHeight:"18px",fontWeight:"400"}],"body-lg":["15px",{lineHeight:"22px",fontWeight:"400"}],"code-md":["13px",{lineHeight:"18px",fontWeight:"500"}],"display-lg":["32px",{lineHeight:"40px",letterSpacing:"-0.02em",fontWeight:"700"}]}}}};</script></head><body class="bg-surface font-body-md text-on-surface min-h-screen"><aside class="fixed left-0 top-0 h-full w-64 bg-surface-container-lowest z-50 flex flex-col border-r border-outline-variant/30 shadow-[0_1px_8px_rgba(0,0,0,0.04)]"><div class="h-16 px-space-lg flex items-center gap-space-sm border-b border-outline-variant/20"><img alt="FinTrace AI Logo" class="h-8 w-auto object-contain" src="https://lh3.googleusercontent.com/aida/AEtjO1X_KYFdLXc_Cqi4hiINuicqzQ_N1zqOcKkcBktWPmdsuv4SgZ_mSxTRR8Oev5eEzUQZUZ3IP0eHrluCxH36Pb84M7BZAf8CQOaLMyFfCsxoL23UoZRLX8RAaCGiPbNGKVPJUnMjjBXzn4kLd2l1hcDufCbOZneA6sVWGS7-59kAIl1EG9P_CMXb_tbd5-kmHPRwC55tNU4DolmwKAfKlsXG41LjGqxr0WtkSwzJGVubycC-8VjoY3tC48k"/><div class="flex flex-col"><span class="font-headline-sm text-headline-sm text-on-surface tracking-tight leading-none">FinTrace<span class="text-primary-container">AI</span></span><span class="font-label-sm text-label-sm text-on-surface-variant uppercase tracking-wider">Forensic AML</span></div></div><div class="px-space-md py-space-sm border-b border-outline-variant/20 bg-surface-container-low/40"><label class="font-label-sm text-label-sm text-on-surface-variant uppercase tracking-wider block mb-space-xs">Workspace Scope</label><div class="flex items-center justify-between bg-surface-container-lowest border border-outline-variant/40 rounded px-space-sm py-space-xs cursor-pointer hover:border-outline"><div class="flex items-center gap-space-xs truncate"><span class="material-symbols-outlined text-primary text-[16px]">corporate_fare</span><span class="font-label-md text-label-md text-on-surface truncate">Batch Audit Q4-2024 / Fed Grants</span></div><span class="material-symbols-outlined text-on-surface-variant text-[16px]">unfold_more</span></div></div><div class="px-space-md pt-space-md pb-space-xs"><span class="font-label-sm text-label-sm text-on-surface-variant uppercase tracking-wider px-space-xs">Investigation Matrix</span></div><nav class="flex-1 px-space-sm space-y-space-xs overflow-y-auto" data-active-classes="bg-primary-container text-on-primary font-label-md rounded"><a class="flex items-center gap-space-sm px-space-md py-space-sm rounded font-label-md text-label-md text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-colors" data-path="overview" href="#"><span class="material-symbols-outlined text-[18px]">space_dashboard</span><span>Overview</span></a><a class="flex items-center gap-space-sm px-space-md py-space-sm rounded font-label-md text-label-md text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-colors" data-path="beneficiaries" href="#"><span class="material-symbols-outlined text-[18px]">badge</span><span>Beneficiaries</span></a><a class="flex items-center gap-space-sm px-space-md py-space-sm rounded font-label-md text-label-md text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-colors" data-path="disbursements" href="#"><span class="material-symbols-outlined text-[18px]">account_balance_wallet</span><span>Disbursements</span></a><a class="flex items-center gap-space-sm px-space-md py-space-sm rounded font-label-md text-label-md text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-colors" data-path="risk-analysis" href="#"><span class="material-symbols-outlined text-[18px]">gshield</span><span>Risk Analysis</span></a><a class="flex items-center gap-space-sm px-space-md py-space-sm rounded font-label-md text-label-md text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-colors" data-path="network-graph" href="#"><span class="material-symbols-outlined text-[18px]">hub</span><span>Network Graph</span></a><a class="flex items-center gap-space-sm px-space-md py-space-sm rounded font-label-md text-label-md text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-colors" data-path="audit-copilot" href="#"><span class="material-symbols-outlined text-[18px]">smart_toy</span><span>Audit Copilot</span></a><a aria-current="page" class="flex items-center gap-space-sm px-space-md py-space-sm transition-colors bg-primary-container text-on-primary font-label-md rounded" data-path="audit-reports" href="#"><span class="material-symbols-outlined text-[18px]">description</span><span>Audit Reports</span></a></nav><div class="p-space-sm border-t border-outline-variant/30 bg-surface-container-low/20"><button class="w-full flex items-center justify-between px-space-md py-space-sm rounded text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-colors" type="button"><span class="flex items-center gap-space-sm font-label-sm text-label-sm"><span class="material-symbols-outlined text-[18px]">left_panel_close</span><span>Collapse Sidebar</span></span><span class="font-code-sm text-code-sm text-outline">[</span></button></div></aside><div class="pl-64 flex flex-col min-h-screen"><header class="fixed top-0 left-64 right-0 h-16 bg-surface-container-lowest/90 backdrop-blur-md border-b border-outline-variant/30 shadow-[0_1px_8px_rgba(0,0,0,0.04)] z-40 px-space-lg flex items-center justify-between gap-space-md"><div class="flex items-center gap-space-md flex-1 max-w-xl"><div class="relative w-full"><span class="material-symbols-outlined absolute left-space-md top-1/2 -translate-y-1/2 text-outline text-[18px]">search</span><input class="w-full h-8 pl-9 pr-16 bg-surface border border-outline-variant/40 rounded font-body-md text-body-md text-on-surface placeholder:text-outline focus:outline-none focus:border-primary-container" placeholder="Search Beneficiary, TxID, Account..." type="text"/><kbd class="absolute right-space-sm top-1/2 -translate-y-1/2 font-code-sm text-code-sm text-outline border border-outline-variant/40 bg-surface-container-low px-1 rounded">Ctrl+K</kbd></div></div><div class="flex items-center gap-space-md"><div class="hidden xl:flex items-center gap-space-xs px-space-sm py-1 bg-surface-container-low border border-outline-variant/30 rounded"><span class="w-2 h-2 rounded-full bg-tertiary-container animate-pulse"></span><span class="font-label-sm text-label-sm text-on-surface">Audit Engine: Online</span><span class="text-outline font-label-sm text-label-sm">·</span><span class="font-code-sm text-code-sm text-on-surface-variant">Sync 4m ago</span></div><button aria-label="Toggle color mode" class="p-space-xs text-on-surface-variant hover:text-on-surface hover:bg-surface-container-high rounded transition-colors" type="button"><span class="material-symbols-outlined text-[20px]">dark_mode</span></button><div class="h-6 w-px bg-outline-variant/30"></div><div class="flex items-center gap-space-sm pl-space-xs"><div class="flex flex-col text-right hidden sm:flex"><span class="font-label-md text-label-md text-on-surface leading-tight">Lead Auditor J. Vance</span><span class="font-label-sm text-label-sm text-outline">Forensics Clearance L3</span></div><div class="w-8 h-8 rounded-full bg-primary flex items-center justify-center"><span class="material-symbols-outlined text-on-primary text-[18px]">person</span></div></div></div></header><main class="w-full pt-16 bg-surface px-space-lg py-space-lg flex-1"><div class="flex flex-col w-full space-y-space-lg">
+<!-- Top Header & Primary Action Bar -->
+<div class="flex flex-col xl:flex-row xl:items-center justify-between gap-space-md bg-surface-container-lowest p-space-lg rounded-xl shadow-sm">
+<div class="flex flex-col space-y-space-xs max-w-3xl">
+<div class="flex items-center gap-space-xs">
+<span class="font-code-sm text-code-sm uppercase tracking-wider text-primary px-space-xs py-0.5 rounded bg-primary-fixed/40">Dossier Engine v4.8</span>
+<span class="text-outline text-label-sm font-label-sm">·</span>
+<span class="font-label-sm text-label-sm text-tertiary flex items-center gap-1">
+<span class="w-1.5 h-1.5 rounded-full bg-tertiary-container animate-ping"></span>
+          FIPS 140-3 Hardware Token Synced
+        </span>
+</div>
+<h1 class="font-headline-lg text-headline-lg text-on-surface tracking-tight">Audit Reports &amp; Regulatory Dossiers</h1>
+<p class="font-body-md text-body-md text-on-surface-variant">Generate, sign, and export tamper-evident audit dossiers for oversight bodies, IG inspectors, and federal compliance archives.</p>
+</div>
+<div class="flex flex-wrap items-center gap-space-sm">
+<button class="flex items-center gap-space-xs bg-surface-container-low hover:bg-surface-container text-on-surface font-label-md text-label-md px-space-md py-2 rounded-lg transition-colors" type="button">
+<span class="material-symbols-outlined text-[18px] text-on-surface-variant">tune</span>
+<span>Configure New Report Template</span>
+</button>
+<button class="flex items-center gap-space-xs bg-surface-container-low hover:bg-surface-container text-on-surface font-label-md text-label-md px-space-md py-2 rounded-lg transition-colors" type="button">
+<span class="material-symbols-outlined text-[18px] text-on-surface-variant">key</span>
+<span>Manage Cryptographic Keys</span>
+</button>
+<button class="flex items-center gap-space-xs bg-primary hover:bg-on-primary-fixed-variant text-on-primary font-label-md text-label-md px-space-lg py-2 rounded-lg shadow-sm transition-all hover:shadow" onclick="document.getElementById('new-dossier-modal').classList.remove('hidden')" type="button">
+<span class="material-symbols-outlined text-[18px]">post_add</span>
+<span>Generate Audit Dossier</span>
+</button>
+</div>
+</div>
+<!-- Operational Metric Bento Cards -->
+<div class="grid grid-cols-1 md:grid-cols-3 gap-space-md">
+<!-- Dossier Volume Metric -->
+<div class="bg-surface-container-lowest p-space-md rounded-xl shadow-sm flex flex-col justify-between space-y-space-sm relative overflow-hidden">
+<div class="flex items-center justify-between">
+<span class="font-label-sm text-label-sm text-on-surface-variant uppercase tracking-wider">Generated Dossiers</span>
+<div class="p-space-xs rounded bg-surface-container text-primary">
+<span class="material-symbols-outlined text-[18px]">inventory_2</span>
+</div>
+</div>
+<div class="flex items-baseline gap-space-md">
+<span class="font-display-lg text-display-lg text-on-surface">6</span>
+<div class="flex items-center gap-space-xs font-code-sm text-code-sm">
+<span class="px-space-xs py-0.5 rounded bg-tertiary-fixed text-on-tertiary-fixed font-semibold">4 Finalized</span>
+<span class="px-space-xs py-0.5 rounded bg-surface-container-high text-on-surface-variant">2 In Draft</span>
+</div>
+</div>
+<div class="w-full bg-surface-container rounded-full h-1.5 overflow-hidden flex">
+<div class="bg-tertiary-container h-full" style="width: 66.6%;"></div>
+<div class="bg-secondary-fixed h-full" style="width: 33.4%;"></div>
+</div>
+</div>
+<!-- Signatures Metric -->
+<div class="bg-surface-container-lowest p-space-md rounded-xl shadow-sm flex flex-col justify-between space-y-space-sm relative overflow-hidden">
+<div class="flex items-center justify-between">
+<span class="font-label-sm text-label-sm text-on-surface-variant uppercase tracking-wider">Signatures &amp; Seals</span>
+<div class="p-space-xs rounded bg-error-container text-on-error-container">
+<span class="material-symbols-outlined text-[18px]">draw</span>
+</div>
+</div>
+<div class="flex items-baseline gap-space-md">
+<span class="font-display-lg text-display-lg text-on-surface">1</span>
+<span class="font-body-md text-body-md text-error flex items-center gap-1 font-medium">
+<span class="material-symbols-outlined text-[16px]">priority_high</span>
+          Pending Lead Auditor Sign-off
+        </span>
+</div>
+<div class="font-code-sm text-code-sm text-on-surface-variant flex items-center justify-between">
+<span>Target: RPT-2024-Q4-001</span>
+<span class="text-primary font-semibold cursor-pointer hover:underline" onclick="toggleDrawer(true)">Sign Now →</span>
+</div>
+</div>
+<!-- Formats & Compliance Metric -->
+<div class="bg-surface-container-lowest p-space-md rounded-xl shadow-sm flex flex-col justify-between space-y-space-sm relative overflow-hidden">
+<div class="flex items-center justify-between">
+<span class="font-label-sm text-label-sm text-on-surface-variant uppercase tracking-wider">Certified Export Profiles</span>
+<div class="p-space-xs rounded bg-secondary-container text-on-secondary-fixed">
+<span class="material-symbols-outlined text-[18px]">verified</span>
+</div>
+</div>
+<div class="flex flex-wrap gap-1.5">
+<span class="font-code-sm text-code-sm bg-surface-container px-2 py-1 rounded text-on-surface flex items-center gap-1">
+<span class="material-symbols-outlined text-[14px] text-primary">picture_as_pdf</span> OIG Standard PDF
+        </span>
+<span class="font-code-sm text-code-sm bg-surface-container px-2 py-1 rounded text-on-surface flex items-center gap-1">
+<span class="material-symbols-outlined text-[14px] text-tertiary">data_object</span> FinCEN SAR XML
+        </span>
+<span class="font-code-sm text-code-sm bg-surface-container px-2 py-1 rounded text-on-surface flex items-center gap-1">
+<span class="material-symbols-outlined text-[14px] text-secondary">folder_zip</span> Evidence Archive (.zip)
+        </span>
+</div>
+<div class="font-body-sm text-body-sm text-on-surface-variant">
+        Cryptographic Manifest SHA-256 + RSA-4096 Timestamping
+      </div>
+</div>
+</div>
+<!-- Main Split Layout: Table on Left/Center, Context Inspector on Right -->
+<div class="grid grid-cols-1 xl:grid-cols-12 gap-space-md items-start">
+<!-- Dossier Data Table (8 Cols on XL) -->
+<div class="xl:col-span-8 bg-surface-container-lowest rounded-xl shadow-sm overflow-hidden flex flex-col">
+<!-- Table Filter Toolbar -->
+<div class="p-space-md bg-surface-container-low/60 flex flex-wrap items-center justify-between gap-space-sm">
+<div class="flex items-center gap-space-xs flex-1 min-w-[240px]">
+<div class="relative w-full max-w-sm">
+<span class="material-symbols-outlined absolute left-2.5 top-1/2 -translate-y-1/2 text-outline text-[16px]">filter_list</span>
+<input class="w-full h-8 pl-8 pr-3 bg-surface-container-lowest rounded font-body-sm text-body-sm text-on-surface placeholder:text-outline focus:outline-none focus:ring-1 focus:ring-primary-container" id="filter-input" onkeyup="filterReports(this.value)" placeholder="Filter by Report ID, Entity or Hash..." type="text"/>
+</div>
+<button class="h-8 px-space-sm bg-surface-container-lowest text-on-surface-variant font-label-sm text-label-sm rounded flex items-center gap-1 hover:bg-surface-container" type="button">
+<span>Fiscal Q4</span>
+<span class="material-symbols-outlined text-[14px]">arrow_drop_down</span>
+</button>
+</div>
+<div class="flex items-center gap-space-xs">
+<span class="font-label-sm text-label-sm text-on-surface-variant">Status:</span>
+<div class="flex bg-surface-container rounded p-0.5 font-label-sm text-label-sm">
+<button class="px-2 py-0.5 rounded bg-surface-container-lowest text-on-surface font-semibold shadow-xs" type="button">All (6)</button>
+<button class="px-2 py-0.5 rounded text-on-surface-variant hover:text-on-surface" type="button">Sealed (4)</button>
+<button class="px-2 py-0.5 rounded text-on-surface-variant hover:text-on-surface" type="button">Review (1)</button>
+</div>
+</div>
+</div>
+<!-- Dense Audit Table -->
+<div class="overflow-x-auto w-full">
+<table class="w-full text-left font-body-sm text-body-sm" id="reports-table">
+<thead>
+<tr class="bg-surface-container-low text-on-surface-variant font-label-sm text-label-sm uppercase tracking-wider h-9">
+<th class="px-space-md py-2">Dossier ID</th>
+<th class="px-space-md py-2">Investigation Scope</th>
+<th class="px-space-md py-2">Records &amp; Entities</th>
+<th class="px-space-md py-2">SHA-256 Digest</th>
+<th class="px-space-md py-2">Status</th>
+<th class="px-space-md py-2 text-right">Actions</th>
+</tr>
+</thead>
+<tbody class="divide-y divide-surface-container/60">
+<!-- Row 1: Active In Inspection -->
+<tr class="bg-primary-fixed/20 hover:bg-primary-fixed/30 cursor-pointer transition-colors" onclick="selectReport('RPT-2024-Q4-001')">
+<td class="px-space-md py-3 whitespace-nowrap">
+<div class="flex items-center gap-1.5">
+<span class="w-2 h-2 rounded-full bg-primary animate-pulse"></span>
+<span class="font-code-md text-code-md font-semibold text-primary">RPT-2024-Q4-001</span>
+</div>
+<div class="font-code-sm text-code-sm text-outline mt-0.5">2024-11-18 14:22 UTC</div>
+</td>
+<td class="px-space-md py-3 min-w-[220px]">
+<div class="font-headline-sm text-headline-sm text-on-surface leading-tight">Synthetic Beneficiary Ring #4 (Pacifica Corp)</div>
+<div class="font-body-sm text-body-sm text-on-surface-variant mt-0.5">Auditor: J. Vance (Lead Forensics)</div>
+</td>
+<td class="px-space-md py-3 whitespace-nowrap font-code-sm text-code-sm">
+<div class="text-on-surface font-semibold">3 Flagged Entities</div>
+<div class="text-on-surface-variant">18 Transactions ($4.2M)</div>
+</td>
+<td class="px-space-md py-3 whitespace-nowrap font-code-sm text-code-sm">
+<div class="flex items-center gap-1 bg-surface-container px-1.5 py-0.5 rounded w-fit">
+<span>e3b0c442...a94f</span>
+<button class="hover:text-primary" onclick="event.stopPropagation(); copyDigest('e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855');" title="Copy Hash" type="button">
+<span class="material-symbols-outlined text-[13px]">content_copy</span>
+</button>
+</div>
+</td>
+<td class="px-space-md py-3 whitespace-nowrap">
+<span class="inline-flex items-center gap-1 font-code-sm text-code-sm px-2 py-0.5 rounded bg-error-container text-on-error-container font-medium">
+<span class="w-1.5 h-1.5 rounded-full bg-error"></span>
+                  Auditor Review
+                </span>
+</td>
+<td class="px-space-md py-3 whitespace-nowrap text-right" onclick="event.stopPropagation()">
+<div class="flex items-center justify-end gap-1">
+<button class="p-1 rounded hover:bg-surface-container text-on-surface-variant hover:text-on-surface" onclick="selectReport('RPT-2024-Q4-001')" title="View Dossier" type="button">
+<span class="material-symbols-outlined text-[18px]">visibility</span>
+</button>
+<button class="p-1 rounded hover:bg-surface-container text-on-surface-variant hover:text-primary" title="Download PDF" type="button">
+<span class="material-symbols-outlined text-[18px]">picture_as_pdf</span>
+</button>
+<button class="p-1 rounded hover:bg-surface-container text-on-surface-variant hover:text-primary" title="Export CSV Evidence" type="button">
+<span class="material-symbols-outlined text-[18px]">csv</span>
+</button>
+</div>
+</td>
+</tr>
+<!-- Row 2: Finalized -->
+<tr class="hover:bg-surface-container-low cursor-pointer transition-colors" onclick="selectReport('RPT-2024-Q4-002')">
+<td class="px-space-md py-3 whitespace-nowrap">
+<span class="font-code-md text-code-md font-semibold text-on-surface">RPT-2024-Q4-002</span>
+<div class="font-code-sm text-code-sm text-outline mt-0.5">2024-11-15 09:10 UTC</div>
+</td>
+<td class="px-space-md py-3 min-w-[220px]">
+<div class="font-headline-sm text-headline-sm text-on-surface leading-tight">Quarterly Disbursement Anomaly Summary Q4-2024</div>
+<div class="font-body-sm text-body-sm text-on-surface-variant mt-0.5">Auditor: M. Chen (Forensic AML L2)</div>
+</td>
+<td class="px-space-md py-3 whitespace-nowrap font-code-sm text-code-sm">
+<div class="text-on-surface font-semibold">142 Flagged Entities</div>
+<div class="text-on-surface-variant">48,192 Txns ($112.8M)</div>
+</td>
+<td class="px-space-md py-3 whitespace-nowrap font-code-sm text-code-sm">
+<div class="flex items-center gap-1 bg-surface-container px-1.5 py-0.5 rounded w-fit">
+<span>9f83ca1e...c20b</span>
+<button class="hover:text-primary" onclick="event.stopPropagation(); copyDigest('9f83ca1ec3b42938aec0912fbe987103ab9273cba92847ff1098273645bbec20');" title="Copy Hash" type="button">
+<span class="material-symbols-outlined text-[13px]">content_copy</span>
+</button>
+</div>
+</td>
+<td class="px-space-md py-3 whitespace-nowrap">
+<span class="inline-flex items-center gap-1 font-code-sm text-code-sm px-2 py-0.5 rounded bg-tertiary-fixed text-on-tertiary-fixed font-medium">
+<span class="w-1.5 h-1.5 rounded-full bg-tertiary"></span>
+                  Finalized &amp; Sealed
+                </span>
+</td>
+<td class="px-space-md py-3 whitespace-nowrap text-right" onclick="event.stopPropagation()">
+<div class="flex items-center justify-end gap-1">
+<button class="p-1 rounded hover:bg-surface-container text-on-surface-variant hover:text-on-surface" onclick="selectReport('RPT-2024-Q4-002')" title="View Dossier" type="button">
+<span class="material-symbols-outlined text-[18px]">visibility</span>
+</button>
+<button class="p-1 rounded hover:bg-surface-container text-on-surface-variant hover:text-primary" title="Download PDF" type="button">
+<span class="material-symbols-outlined text-[18px]">picture_as_pdf</span>
+</button>
+<button class="p-1 rounded hover:bg-surface-container text-tertiary" title="Verify Hash" type="button">
+<span class="material-symbols-outlined text-[18px]">verified_user</span>
+</button>
+</div>
+</td>
+</tr>
+<!-- Row 3: Finalized -->
+<tr class="hover:bg-surface-container-low cursor-pointer transition-colors" onclick="selectReport('RPT-2024-Q4-003')">
+<td class="px-space-md py-3 whitespace-nowrap">
+<span class="font-code-md text-code-md font-semibold text-on-surface">RPT-2024-Q4-003</span>
+<div class="font-code-sm text-code-sm text-outline mt-0.5">2024-11-12 18:04 UTC</div>
+</td>
+<td class="px-space-md py-3 min-w-[220px]">
+<div class="font-headline-sm text-headline-sm text-on-surface leading-tight">Sub-recipient Grant Compliance Audit - Program 93.558</div>
+<div class="font-body-sm text-body-sm text-on-surface-variant mt-0.5">Auditor: J. Vance (Lead Forensics)</div>
+</td>
+<td class="px-space-md py-3 whitespace-nowrap font-code-sm text-code-sm">
+<div class="text-on-surface font-semibold">9 Flagged Entities</div>
+<div class="text-on-surface-variant">420 Txns ($8.4M)</div>
+</td>
+<td class="px-space-md py-3 whitespace-nowrap font-code-sm text-code-sm">
+<div class="flex items-center gap-1 bg-surface-container px-1.5 py-0.5 rounded w-fit">
+<span>d82e1850...47e3</span>
+<button class="hover:text-primary" onclick="event.stopPropagation(); copyDigest('d82e18504a39b3629f10928a38ecba98234857bfe4839201948572bdeca47e3');" title="Copy Hash" type="button">
+<span class="material-symbols-outlined text-[13px]">content_copy</span>
+</button>
+</div>
+</td>
+<td class="px-space-md py-3 whitespace-nowrap">
+<span class="inline-flex items-center gap-1 font-code-sm text-code-sm px-2 py-0.5 rounded bg-tertiary-fixed text-on-tertiary-fixed font-medium">
+<span class="w-1.5 h-1.5 rounded-full bg-tertiary"></span>
+                  Finalized &amp; Sealed
+                </span>
+</td>
+<td class="px-space-md py-3 whitespace-nowrap text-right" onclick="event.stopPropagation()">
+<div class="flex items-center justify-end gap-1">
+<button class="p-1 rounded hover:bg-surface-container text-on-surface-variant hover:text-on-surface" onclick="selectReport('RPT-2024-Q4-003')" title="View Dossier" type="button">
+<span class="material-symbols-outlined text-[18px]">visibility</span>
+</button>
+<button class="p-1 rounded hover:bg-surface-container text-on-surface-variant hover:text-primary" title="Download PDF" type="button">
+<span class="material-symbols-outlined text-[18px]">picture_as_pdf</span>
+</button>
+<button class="p-1 rounded hover:bg-surface-container text-tertiary" title="Verify Hash" type="button">
+<span class="material-symbols-outlined text-[18px]">verified_user</span>
+</button>
+</div>
+</td>
+</tr>
+<!-- Row 4: Processing / Compiling -->
+<tr class="hover:bg-surface-container-low cursor-pointer transition-colors opacity-85" onclick="selectReport('RPT-2024-Q4-004')">
+<td class="px-space-md py-3 whitespace-nowrap">
+<span class="font-code-md text-code-md font-semibold text-on-surface">RPT-2024-Q4-004</span>
+<div class="font-code-sm text-code-sm text-outline mt-0.5">2024-11-18 16:01 UTC</div>
+</td>
+<td class="px-space-md py-3 min-w-[220px]">
+<div class="font-headline-sm text-headline-sm text-on-surface leading-tight">Batch Re-indexing: Sanction Match False Positive Sweep</div>
+<div class="font-body-sm text-body-sm text-on-surface-variant mt-0.5">Auditor: System Heuristics Daemon</div>
+</td>
+<td class="px-space-md py-3 whitespace-nowrap font-code-sm text-code-sm">
+<div class="text-on-surface font-semibold">1,024 Entities</div>
+<div class="text-on-surface-variant">Calculating...</div>
+</td>
+<td class="px-space-md py-3 whitespace-nowrap font-code-sm text-code-sm">
+<span class="text-outline italic">Hashing pending...</span>
+</td>
+<td class="px-space-md py-3 whitespace-nowrap">
+<span class="inline-flex items-center gap-1 font-code-sm text-code-sm px-2 py-0.5 rounded bg-surface-container-high text-on-surface font-medium">
+<span class="material-symbols-outlined text-[12px] animate-spin">refresh</span>
+                  Compiling (78%)
+                </span>
+</td>
+<td class="px-space-md py-3 whitespace-nowrap text-right" onclick="event.stopPropagation()">
+<button class="font-label-sm text-label-sm text-outline hover:text-on-surface px-2 py-1 rounded bg-surface-container" type="button">Abort</button>
+</td>
+</tr>
+<!-- Row 5: Finalized -->
+<tr class="hover:bg-surface-container-low cursor-pointer transition-colors" onclick="selectReport('RPT-2024-Q3-089')">
+<td class="px-space-md py-3 whitespace-nowrap">
+<span class="font-code-md text-code-md font-semibold text-on-surface">RPT-2024-Q3-089</span>
+<div class="font-code-sm text-code-sm text-outline mt-0.5">2024-10-29 11:30 UTC</div>
+</td>
+<td class="px-space-md py-3 min-w-[220px]">
+<div class="font-headline-sm text-headline-sm text-on-surface leading-tight">Emergency Relief Allocation Clawback Analysis</div>
+<div class="font-body-sm text-body-sm text-on-surface-variant mt-0.5">Auditor: T. Alvarez (Special Investigator)</div>
+</td>
+<td class="px-space-md py-3 whitespace-nowrap font-code-sm text-code-sm">
+<div class="text-on-surface font-semibold">27 Flagged Entities</div>
+<div class="text-on-surface-variant">3,910 Txns ($31.5M)</div>
+</td>
+<td class="px-space-md py-3 whitespace-nowrap font-code-sm text-code-sm">
+<div class="flex items-center gap-1 bg-surface-container px-1.5 py-0.5 rounded w-fit">
+<span>7b19de42...31a1</span>
+<button class="hover:text-primary" onclick="event.stopPropagation(); copyDigest('7b19de42918237498273618293746182374618237461823746182734918231a1');" title="Copy Hash" type="button">
+<span class="material-symbols-outlined text-[13px]">content_copy</span>
+</button>
+</div>
+</td>
+<td class="px-space-md py-3 whitespace-nowrap">
+<span class="inline-flex items-center gap-1 font-code-sm text-code-sm px-2 py-0.5 rounded bg-tertiary-fixed text-on-tertiary-fixed font-medium">
+<span class="w-1.5 h-1.5 rounded-full bg-tertiary"></span>
+                  Finalized &amp; Sealed
+                </span>
+</td>
+<td class="px-space-md py-3 whitespace-nowrap text-right" onclick="event.stopPropagation()">
+<div class="flex items-center justify-end gap-1">
+<button class="p-1 rounded hover:bg-surface-container text-on-surface-variant hover:text-on-surface" onclick="selectReport('RPT-2024-Q3-089')" title="View Dossier" type="button">
+<span class="material-symbols-outlined text-[18px]">visibility</span>
+</button>
+<button class="p-1 rounded hover:bg-surface-container text-on-surface-variant hover:text-primary" title="Download PDF" type="button">
+<span class="material-symbols-outlined text-[18px]">picture_as_pdf</span>
+</button>
+<button class="p-1 rounded hover:bg-surface-container text-tertiary" title="Verify Hash" type="button">
+<span class="material-symbols-outlined text-[18px]">verified_user</span>
+</button>
+</div>
+</td>
+</tr>
+</tbody>
+</table>
+<!-- Interactive Search Fallback Empty State (Hidden initially) -->
+<div class="hidden p-space-xl flex flex-col items-center justify-center text-center space-y-space-sm bg-surface-container-low/20" id="table-empty-state">
+<div class="w-12 h-12 rounded-full bg-surface-container flex items-center justify-center text-outline">
+<span class="material-symbols-outlined text-[24px]">find_in_page</span>
+</div>
+<div class="font-headline-sm text-headline-sm text-on-surface">No matching audit dossiers found</div>
+<p class="font-body-sm text-body-sm text-on-surface-variant max-w-sm">No recorded dossiers match the requested query. Revise filter criteria or initiate a new forensic dossier compile.</p>
+<button class="font-label-sm text-label-sm text-primary hover:underline" onclick="resetFilter()" type="button">Reset Search Filters</button>
+</div>
+</div>
+<!-- Table Footer Metadata & Pagination -->
+<div class="p-space-md bg-surface-container-low/40 flex items-center justify-between text-on-surface-variant font-label-sm text-label-sm">
+<div class="flex items-center gap-space-sm">
+<span>Displaying 5 of 6 dossiers</span>
+<span>·</span>
+<span class="flex items-center gap-1 font-code-sm text-code-sm text-tertiary">
+<span class="w-1.5 h-1.5 rounded-full bg-tertiary-container"></span> Immutable Ledger Root Sync: VALID
+          </span>
+</div>
+<div class="flex items-center gap-1">
+<button class="px-2 py-1 rounded bg-surface-container text-outline opacity-50 cursor-not-allowed" disabled="" type="button">Previous</button>
+<button class="px-2 py-1 rounded bg-surface-container-lowest text-on-surface font-semibold shadow-xs" type="button">1</button>
+<button class="px-2 py-1 rounded hover:bg-surface-container text-on-surface-variant" type="button">Next</button>
+</div>
+</div>
+</div>
+<!-- Active Report Configuration & Forensic Dossier Inspector (4 Cols on XL) -->
+<div class="xl:col-span-4 bg-surface-container-lowest rounded-xl shadow-sm overflow-hidden flex flex-col space-y-space-md p-space-md">
+<!-- Dossier Header & Badge -->
+<div class="flex items-start justify-between pb-space-xs">
+<div>
+<div class="flex items-center gap-space-xs">
+<span class="font-code-md text-code-md font-bold text-primary" id="inspector-id">RPT-2024-Q4-001</span>
+<span class="font-code-sm text-code-sm px-1.5 py-0.5 rounded bg-error-container text-on-error-container font-semibold" id="inspector-badge">Awaiting Signature</span>
+</div>
+<h2 class="font-headline-sm text-headline-sm text-on-surface mt-1" id="inspector-title">Synthetic Beneficiary Ring #4 (Apex Horizon / Pacifica)</h2>
+</div>
+<button class="p-1 rounded text-outline hover:text-on-surface hover:bg-surface-container" onclick="toggleDrawer(true)" title="Full screen view" type="button">
+<span class="material-symbols-outlined text-[20px]">open_in_full</span>
+</button>
+</div>
+<!-- Live Hash Verification Banner -->
+<div class="p-space-sm bg-surface-container-low rounded-lg space-y-1">
+<div class="flex items-center justify-between text-label-sm font-label-sm text-on-surface-variant">
+<span class="flex items-center gap-1">
+<span class="material-symbols-outlined text-[14px] text-tertiary">fingerprint</span>
+            SHA-256 Digest (Pre-seal)
+          </span>
+<span class="font-code-sm text-code-sm text-tertiary">Verified</span>
+</div>
+<div class="font-code-sm text-code-sm text-on-surface break-all bg-surface-container-lowest p-1.5 rounded select-all">
+          e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855
+        </div>
+</div>
+<!-- Executive Summary Preview -->
+<div class="space-y-space-xs">
+<span class="font-label-sm text-label-sm text-on-surface-variant uppercase tracking-wider block">Executive Summary Snippet</span>
+<div class="p-space-sm bg-surface rounded font-body-sm text-body-sm text-on-surface space-y-space-xs leading-relaxed max-h-40 overflow-y-auto">
+<p>Forensic inspection isolated cyclic disbursement vectors totaling <strong>$4,210,000 USD</strong> between 3 interrelated shell LLCs (Pacifica Maritime, Apex Horizon Ltd, Veloce Trading). Transactions were routed across 4 intermediary ACH nodes within a strict 48-hour cadence, matching high-probability funnel structuring behaviors.</p>
+<p class="font-code-sm text-code-sm text-on-surface-variant bg-surface-container-low p-1.5 rounded">Primary Red Flag Trigger: SHAP velocity contribution +42.8% on Routing Node 021000021.</p>
+</div>
+</div>
+<!-- Section Checklist: Included Evidence Items -->
+<div class="space-y-space-xs">
+<div class="flex items-center justify-between">
+<span class="font-label-sm text-label-sm text-on-surface-variant uppercase tracking-wider">Included Evidence Items (4/4)</span>
+<span class="font-label-sm text-label-sm text-primary cursor-pointer hover:underline">Edit Manifest</span>
+</div>
+<div class="space-y-1.5 font-body-sm text-body-sm">
+<label class="flex items-center gap-space-xs p-1.5 rounded bg-surface-container-low/60 hover:bg-surface-container-low cursor-pointer">
+<input checked="" class="w-3.5 h-3.5 accent-primary-container rounded" type="checkbox"/>
+<span class="material-symbols-outlined text-[16px] text-primary">receipt_long</span>
+<span class="flex-1 truncate text-on-surface">NACHA ACH Raw Batch Excerpts (18 Records)</span>
+<span class="font-code-sm text-code-sm text-outline">124 KB</span>
+</label>
+<label class="flex items-center gap-space-xs p-1.5 rounded bg-surface-container-low/60 hover:bg-surface-container-low cursor-pointer">
+<input checked="" class="w-3.5 h-3.5 accent-primary-container rounded" type="checkbox"/>
+<span class="material-symbols-outlined text-[16px] text-tertiary">balance</span>
+<span class="flex-1 truncate text-on-surface">Heuristic Rule &amp; Sanctions Scorecards</span>
+<span class="font-code-sm text-code-sm text-outline">48 KB</span>
+</label>
+<label class="flex items-center gap-space-xs p-1.5 rounded bg-surface-container-low/60 hover:bg-surface-container-low cursor-pointer">
+<input checked="" class="w-3.5 h-3.5 accent-primary-container rounded" type="checkbox"/>
+<span class="material-symbols-outlined text-[16px] text-secondary">hub</span>
+<span class="flex-1 truncate text-on-surface">High-Resolution Entity Network Graph Snapshot</span>
+<span class="font-code-sm text-code-sm text-outline">1.2 MB</span>
+</label>
+<label class="flex items-center gap-space-xs p-1.5 rounded bg-surface-container-low/60 hover:bg-surface-container-low cursor-pointer">
+<input checked="" class="w-3.5 h-3.5 accent-primary-container rounded" type="checkbox"/>
+<span class="material-symbols-outlined text-[16px] text-primary">analytics</span>
+<span class="flex-1 truncate text-on-surface">SHAP Feature Importance Mathematical Vector</span>
+<span class="font-code-sm text-code-sm text-outline">16 KB</span>
+</label>
+</div>
+</div>
+<!-- Attestation & Digital Signature Panel -->
+<div class="p-space-sm bg-surface-container-low rounded-lg space-y-space-xs">
+<span class="font-label-sm text-label-sm text-on-surface font-semibold flex items-center gap-1">
+<span class="material-symbols-outlined text-[16px] text-primary">gavel</span>
+          Legal Attestation &amp; Cryptographic Sign
+        </span>
+<p class="font-body-sm text-body-sm text-on-surface-variant leading-tight">
+          By sealing, Lead Auditor Vance certifies under 18 U.S.C. § 1001 that this package was extracted directly from audited transaction ledgers without manual post-hash modification.
+        </p>
+<div class="pt-1">
+<label class="flex items-start gap-space-xs cursor-pointer">
+<input class="w-4 h-4 mt-0.5 accent-primary-container rounded" id="seal-checkbox" onchange="toggleSignButton(this.checked)" type="checkbox"/>
+<span class="font-label-sm text-label-sm text-on-surface">I affirm evidence authenticity and execute digital seal using HSM Key ID: <span class="font-code-sm text-code-sm text-primary">SEC-092-FIPS</span></span>
+</label>
+</div>
+<button class="w-full mt-2 py-2 px-3 rounded bg-surface-container text-outline font-label-md text-label-md flex items-center justify-center gap-1.5 cursor-not-allowed transition-all" disabled="" id="sign-btn" onclick="executeSeal()" type="button">
+<span class="material-symbols-outlined text-[16px]">lock</span>
+<span>Execute Cryptographic Signature</span>
+</button>
+</div>
+<!-- Quick Export Actions -->
+<div class="space-y-space-xs pt-1">
+<span class="font-label-sm text-label-sm text-on-surface-variant uppercase tracking-wider block">Direct Export Options</span>
+<div class="grid grid-cols-1 gap-1.5">
+<button class="w-full h-8 px-space-sm rounded bg-surface-container hover:bg-surface-container-high text-on-surface font-label-sm text-label-sm flex items-center justify-between transition-colors" type="button">
+<span class="flex items-center gap-1.5">
+<span class="material-symbols-outlined text-[16px] text-error">picture_as_pdf</span>
+<span>Export Official OIG PDF (Watermarked)</span>
+</span>
+<span class="material-symbols-outlined text-[14px] text-outline">download</span>
+</button>
+<button class="w-full h-8 px-space-sm rounded bg-surface-container hover:bg-surface-container-high text-on-surface font-label-sm text-label-sm flex items-center justify-between transition-colors" type="button">
+<span class="flex items-center gap-1.5">
+<span class="material-symbols-outlined text-[16px] text-on-surface-variant">folder_zip</span>
+<span>Download Raw Evidence Bundle (.zip)</span>
+</span>
+<span class="material-symbols-outlined text-[14px] text-outline">download</span>
+</button>
+<button class="w-full h-8 px-space-sm rounded bg-surface-container hover:bg-surface-container-high text-on-surface font-label-sm text-label-sm flex items-center justify-between transition-colors" type="button">
+<span class="flex items-center gap-1.5">
+<span class="material-symbols-outlined text-[16px] text-tertiary">cloud_upload</span>
+<span>Dispatch via FinCEN SAR Secure SFTP</span>
+</span>
+<span class="material-symbols-outlined text-[14px] text-outline">send</span>
+</button>
+</div>
+</div>
+</div>
+</div>
+<!-- Interactive Fullscreen Dossier Preview Modal / Drawer -->
+<div class="fixed inset-0 z-50 bg-inverse-surface/50 backdrop-blur-xs flex items-center justify-center p-space-md hidden" id="dossier-modal">
+<div class="bg-surface-container-lowest w-full max-w-5xl max-h-[921px] rounded-xl shadow-xl flex flex-col overflow-hidden animate-in fade-in zoom-in-95 duration-150">
+<!-- Modal Header -->
+<div class="p-space-md bg-surface-container-low flex items-center justify-between">
+<div class="flex items-center gap-space-sm">
+<div class="p-space-xs rounded bg-primary-container text-on-primary">
+<span class="material-symbols-outlined text-[20px]">assignment_turned_in</span>
+</div>
+<div>
+<div class="flex items-center gap-space-xs">
+<span class="font-headline-sm text-headline-sm text-on-surface" id="modal-dossier-id">RPT-2024-Q4-001</span>
+<span class="font-code-sm text-code-sm bg-surface-container px-2 py-0.5 rounded text-on-surface-variant">OIG Watermark Level 3</span>
+</div>
+<div class="font-label-sm text-label-sm text-on-surface-variant">Forensic Attestation Record • FinTrace Core AML Engine</div>
+</div>
+</div>
+<button class="p-space-xs rounded text-outline hover:text-on-surface hover:bg-surface-container" onclick="toggleDrawer(false)" type="button">
+<span class="material-symbols-outlined text-[20px]">close</span>
+</button>
+</div>
+<!-- Modal Body (Two Column Evidence Preview) -->
+<div class="flex-1 overflow-y-auto p-space-lg grid grid-cols-1 md:grid-cols-12 gap-space-lg">
+<!-- Document Simulation Left Column (8 cols) -->
+<div class="md:col-span-8 space-y-space-md">
+<!-- Document Header Simulation -->
+<div class="p-space-lg bg-surface rounded-xl space-y-space-md relative overflow-hidden">
+<!-- Diagonal Watermark Overlay -->
+<div class="absolute inset-0 pointer-events-none flex items-center justify-center opacity-5 select-none rotate-[-25deg]">
+<span class="font-display-lg text-display-lg text-on-surface font-black uppercase text-center leading-none">CONFIDENTIAL<br/>OIG EVIDENTIARY AUDIT</span>
+</div>
+<div class="flex items-center justify-between border-b border-surface-container pb-space-sm">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-primary text-[24px]">policy</span>
+<span class="font-label-md text-label-md uppercase tracking-wider text-on-surface">U.S. Regulatory Compliance File</span>
+</div>
+<span class="font-code-sm text-code-sm text-on-surface-variant">FORM FIN-93.558</span>
+</div>
+<div>
+<h3 class="font-headline-md text-headline-md text-on-surface">Formal Investigation Finding: Synthetic Beneficiary Ring #4 (Pacifica)</h3>
+<p class="font-body-sm text-body-sm text-on-surface-variant mt-1">Lead Forensic Special Agent: Vance, J. (Badge #L3-9941) • Submitted 2024-11-18</p>
+</div>
+<!-- Embedded Visualization Snapshot -->
+<div class="space-y-space-xs">
+<span class="font-label-sm text-label-sm text-on-surface-variant uppercase tracking-wider block">Topology Dissection Snapshot</span>
+<div class="bg-surface-container-lowest p-space-md rounded-lg flex flex-col items-center justify-center">
+<svg class="w-full h-36" fill="none" viewbox="0 0 400 120" xmlns="http://www.w3.org/2000/svg">
+<!-- Node links -->
+<path class="text-outline-variant" d="M 60 60 L 160 30" stroke="currentColor" stroke-dasharray="4 2" stroke-width="2"></path>
+<path class="text-outline-variant" d="M 60 60 L 160 90" stroke="currentColor" stroke-width="2"></path>
+<path class="text-outline-variant" d="M 160 30 L 260 60" stroke="currentColor" stroke-width="2"></path>
+<path class="text-primary" d="M 160 90 L 260 60" stroke="currentColor" stroke-width="3"></path>
+<path class="text-error" d="M 260 60 L 340 60" stroke="currentColor" stroke-width="3"></path>
+<!-- Node Circles -->
+<circle class="fill-surface-container-high" cx="60" cy="60" r="14"></circle>
+<text class="fill-on-surface font-code-sm text-[10px]" text-anchor="middle" x="60" y="64">ACH</text>
+<circle class="fill-surface-container" cx="160" cy="30" r="12"></circle>
+<text class="fill-on-surface font-code-sm text-[9px]" text-anchor="middle" x="160" y="34">Node 1</text>
+<circle class="fill-surface-container" cx="160" cy="90" r="12"></circle>
+<text class="fill-on-surface font-code-sm text-[9px]" text-anchor="middle" x="160" y="94">Node 2</text>
+<circle class="fill-primary-container" cx="260" cy="60" r="16"></circle>
+<text class="fill-on-primary font-code-sm text-[10px] font-bold" text-anchor="middle" x="260" y="64">Ring #4</text>
+<circle class="fill-error-container" cx="340" cy="60" r="14"></circle>
+<text class="fill-on-error-container font-code-sm text-[10px] font-bold" text-anchor="middle" x="340" y="64">Offshore</text>
+</svg>
+<div class="flex items-center gap-space-md text-label-sm font-label-sm text-on-surface-variant mt-2">
+<span class="flex items-center gap-1"><span class="w-2 h-2 rounded-full bg-primary-container"></span> Shell Aggregation Cluster</span>
+<span class="flex items-center gap-1"><span class="w-2 h-2 rounded-full bg-error-container"></span> Unregulated Jurisdiction Terminal</span>
+</div>
+</div>
+</div>
+<!-- Structured Findings Excerpt -->
+<div class="space-y-space-xs">
+<span class="font-label-sm text-label-sm text-on-surface-variant uppercase tracking-wider block">Forensic Anomaly Vector Ledger</span>
+<div class="bg-surface-container-lowest rounded overflow-hidden">
+<table class="w-full text-left font-body-sm text-body-sm">
+<thead class="bg-surface-container-low text-on-surface-variant font-label-sm text-label-sm">
+<tr>
+<th class="px-2 py-1">Origin Account</th>
+<th class="px-2 py-1">Terminal Routing</th>
+<th class="px-2 py-1 text-right">Amount (USD)</th>
+<th class="px-2 py-1 text-right">SHAP Weight</th>
+</tr>
+</thead>
+<tbody class="divide-y divide-surface-container font-code-sm text-code-sm">
+<tr>
+<td class="px-2 py-1.5">**4912 (Pacifica Corp)</td>
+<td class="px-2 py-1.5">Node 021000021</td>
+<td class="px-2 py-1.5 text-right font-medium">$1,450,000.00</td>
+<td class="px-2 py-1.5 text-right text-error">+48.2%</td>
+</tr>
+<tr>
+<td class="px-2 py-1.5">**8831 (Apex Horizon)</td>
+<td class="px-2 py-1.5">Node 021000021</td>
+<td class="px-2 py-1.5 text-right font-medium">$1,760,000.00</td>
+<td class="px-2 py-1.5 text-right text-error">+41.0%</td>
+</tr>
+<tr>
+<td class="px-2 py-1.5">**0192 (Veloce Trade)</td>
+<td class="px-2 py-1.5">Node 021000021</td>
+<td class="px-2 py-1.5 text-right font-medium">$1,000,000.00</td>
+<td class="px-2 py-1.5 text-right text-error">+39.6%</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+</div>
+<!-- Verification & Actions Right Column (4 cols) -->
+<div class="md:col-span-4 space-y-space-md">
+<div class="p-space-md bg-surface-container-low rounded-xl space-y-space-sm">
+<span class="font-headline-sm text-headline-sm text-on-surface block">Chain of Custody</span>
+<div class="space-y-space-xs font-body-sm text-body-sm">
+<div class="flex items-start gap-2">
+<span class="material-symbols-outlined text-tertiary text-[16px] mt-0.5">check_circle</span>
+<div>
+<div class="text-on-surface font-semibold">Ledger Extracted</div>
+<div class="font-code-sm text-code-sm text-outline">2024-11-18 14:20:01 UTC</div>
+</div>
+</div>
+<div class="flex items-start gap-2">
+<span class="material-symbols-outlined text-tertiary text-[16px] mt-0.5">check_circle</span>
+<div>
+<div class="text-on-surface font-semibold">Merkle Root Appended</div>
+<div class="font-code-sm text-code-sm text-outline">Root: 0x932f...91ab</div>
+</div>
+</div>
+<div class="flex items-start gap-2">
+<span class="material-symbols-outlined text-primary text-[16px] mt-0.5">pending</span>
+<div>
+<div class="text-on-surface font-semibold">Cryptographic Seal</div>
+<div class="font-code-sm text-code-sm text-primary">Awaiting L3 Lead Auditor</div>
+</div>
+</div>
+</div>
+</div>
+<div class="space-y-space-xs">
+<span class="font-label-sm text-label-sm text-on-surface-variant uppercase tracking-wider block">Audit Export Formats</span>
+<button class="w-full py-2 px-space-md bg-primary hover:bg-on-primary-fixed-variant text-on-primary rounded-lg font-label-md text-label-md flex items-center justify-center gap-space-xs shadow-sm transition-colors" type="button">
+<span class="material-symbols-outlined text-[18px]">download</span>
+<span>Download Signed Dossier (.PDF)</span>
+</button>
+<button class="w-full py-2 px-space-md bg-surface-container hover:bg-surface-container-high text-on-surface rounded-lg font-label-md text-label-md flex items-center justify-center gap-space-xs transition-colors" type="button">
+<span class="material-symbols-outlined text-[18px]">folder_zip</span>
+<span>Evidence Bundle (.ZIP)</span>
+</button>
+<button class="w-full py-2 px-space-md bg-surface-container hover:bg-surface-container-high text-on-surface rounded-lg font-label-md text-label-md flex items-center justify-center gap-space-xs transition-colors" type="button">
+<span class="material-symbols-outlined text-[18px]">verified</span>
+<span>Validate Ledger SHA-256 Hash</span>
+</button>
+</div>
+</div>
+</div>
+<!-- Modal Footer -->
+<div class="p-space-md bg-surface-container-low flex items-center justify-between">
+<span class="font-code-sm text-code-sm text-outline">FinTrace Cryptographic Manifest Specification v2.1</span>
+<button class="px-space-md py-1.5 rounded-lg bg-surface-container hover:bg-surface-container-high text-on-surface font-label-md text-label-md" onclick="toggleDrawer(false)" type="button">Close Inspector</button>
+</div>
+</div>
+</div>
+<!-- Generate New Audit Dossier Modal -->
+<div class="fixed inset-0 z-50 bg-inverse-surface/50 backdrop-blur-xs flex items-center justify-center p-space-md hidden" id="new-dossier-modal">
+<div class="bg-surface-container-lowest w-full max-w-lg rounded-xl shadow-xl flex flex-col overflow-hidden animate-in fade-in zoom-in-95 duration-150">
+<div class="p-space-md bg-surface-container-low flex items-center justify-between">
+<div class="flex items-center gap-space-sm">
+<span class="material-symbols-outlined text-primary text-[20px]">post_add</span>
+<span class="font-headline-sm text-headline-sm text-on-surface">Generate New Audit Dossier</span>
+</div>
+<button class="p-1 rounded text-outline hover:text-on-surface" onclick="document.getElementById('new-dossier-modal').classList.add('hidden')" type="button">
+<span class="material-symbols-outlined text-[20px]">close</span>
+</button>
+</div>
+<div class="p-space-lg space-y-space-md">
+<div>
+<label class="font-label-sm text-label-sm text-on-surface block mb-1">Dossier Classification &amp; Scope</label>
+<select class="w-full h-9 px-space-sm bg-surface-container-low rounded font-body-sm text-body-sm text-on-surface focus:outline-none">
+<option>Investigation Finding Package (Synthetic Beneficiary Ring)</option>
+<option>Quarterly Disbursement Anomaly Summary (IG Formal)</option>
+<option>Sub-recipient Compliance Verification (Federal Grant)</option>
+<option>OFAC / Sanctions Strict False Positive Exclusion File</option>
+</select>
+</div>
+<div>
+<label class="font-label-sm text-label-sm text-on-surface block mb-1">Target Workspace Batch</label>
+<input class="w-full h-9 px-space-sm bg-surface-container-low/60 rounded font-body-sm text-body-sm text-on-surface-variant focus:outline-none cursor-not-allowed" readonly="" type="text" value="Batch Audit Q4-2024 / Fed Grants (Current Workspace)"/>
+</div>
+<div>
+<label class="font-label-sm text-label-sm text-on-surface block mb-1">Evidentiary Modules to Compile</label>
+<div class="space-y-1 font-body-sm text-body-sm">
+<label class="flex items-center gap-2"><input checked="" class="accent-primary" type="checkbox"/> ACH Batch Transmittals</label>
+<label class="flex items-center gap-2"><input checked="" class="accent-primary" type="checkbox"/> Graph Topology Vector Diagrams</label>
+<label class="flex items-center gap-2"><input checked="" class="accent-primary" type="checkbox"/> SHAP / Heuristic Audit Logs</label>
+<label class="flex items-center gap-2"><input checked="" class="accent-primary" type="checkbox"/> Digital Hardware Token Key Attestation</label>
+</div>
+</div>
+</div>
+<div class="p-space-md bg-surface-container-low flex items-center justify-end gap-space-sm">
+<button class="px-space-md py-1.5 rounded-lg text-on-surface-variant font-label-md text-label-md hover:bg-surface-container" onclick="document.getElementById('new-dossier-modal').classList.add('hidden')" type="button">Cancel</button>
+<button class="px-space-md py-1.5 rounded-lg bg-primary hover:bg-on-primary-fixed-variant text-on-primary font-label-md text-label-md" onclick="simulateGenerate()" type="button">Compile &amp; Hash Dossier</button>
+</div>
+</div>
+</div>
+<!-- Toast Notification Container -->
+<div class="fixed bottom-6 right-6 z-50 bg-inverse-surface text-inverse-on-surface px-space-md py-space-sm rounded-lg shadow-lg flex items-center gap-space-sm transform translate-y-20 opacity-0 transition-all duration-200" id="toast-msg">
+<span class="material-symbols-outlined text-[18px] text-tertiary-fixed">check_circle</span>
+<span class="font-body-sm text-body-sm" id="toast-text">Hash copied to clipboard</span>
+</div>
+</div>
+<script>
+  function toggleDrawer(open) {
+    const modal = document.getElementById('dossier-modal');
+    if (open) {
+      modal.classList.remove('hidden');
+    } else {
+      modal.classList.add('hidden');
+    }
+  }
+
+  function toggleSignButton(checked) {
+    const btn = document.getElementById('sign-btn');
+    if (checked) {
+      btn.disabled = false;
+      btn.classList.remove('bg-surface-container', 'text-outline', 'cursor-not-allowed');
+      btn.classList.add('bg-primary', 'hover:bg-on-primary-fixed-variant', 'text-on-primary', 'cursor-pointer');
+    } else {
+      btn.disabled = true;
+      btn.classList.add('bg-surface-container', 'text-outline', 'cursor-not-allowed');
+      btn.classList.remove('bg-primary', 'hover:bg-on-primary-fixed-variant', 'text-on-primary', 'cursor-pointer');
+    }
+  }
+
+  function executeSeal() {
+    const badge = document.getElementById('inspector-badge');
+    badge.textContent = 'Finalized & Sealed';
+    badge.classList.remove('bg-error-container', 'text-on-error-container');
+    badge.classList.add('bg-tertiary-fixed', 'text-on-tertiary-fixed');
+    
+    const btn = document.getElementById('sign-btn');
+    btn.innerHTML = '<span class="material-symbols-outlined text-[16px]">verified</span> Signed by Vance, J.';
+    btn.disabled = true;
+    btn.classList.add('opacity-75');
+
+    showToast('Cryptographic Seal Applied with RSA-4096 / FIPS-140-3 Token');
+  }
+
+  function copyDigest(hash) {
+    navigator.clipboard.writeText(hash).then(() => {
+      showToast('SHA-256 Digest Copied: ' + hash.substring(0, 16) + '...');
+    }).catch(() => {
+      showToast('Copied Hash to Clipboard');
+    });
+  }
+
+  function showToast(text) {
+    const toast = document.getElementById('toast-msg');
+    const toastText = document.getElementById('toast-text');
+    toastText.textContent = text;
+    toast.classList.remove('translate-y-20', 'opacity-0');
+    setTimeout(() => {
+      toast.classList.add('translate-y-20', 'opacity-0');
+    }, 3000);
+  }
+
+  function filterReports(query) {
+    const table = document.getElementById('reports-table');
+    const rows = table.getElementsByTagName('tbody')[0].getElementsByTagName('tr');
+    const emptyState = document.getElementById('table-empty-state');
+    let visibleCount = 0;
+    const term = query.toLowerCase();
+
+    for (let i = 0; i < rows.length; i++) {
+      const rowText = rows[i].textContent.toLowerCase();
+      if (rowText.includes(term)) {
+        rows[i].style.display = '';
+        visibleCount++;
+      } else {
+        rows[i].style.display = 'none';
+      }
+    }
+
+    if (visibleCount === 0) {
+      emptyState.classList.remove('hidden');
+    } else {
+      emptyState.classList.add('hidden');
+    }
+  }
+
+  function resetFilter() {
+    const input = document.getElementById('filter-input');
+    input.value = '';
+    filterReports('');
+  }
+
+  function selectReport(reportId) {
+    document.getElementById('inspector-id').textContent = reportId;
+    document.getElementById('modal-dossier-id').textContent = reportId;
+    showToast('Loaded Inspector for ' + reportId);
+  }
+
+  function simulateGenerate() {
+    document.getElementById('new-dossier-modal').classList.add('hidden');
+    showToast('New Dossier queued: RPT-2024-Q4-007 compiling...');
+  }
+</script></main></div></body></html>

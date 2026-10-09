@@ -75,7 +75,8 @@ export async function ingestBeneficiariesCsvHandler(req: Request, res: Response)
     });
   } catch (error) {
     logger.error('Error in ingestBeneficiariesCsvHandler:', error);
-    res.status(500).json({
+    const isClientError = error instanceof Error && (error.message.includes('missing required') || error.message.includes('Invalid CSV syntax'));
+    res.status(isClientError ? 400 : 500).json({
       success: false,
       error: {
         message: 'Failed to parse and ingest beneficiary CSV file',
@@ -114,7 +115,8 @@ export async function ingestDisbursementsCsvHandler(req: Request, res: Response)
     });
   } catch (error) {
     logger.error('Error in ingestDisbursementsCsvHandler:', error);
-    res.status(500).json({
+    const isClientError = error instanceof Error && (error.message.includes('missing required') || error.message.includes('Invalid CSV syntax'));
+    res.status(isClientError ? 400 : 500).json({
       success: false,
       error: {
         message: 'Failed to parse and ingest disbursement CSV file',

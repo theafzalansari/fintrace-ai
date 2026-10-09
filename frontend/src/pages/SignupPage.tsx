@@ -9,16 +9,16 @@ export const SignupPage: React.FC = () => {
   const publishableKey = import.meta.env.VITE_CLERK_PUBLISHABLE_KEY;
 
   return (
-    <div className="min-h-[calc(100vh-8rem)] flex items-center justify-center p-6 bg-[#07090E]">
+    <div className="min-h-[calc(100vh-8rem)] flex items-center justify-center p-6 bg-slate-50 dark:bg-[#07090E] transition-colors">
       <div className="w-full max-w-md space-y-6">
         {publishableKey ? (
           /* Real Clerk Sign Up UI */
           <div className="flex flex-col items-center space-y-4">
-            <div className="flex items-center gap-2 font-mono text-xs text-slate-400 mb-2">
-              <ShieldCheck className="h-4 w-4 text-[#84CC16]" />
+            <div className="flex items-center gap-2 font-mono text-xs text-slate-600 dark:text-slate-400 mb-2">
+              <ShieldCheck className="h-4 w-4 text-blue-600 dark:text-[#84CC16]" />
               <span>CLERK ACCOUNT REGISTRATION</span>
             </div>
-            <div className="w-full bg-[#0B0F17] border border-slate-800 p-2 rounded-xl shadow-2xl flex justify-center">
+            <div className="w-full bg-white dark:bg-[#0B0F17] border border-slate-200 dark:border-slate-800 p-2 rounded-xl shadow-2xl flex justify-center">
               <SignUp
                 routing="path"
                 path="/signup"
@@ -30,35 +30,35 @@ export const SignupPage: React.FC = () => {
           </div>
         ) : (
           /* Clerk Key Setup Instructions fallback if key is not set yet */
-          <div className="border border-slate-800 bg-[#0B0F17] rounded-lg p-6 space-y-6 shadow-2xl">
-            <div className="space-y-2 border-b border-slate-800 pb-4">
+          <div className="border border-slate-200 dark:border-slate-800 bg-white dark:bg-[#0B0F17] rounded-lg p-6 space-y-6 shadow-2xl">
+            <div className="space-y-2 border-b border-slate-200 dark:border-slate-800 pb-4">
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-2">
-                  <div className="h-7 w-7 rounded bg-slate-900 border border-[#84CC16]/40 flex items-center justify-center">
-                    <Key className="h-4 w-4 text-[#84CC16]" />
+                  <div className="h-7 w-7 rounded bg-slate-100 dark:bg-slate-900 border border-blue-500/40 dark:border-[#84CC16]/40 flex items-center justify-center">
+                    <Key className="h-4 w-4 text-blue-600 dark:text-[#84CC16]" />
                   </div>
-                  <span className="font-mono text-xs font-bold text-white uppercase tracking-wider">
+                  <span className="font-mono text-xs font-bold text-slate-950 dark:text-white uppercase tracking-wider">
                     CLERK REGISTRATION
                   </span>
                 </div>
-                <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-amber-950 text-amber-400 border border-amber-800">
+                <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-amber-100 dark:bg-amber-950 text-amber-800 dark:text-amber-400 border border-amber-300 dark:border-amber-800">
                   KEY REQUIRED
                 </span>
               </div>
-              <h1 className="text-xl font-bold tracking-tight text-white">Create FinTrace Profile</h1>
-              <p className="text-xs text-slate-400 font-mono">
+              <h1 className="text-xl font-bold tracking-tight text-slate-950 dark:text-white">Create FinTrace Profile</h1>
+              <p className="text-xs text-slate-600 dark:text-slate-400 font-mono">
                 Real Clerk authentication SDK is installed and ready.
               </p>
             </div>
 
-            <div className="p-4 rounded border border-amber-500/40 bg-amber-950/20 text-amber-300 text-xs space-y-2 font-mono">
-              <div className="font-bold uppercase tracking-wider text-amber-400">
+            <div className="p-4 rounded border border-amber-300 dark:border-amber-500/40 bg-amber-50 dark:bg-amber-950/20 text-amber-900 dark:text-amber-300 text-xs space-y-2 font-mono">
+              <div className="font-bold uppercase tracking-wider text-amber-800 dark:text-amber-400">
                 Setup Environment Variable:
               </div>
-              <p className="text-amber-200/90 leading-relaxed">
-                Add your Clerk Publishable Key to <code className="text-white bg-slate-900 px-1 py-0.5 rounded">frontend/.env</code>:
+              <p className="text-amber-900 dark:text-amber-200/90 leading-relaxed">
+                Add your Clerk Publishable Key to <code className="text-slate-950 dark:text-white bg-slate-200 dark:bg-slate-900 px-1 py-0.5 rounded">frontend/.env</code>:
               </p>
-              <div className="p-2 rounded bg-slate-950 border border-slate-800 text-lime-400 font-mono text-[11px] select-all">
+              <div className="p-2 rounded bg-slate-100 dark:bg-slate-950 border border-slate-300 dark:border-slate-800 text-lime-700 dark:text-lime-400 font-mono text-[11px] select-all">
                 VITE_CLERK_PUBLISHABLE_KEY=pk_test_...
               </div>
             </div>
@@ -70,11 +70,11 @@ export const SignupPage: React.FC = () => {
               INITIALIZE WORKSPACE (DEMO) <ArrowRight className="h-3.5 w-3.5" />
             </Button>
 
-            <div className="pt-2 border-t border-slate-800/80 flex items-center justify-between text-xs font-mono text-slate-400">
+            <div className="pt-2 border-t border-slate-200 dark:border-slate-800/80 flex items-center justify-between text-xs font-mono text-slate-600 dark:text-slate-400">
               <span>Direct access enabled for inspection</span>
               <button
                 onClick={() => navigate('/dashboard')}
-                className="text-[#84CC16] hover:underline flex items-center gap-1"
+                className="text-blue-600 dark:text-[#84CC16] hover:underline flex items-center gap-1"
               >
                 Open Workspace <CheckCircle2 className="h-3 w-3" />
               </button>
@@ -83,11 +83,11 @@ export const SignupPage: React.FC = () => {
         )}
 
         {/* Footer Navigation */}
-        <div className="flex items-center justify-between text-xs font-mono text-slate-500 px-1">
-          <Link to="/" className="hover:text-slate-300">
+        <div className="flex items-center justify-between text-xs font-mono text-slate-600 dark:text-slate-500 px-1">
+          <Link to="/" className="hover:text-slate-950 dark:hover:text-slate-300">
             ← Return to public portal
           </Link>
-          <Link to="/login" className="text-slate-400 hover:text-white">
+          <Link to="/login" className="text-slate-700 dark:text-slate-400 hover:text-slate-950 dark:hover:text-white">
             Already registered? Sign in →
           </Link>
         </div>

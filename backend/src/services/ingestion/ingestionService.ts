@@ -32,17 +32,134 @@ export interface IngestionResult<T> {
 const memoryBeneficiariesStore = new Map<string, BeneficiaryInput>();
 const memoryDisbursementsStore = new Map<string, DisbursementInput>();
 
+function cleanHeaderKey(key: string): string {
+  return key.trim().replace(/^\uFEFF/, '').toLowerCase().replace(/[\s\-_]+/g, '');
+}
+
+const BENEFICIARY_HEADER_MAP: Record<string, keyof BeneficiaryInput> = {
+  beneficiaryid: 'beneficiaryId',
+  beneficiary_id: 'beneficiaryId',
+  id: 'beneficiaryId',
+  name: 'name',
+  beneficiaryname: 'name',
+  beneficiary_name: 'name',
+  bankaccountnumber: 'bankAccountNumber',
+  bank_account_number: 'bankAccountNumber',
+  accountnumber: 'bankAccountNumber',
+  account_number: 'bankAccountNumber',
+  accountno: 'bankAccountNumber',
+  account_no: 'bankAccountNumber',
+  ifscorroutingcode: 'ifscOrRoutingCode',
+  ifsc_or_routing_code: 'ifscOrRoutingCode',
+  ifsc: 'ifscOrRoutingCode',
+  ifsccode: 'ifscOrRoutingCode',
+  ifsc_code: 'ifscOrRoutingCode',
+  routingcode: 'ifscOrRoutingCode',
+  routing_code: 'ifscOrRoutingCode',
+  category: 'category',
+  phone: 'phone',
+  phonenumber: 'phone',
+  phone_number: 'phone',
+  mobile: 'phone',
+  email: 'email',
+  emailaddress: 'email',
+  email_address: 'email',
+  address: 'address',
+  identityhash: 'identityHash',
+  identity_hash: 'identityHash',
+  aadhaar_hash: 'identityHash',
+  pan_hash: 'identityHash',
+  status: 'status'
+};
+
+const DISBURSEMENT_HEADER_MAP: Record<string, keyof DisbursementInput> = {
+  disbursementid: 'disbursementId',
+  disbursement_id: 'disbursementId',
+  id: 'disbursementId',
+  txnid: 'disbursementId',
+  txn_id: 'disbursementId',
+  beneficiaryid: 'beneficiaryId',
+  beneficiary_id: 'beneficiaryId',
+  amount: 'amount',
+  payoutamount: 'amount',
+  payout_amount: 'amount',
+  amt: 'amount',
+  currency: 'currency',
+  disbursementdate: 'disbursementDate',
+  disbursement_date: 'disbursementDate',
+  date: 'disbursementDate',
+  txndate: 'disbursementDate',
+  txn_date: 'disbursementDate',
+  programcode: 'programCode',
+  program_code: 'programCode',
+  schemecode: 'programCode',
+  scheme_code: 'programCode',
+  paymentchannel: 'paymentChannel',
+  payment_channel: 'paymentChannel',
+  channel: 'paymentChannel',
+  status: 'status',
+  referencenumber: 'referenceNumber',
+  reference_number: 'referenceNumber',
+  ref: 'referenceNumber',
+  remarks: 'remarks',
+  remark: 'remarks',
+  description: 'remarks'
+};
+
 export class IngestionService {
   /**
-   * Parse CSV raw text or buffer into javascript objects
+   * Normalize beneficiary row keys & trim values
+   */
+  public normalizeBeneficiaryRawRecord(rawRecord: unknown): Record<string, unknown> {
+    if (!rawRecord || typeof rawRecord !== 'object') return {};
+    const normalized: Record<string, unknown> = {};
+    for (const [key, value] of Object.entries(rawRecord as Record<string, unknown>)) {
+      const cleanKey = cleanHeaderKey(key);
+      const mappedField = BENEFICIARY_HEADER_MAP[cleanKey];
+      const cleanValue = typeof value === 'string' ? value.trim() : value;
+      if (mappedField) {
+        normalized[mappedField] = cleanValue;
+      } else {
+        normalized[key.trim().replace(/^\uFEFF/, '')] = cleanValue;
+      }
+    }
+    return normalized;
+  }
+
+  /**
+   * Normalize disbursement row keys & trim values
+   */
+  public normalizeDisbursementRawRecord(rawRecord: unknown): Record<string, unknown> {
+    if (!rawRecord || typeof rawRecord !== 'object') return {};
+    const normalized: Record<string, unknown> = {};
+    for (const [key, value] of Object.entries(rawRecord as Record<string, unknown>)) {
+      const cleanKey = cleanHeaderKey(key);
+      const mappedField = DISBURSEMENT_HEADER_MAP[cleanKey];
+      const cleanValue = typeof value === 'string' ? value.trim() : value;
+      if (mappedField) {
+        normalized[mappedField] = cleanValue;
+      } else {
+        normalized[key.trim().replace(/^\uFEFF/, '')] = cleanValue;
+      }
+    }
+    return normalized;
+  }
+
+  /**
+   * Parse CSV raw text or buffer into javascript objects with BOM & header trimming
    */
   public parseCsv(csvData: string | Buffer): Record<string, string>[] {
-    const content = typeof csvData === 'string' ? csvData : csvData.toString('utf-8');
+    let content = typeof csvData === 'string' ? csvData : csvData.toString('utf-8');
+    content = content.replace(/^\uFEFF/, '').trim();
+    if (!content) return [];
     try {
       return parse(content, {
-        columns: true,
+        columns: (header: string[]) => {
+          return header.map(h => h.trim().replace(/^\uFEFF/, ''));
+        },
         skip_empty_lines: true,
-        trim: true
+        trim: true,
+        bom: true
       });
     } catch (err) {
       throw new Error(`Invalid CSV syntax or malformed structure: ${err instanceof Error ? err.message : String(err)}`);
@@ -56,9 +173,21 @@ export class IngestionService {
     const acceptedMap = new Map<string, BeneficiaryInput>();
     const rejected: IngestionRowError[] = [];
 
+    // Header validation for beneficiary records
+    if (records.length > 0 && typeof records[0] === 'object' && records[0] !== null) {
+      const firstRowNormalized = this.normalizeBeneficiaryRawRecord(records[0]);
+      const requiredFields: (keyof BeneficiaryInput)[] = ['beneficiaryId', 'name', 'bankAccountNumber', 'ifscOrRoutingCode'];
+      const missingFields = requiredFields.filter(f => !(f in firstRowNormalized) || firstRowNormalized[f] === undefined || firstRowNormalized[f] === '');
+      
+      if (missingFields.length === requiredFields.length) {
+        throw new Error(`CSV missing required beneficiary headers. Missing: [${missingFields.join(', ')}]. Supported IFSC aliases: ifsc, ifscCode, ifsc_code, ifscOrRoutingCode, routing_code.`);
+      }
+    }
+
     for (let index = 0; index < records.length; index++) {
       const raw = records[index];
-      const result = validateBeneficiaryRecord(raw);
+      const normalizedRaw = this.normalizeBeneficiaryRawRecord(raw);
+      const result = validateBeneficiaryRecord(normalizedRaw);
 
       if (!result.success) {
         const errors: IngestionErrorDetail[] = result.error.issues.map((issue) => ({
@@ -72,22 +201,38 @@ export class IngestionService {
         });
       } else {
         const validatedData = result.data;
-        acceptedMap.set(validatedData.beneficiaryId, validatedData);
-
-        // Store in memory store
-        memoryBeneficiariesStore.set(validatedData.beneficiaryId, validatedData);
+        let isPersisted = true;
 
         // Idempotent upsert to MongoDB if connected
         if (mongoose.connection.readyState === 1) {
           try {
-            await Beneficiary.findOneAndUpdate(
+            const doc = await Beneficiary.findOneAndUpdate(
               { beneficiaryId: validatedData.beneficiaryId },
               validatedData,
-              { upsert: true, new: true }
+              { upsert: true, new: true, runValidators: true }
             );
+            if (!doc) {
+              throw new Error('Database insertion returned null');
+            }
           } catch (dbErr) {
-            logger.warn(`Failed to persist beneficiary ${validatedData.beneficiaryId} to MongoDB:`, dbErr);
+            logger.error(`Failed to persist beneficiary ${validatedData.beneficiaryId} to MongoDB:`, dbErr);
+            isPersisted = false;
+            rejected.push({
+              row: index + 1,
+              raw,
+              errors: [
+                {
+                  field: 'database',
+                  message: `Database persistence failed: ${dbErr instanceof Error ? dbErr.message : String(dbErr)}`
+                }
+              ]
+            });
           }
+        }
+
+        if (isPersisted) {
+          acceptedMap.set(validatedData.beneficiaryId, validatedData);
+          memoryBeneficiariesStore.set(validatedData.beneficiaryId, validatedData);
         }
       }
     }
@@ -113,9 +258,21 @@ export class IngestionService {
     const acceptedMap = new Map<string, DisbursementInput>();
     const rejected: IngestionRowError[] = [];
 
+    // Header validation for disbursement records
+    if (records.length > 0 && typeof records[0] === 'object' && records[0] !== null) {
+      const firstRowNormalized = this.normalizeDisbursementRawRecord(records[0]);
+      const requiredFields: (keyof DisbursementInput)[] = ['disbursementId', 'beneficiaryId', 'amount', 'disbursementDate', 'programCode'];
+      const missingFields = requiredFields.filter(f => !(f in firstRowNormalized) || firstRowNormalized[f] === undefined || firstRowNormalized[f] === '');
+      
+      if (missingFields.length === requiredFields.length) {
+        throw new Error(`CSV missing required disbursement headers. Missing: [${missingFields.join(', ')}].`);
+      }
+    }
+
     for (let index = 0; index < records.length; index++) {
       const raw = records[index];
-      const result = validateDisbursementRecord(raw);
+      const normalizedRaw = this.normalizeDisbursementRawRecord(raw);
+      const result = validateDisbursementRecord(normalizedRaw);
 
       if (!result.success) {
         const errors: IngestionErrorDetail[] = result.error.issues.map((issue) => ({
@@ -129,22 +286,38 @@ export class IngestionService {
         });
       } else {
         const validatedData = result.data;
-        acceptedMap.set(validatedData.disbursementId, validatedData);
-
-        // Store in memory store
-        memoryDisbursementsStore.set(validatedData.disbursementId, validatedData);
+        let isPersisted = true;
 
         // Idempotent upsert to MongoDB if connected
         if (mongoose.connection.readyState === 1) {
           try {
-            await Disbursement.findOneAndUpdate(
+            const doc = await Disbursement.findOneAndUpdate(
               { disbursementId: validatedData.disbursementId },
               validatedData,
-              { upsert: true, new: true }
+              { upsert: true, new: true, runValidators: true }
             );
+            if (!doc) {
+              throw new Error('Database insertion returned null');
+            }
           } catch (dbErr) {
-            logger.warn(`Failed to persist disbursement ${validatedData.disbursementId} to MongoDB:`, dbErr);
+            logger.error(`Failed to persist disbursement ${validatedData.disbursementId} to MongoDB:`, dbErr);
+            isPersisted = false;
+            rejected.push({
+              row: index + 1,
+              raw,
+              errors: [
+                {
+                  field: 'database',
+                  message: `Database persistence failed: ${dbErr instanceof Error ? dbErr.message : String(dbErr)}`
+                }
+              ]
+            });
           }
+        }
+
+        if (isPersisted) {
+          acceptedMap.set(validatedData.disbursementId, validatedData);
+          memoryDisbursementsStore.set(validatedData.disbursementId, validatedData);
         }
       }
     }
@@ -185,7 +358,10 @@ export class IngestionService {
   public async getBeneficiaries(): Promise<unknown[]> {
     if (mongoose.connection.readyState === 1) {
       try {
-        return await Beneficiary.find().lean();
+        const dbRecords = await Beneficiary.find().lean();
+        if (dbRecords && dbRecords.length > 0) {
+          return dbRecords;
+        }
       } catch (err) {
         logger.warn('Error fetching beneficiaries from MongoDB, returning memory store', err);
       }
@@ -199,7 +375,10 @@ export class IngestionService {
   public async getDisbursements(): Promise<unknown[]> {
     if (mongoose.connection.readyState === 1) {
       try {
-        return await Disbursement.find().lean();
+        const dbRecords = await Disbursement.find().lean();
+        if (dbRecords && dbRecords.length > 0) {
+          return dbRecords;
+        }
       } catch (err) {
         logger.warn('Error fetching disbursements from MongoDB, returning memory store', err);
       }

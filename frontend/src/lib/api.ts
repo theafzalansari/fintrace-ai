@@ -17,8 +17,14 @@ async function handleResponse<T>(response: Response): Promise<T> {
     let errorMessage = `HTTP error ${response.status}`;
     try {
       const errData = await response.json();
-      if (errData?.error?.message) {
-        errorMessage = errData.error.message;
+      if (errData?.error) {
+        if (typeof errData.error === 'string') {
+          errorMessage = errData.error;
+        } else if (errData.error.details) {
+          errorMessage = `${errData.error.message}: ${errData.error.details}`;
+        } else if (errData.error.message) {
+          errorMessage = errData.error.message;
+        }
       }
     } catch {
       // Use fallback error message
