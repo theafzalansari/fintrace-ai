@@ -16,14 +16,15 @@ interface SidebarProps {
 }
 
 export const Sidebar: React.FC<SidebarProps> = ({ activeTab, setActiveTab }) => {
+
   const navItems = [
     { id: 'dashboard', label: 'Audit Dashboard', icon: LayoutDashboard },
     { id: 'beneficiaries', label: 'Beneficiary Ledger', icon: Users, badge: 'Ghost Detection' },
     { id: 'disbursements', label: 'Disbursement Records', icon: FileText },
-    { id: 'investigations', label: 'Micro-Audit Risks', icon: SearchCode, badge: 'Rule Engine' },
+    { id: 'investigations', label: 'Micro-Audit Risks', icon: SearchCode, badge: 'Hybrid Engine' },
     { id: 'network', label: 'Network Graph', icon: GitFork, badge: 'Adjacency' },
     { id: 'copilot', label: 'Audit Copilot', icon: Bot, badge: 'AI Assistant' },
-    { id: 'reports', label: 'Audit Reports', icon: FileCheck, badge: 'Future' }
+    { id: 'reports', label: 'Audit Reports', icon: FileCheck, badge: 'PDF & CSV' }
   ];
 
   return (
